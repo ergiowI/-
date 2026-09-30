@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Фантик Казино</title>
+<style>
+  :root {
+    --bg: #0f1117; --panel: #181b24; --panel2: #20242f; --line: #2b3040;
+    --text: #e8eaf0; --muted: #8b91a3; --accent: #f5b83d; --win: #3ddc84; --lose: #ff5c5c;
+    --r-blue: #4b69ff; --r-purple: #8847ff; --r-pink: #d32ce6; --r-red: #eb4b4b; --r-gold: #e4ae39;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  button { font: inherit; cursor: pointer; border: 0; border-radius: 8px; padding: 10px 16px; background: var(--panel2); color: var(--text); }
+  button:hover:not(:disabled) { filter: brightness(1.2); }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  button.primary { background: var(--accent); color: #1a1300; font-weight: 700; }
+  select, input { font: inherit; background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+
+  header { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    padding: 12px 20px; background: #0b0d12ee; border-bottom: 1px solid var(--line); backdrop-filter: blur(6px); }
+  .logo { font-weight: 800; font-size: 20px; letter-spacing: .5px; }
+  .logo span { color: var(--accent); }
+  nav { display: flex; gap: 6px; flex-wrap: wrap; }
+  nav button.active { background: var(--accent); color: #1a1300; font-weight: 700; }
+  .wallet { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .balance { font-weight: 800; font-size: 18px; color: var(--accent); min-width: 110px; text-align: right; }
+  main { max-width: 1100px; margin: 0 auto; padding: 20px 16px 60px; }
+  section { display: none; }
+  section.active { display: block; }
+  h2 { margin: 0 0 14px; }
+  .muted { color: var(--muted); }
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+  /* кейсы */
+  .cases { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+  .case-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: transform .15s, border-color .15s; }
+  .case-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .case-card .box { font-size: 54px; line-height: 1.2; }
+  .case-card .price { color: var(--accent); font-weight: 700; margin-top: 6px; }
+
+  .spinner { position: relative; overflow: hidden; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; height: 150px; margin: 16px 0; }
+  .spinner::after { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 3px; margin-left: -1.5px; background: var(--accent); box-shadow: 0 0 12px var(--accent); z-index: 2; }
+  .track { display: flex; position: absolute; top: 15px; left: 0; will-change: transform; }
+  .item { flex: 0 0 auto; width: 130px; height: 120px; margin-right: 6px; border-radius: 8px; background: linear-gradient(180deg, var(--panel2), #151821);
+    border-bottom: 4px solid var(--rc); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 6px; overflow: hidden; }
+  .item .ico { font-size: 30px; }
+  .item .w { font-size: 12px; color: var(--muted); }
+  .item .n { font-size: 13px; font-weight: 600; color: var(--rc); line-height: 1.15; }
+  .item .v { font-size: 12px; color: var(--accent); margin-top: 2px; }
+  .r-blue { --rc: var(--r-blue); } .r-purple { --rc: var(--r-purple); } .r-pink { --rc: var(--r-pink); } .r-red { --rc: var(--r-red); } .r-gold { --rc: var(--r-gold); }
+
+  .contents { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin-top: 12px; }
+  .contents .item { width: auto; margin: 0; }
+  .chance { font-size: 11px; color: var(--muted); }
+
+  .drop { margin: 10px 0; padding: 14px; border-radius: 10px; background: var(--panel); border: 1px solid var(--line); display: none; }
+  .drop.show { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+
+  /* батл */
+  .battle-arena { display: grid; gap: 10px; margin-top: 16px; }
+  .player { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px; min-width: 0; }
+  .player.winner { border-color: var(--win); box-shadow: 0 0 18px #3ddc8455; }
+  .player h3 { margin: 0 0 6px; font-size: 15px; display: flex; justify-content: space-between; }
+  .player .total { color: var(--accent); }
+  .vspin { position: relative; overflow: hidden; height: 240px; border-radius: 8px; background: #12141b; }
+  .vspin::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 3px; margin-top: -1.5px; background: var(--accent); box-shadow: 0 0 10px var(--accent); z-index: 2; }
+  .vspin .track { flex-direction: column; top: 0; left: 50%; margin-left: -65px; }
+  .vspin .item { margin: 0 0 6px 0; }
+  .won { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; min-height: 28px; }
+  .chip { font-size: 11px; padding: 3px 6px; border-radius: 5px; background: var(--panel2); border-left: 3px solid var(--rc); }
+
+  /* слоты */
+  .slots { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
+  .reel { width: 110px; height: 330px; overflow: hidden; position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
+  .reel::before, .reel::after { content: ""; position: absolute; left: 0; right: 0; height: 110px; z-index: 2; pointer-events: none; }
+  .reel::before { top: 0; background: linear-gradient(#0f1117, transparent); }
+  .reel::after { bottom: 0; background: linear-gradient(transparent, #0f1117); }
+  .reel .strip { position: absolute; top: 0; left: 0; right: 0; }
+  .reel .sym { height: 110px; display: flex; align-items: center; justify-content: center; font-size: 60px; }
+  .paytable { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; max-width: 700px; margin: 0 auto; }
+  .paytable div { background: var(--panel); padding: 6px 10px; border-radius: 8px; font-size: 14px; }
+
+  /* рулетка */
+  .rspin .track { top: 20px; }
+  .tile { flex: 0 0 auto; width: 90px; height: 90px; margin-right: 6px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 26px; }
+  .t-red { background: #c33; } .t-black { background: #2a2d36; } .t-green { background: #1f9d55; }
+  .bets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+  .bet { padding: 14px; border-radius: 10px; text-align: center; }
+  .bet b { display: block; font-size: 18px; }
+  .history { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 12px; }
+  .history span { width: 26px; height: 26px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+
+  /* инвентарь */
+  .inv { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+  .inv .item { width: auto; margin: 0; height: 150px; }
+  .inv .item button { margin-top: 6px; padding: 4px 10px; font-size: 12px; }
+
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(120px); background: var(--panel2); border: 1px solid var(--line);
+    padding: 12px 18px; border-radius: 10px; transition: transform .25s; z-index: 50; font-weight: 600; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .result-win { color: var(--win); font-weight: 700; } .result-lose { color: var(--lose); font-weight: 700; }
+  @media (max-width: 600px) { .reel { width: 90px; } .bets { grid-template-columns: 1fr; } .wallet { margin-left: 0; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">🎰 Фантик <span>Казино</span></div>
+  <nav id="nav">
+    <button data-tab="cases" class="active">📦 Кейсы</button>
+    <button data-tab="battle">⚔️ Кейс-батл</button>
+    <button data-tab="slots">🍒 Слоты</button>
+    <button data-tab="roulette">🎡 Рулетка</button>
+    <button data-tab="inventory">🎒 Инвентарь <span id="invCount"></span></button>
+  </nav>
+  <div class="wallet">
+    <button id="muteBtn" title="Звук">🔊</button>
+    <button id="bonusBtn">+ Фантики</button>
+    <div class="balance" id="balance">0</div>
+  </div>
+</header>
+
+<main>
+  <!-- КЕЙСЫ -->
+  <section id="tab-cases" class="active">
+    <div id="caseList">
+      <h2>Выбери кейс</h2>
+      <div class="cases" id="cases"></div>
+    </div>
+    <div id="caseOpen" style="display:none">
+      <div class="row">
+        <button id="backCases">← Назад</button>
+        <h2 id="caseTitle" style="margin:0"></h2>
+      </div>
+      <div class="spinner" id="caseSpinner"><div class="track" id="caseTrack"></div></div>
+      <div class="row">
+        <button class="primary" id="openBtn">Открыть</button>
+        <button id="fastBtn">⚡ Быстро</button>
+      </div>
+      <div class="drop" id="dropBox"></div>
+      <h3>Содержимое кейса</h3>
+      <div class="contents" id="caseContents"></div>
+    </div>
+  </section>
+
+  <!-- БАТЛ -->
+  <section id="tab-battle">
+    <h2>Кейс-батл</h2>
+    <p class="muted">Все игроки открывают одинаковые кейсы. У кого сумма дропа больше — забирает все предметы.</p>
+    <div class="row">
+      <label>Кейс <select id="bCase"></select></label>
+      <label>Раундов <select id="bRounds"><option>1</option><option selected>3</option><option>5</option><option>10</option></select></label>
+      <label>Игроков <select id="bPlayers"><option value="2">1 на 1</option><option value="3">1 на 1 на 1</option><option value="4">1×1×1×1</option></select></label>
+      <button class="primary" id="bStart">Начать батл</button>
+    </div>
+    <p id="bInfo" class="muted"></p>
+    <div class="battle-arena" id="arena"></div>
+  </section>
+
+  <!-- СЛОТЫ -->
+  <section id="tab-slots">
+    <h2>Слоты</h2>
+    <div class="slots" id="reels"></div>
+    <div class="row" style="justify-content:center">
+      <label>Ставка <select id="slotBet"><option>10</option><option selected>50</option><option>100</option><option>500</option><option>1000</option></select></label>
+      <button class="primary" id="slotSpin">Крутить</button>
+    </div>
+    <p id="slotMsg" style="text-align:center; min-height:22px"></p>
+    <div class="paytable" id="paytable"></div>
+  </section>
+
+  <!-- РУЛЕТКА -->
+  <section id="tab-roulette">
+    <h2>Рулетка</h2>
+    <div class="spinner rspin" id="rSpinner" style="height:130px"><div class="track" id="rTrack"></div></div>
+    <div class="row">
+      <label>Ставка <input id="rBet" type="number" min="1" value="100" style="width:110px"></label>
+      <button data-x="half">½</button><button data-x="double">×2</button><button data-x="max">Всё</button>
+    </div>
+    <div class="bets">
+      <button class="bet t-red" data-color="red"><b>Красное ×2</b>1–7</button>
+      <button class="bet t-green" data-color="green"><b>Зеро ×14</b>0</button>
+      <button class="bet t-black" data-color="black"><b>Чёрное ×2</b>8–14</button>
+    </div>
+    <p id="rMsg" style="min-height:22px"></p>
+    <div class="history" id="rHistory"></div>
+  </section>
+
+  <!-- ИНВЕНТАРЬ -->
+  <section id="tab-inventory">
+    <div class="row" style="justify-content:space-between">
+      <h2 style="margin:0">Инвентарь</h2>
+      <div class="row">
+        <span class="muted" id="invValue"></span>
+        <button id="sellAll">Продать всё</button>
+      </div>
+    </div>
+    <p class="muted" id="stats"></p>
+    <div class="inv" id="inv"></div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---------- хранилище ----------
+const SAVE_KEY = 'fantik-casino-v1';
+let state = { balance: 1000, inv: [], opened: 0, best: null, lastBonus: 0 };
+try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s) state = Object.assign(state, s); } catch (e) {}
+function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {} }
+
+const $ = s => document.querySelector(s);
+const fmt = n => Math.round(n).toLocaleString('ru-RU');
+function rand(a, b) { return a + Math.random() * (b - a); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function setBalance(delta) {
+  state.balance = Math.max(0, Math.round(state.balance + delta));
+  save(); renderBalance();
+}
+function renderBalance() {
+  $('#balance').textContent = fmt(state.balance) + ' 🪙';
+  $('#invCount').textContent = state.inv.length ? `(${state.inv.length})` : '';
+  const wait = Math.max(0, state.lastBonus + BONUS_COOLDOWN - Date.now());
+  const bb = $('#bonusBtn');
+  bb.disabled = wait > 0;
+  bb.textContent = wait > 0 ? `+ Фантики через ${Math.ceil(wait / 1000)}с` : '+ 500 фантиков';
+}
+const BONUS_COOLDOWN = 60 * 1000;
+$('#bonusBtn').onclick = () => { state.lastBonus = Date.now(); setBalance(500); toast('+500 фантиков 🪙'); };
+setInterval(renderBalance, 1000);
+
+let toastT;
+function toast(msg) { const t = $('#toast'); t.innerHTML = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2200); }
+
+// ---------- звук ----------
+let muted = false, actx;
+try { muted = localStorage.getItem('fantik-mute') === '1'; } catch (e) {}
+$('#muteBtn').textContent = muted ? '🔇' : '🔊';
+$('#muteBtn').onclick = () => { muted = !muted; $('#muteBtn').textContent = muted ? '🔇' : '🔊'; try { localStorage.setItem('fantik-mute', muted ? '1' : '0'); } catch (e) {} };
+function beep(freq = 900, dur = 0.03, vol = 0.05, type = 'square') {
+  if (muted || !freq) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = type; o.frequency.value = freq; g.gain.value = vol;
+    g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + dur);
+    o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime + dur);
+  } catch (e) {}
+}
+function winSound() { [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => beep(f, 0.15, 0.06, 'triangle'), i * 90)); }
+
+// ---------- предметы и кейсы ----------
+const RARITY = {
+  blue:   { name: 'Армейское',     weight: 79.92, mult: [0.25, 0.6] },
+  purple: { name: 'Запрещённое',   weight: 15.98, mult: [1.0, 2.0] },
+  pink:   { name: 'Засекреченное', weight: 3.2,   mult: [3.5, 6] },
+  red:    { name: 'Тайное',        weight: 0.64,  mult: [10, 20] },
+  gold:   { name: '★ Редкое',      weight: 0.26,  mult: [30, 60] },
+};
+const ICON = { 'AK-47': '🔫', 'M4A4': '🔫', 'M4A1-S': '🔫', 'AWP': '🎯', 'Desert Eagle': '🔫', 'Glock-18': '🔫', 'USP-S': '🔫', 'P250': '🔫',
+  'MP9': '🔫', 'MAC-10': '🔫', 'P90': '🔫', 'UMP-45': '🔫', 'FAMAS': '🔫', 'Galil AR': '🔫', 'SSG 08': '🎯', 'Nova': '🔫',
+  '★ Нож-бабочка': '🔪', '★ Керамбит': '🔪', '★ Штык-нож': '🗡️', '★ Перчатки': '🧤' };
+
+const CASES = [
+  { id: 'novice', name: 'Новичок', box: '📦', price: 25, items: {
+    blue: [['Glock-18', 'Песчаная буря'], ['P250', 'Серый туман'], ['Nova', 'Ржавчина'], ['MP9', 'Болото'], ['UMP-45', 'Камуфляж']],
+    purple: [['FAMAS', 'Неон'], ['Galil AR', 'Кислота'], ['MAC-10', 'Граффити'], ['USP-S', 'Тёмная вода']],
+    pink: [['M4A1-S', 'Лунный свет'], ['AK-47', 'Сланец'], ['AWP', 'Сафари']],
+    red: [['AK-47', 'Красная линия'], ['Desert Eagle', 'Пламя']],
+    gold: [['★ Штык-нож', 'Ночь']] } },
+  { id: 'city', name: 'Ночной город', box: '🌃', price: 100, items: {
+    blue: [['P90', 'Асфальт'], ['MP9', 'Неоновый дождь'], ['Glock-18', 'Такси'], ['Nova', 'Метро'], ['SSG 08', 'Бетон']],
+    purple: [['USP-S', 'Киберпанк'], ['M4A4', 'Вывеска'], ['MAC-10', 'Ночной клуб'], ['Galil AR', 'Смог']],
+    pink: [['AWP', 'Неоновый тигр'], ['Desert Eagle', 'Хром'], ['M4A1-S', 'Небоскрёб']],
+    red: [['AK-47', 'Неоновая революция'], ['AWP', 'Азимов']],
+    gold: [['★ Керамбит', 'Гамма-волна']] } },
+  { id: 'dragon', name: 'Дракон', box: '🐉', price: 500, items: {
+    blue: [['UMP-45', 'Чешуя'], ['P250', 'Пепел'], ['FAMAS', 'Коготь'], ['MP9', 'Лава'], ['Nova', 'Уголь']],
+    purple: [['Glock-18', 'Огненное дыхание'], ['USP-S', 'Кровавый тигр'], ['M4A4', 'Дракон-страж'], ['SSG 08', 'Пламенный']],
+    pink: [['Desert Eagle', 'Золотой дракон'], ['AK-47', 'Огненный змей'], ['M4A1-S', 'Горячий асфальт']],
+    red: [['AWP', 'Драконья легенда'], ['M4A4', 'Вой']],
+    gold: [['★ Нож-бабочка', 'Мраморный градиент']] } },
+  { id: 'gold', name: 'Золотой', box: '👑', price: 2500, items: {
+    blue: [['MAC-10', 'Позолота'], ['P90', 'Слиток'], ['Galil AR', 'Корона'], ['Nova', 'Сокровище'], ['MP9', 'Монета']],
+    purple: [['USP-S', 'Королевская гвардия'], ['Glock-18', 'Фейд'], ['FAMAS', 'Трон'], ['P250', 'Скипетр']],
+    pink: [['M4A1-S', 'Золотая спираль'], ['Desert Eagle', 'Блейз'], ['AK-47', 'Золотая арабеска']],
+    red: [['AWP', 'Медуза'], ['AK-47', 'Дикий лотос']],
+    gold: [['★ Перчатки', 'Пандора'], ['★ Керамбит', 'Изумруд']] } },
+];
+
+// раскладываем предметы: цена = цена кейса × множитель редкости
+CASES.forEach(c => {
+  c.pool = [];
+  for (const [r, list] of Object.entries(c.items)) {
+    const [lo, hi] = RARITY[r].mult;
+    list.forEach(([weapon, skin], i) => {
+      const k = list.length === 1 ? 0.5 : i / (list.length - 1);
+      c.pool.push({ weapon, skin, rarity: r, value: Math.max(1, Math.round(c.price * (lo + (hi - lo) * k))), weight: RARITY[r].weight / list.length });
+    });
+  }
+});
+
+function roll(c) {
+  let x = Math.random() * 100;
+  for (const it of c.pool) { if ((x -= it.weight) <= 0) return it; }
+  return c.pool[0];
+}
+function itemHTML(it, extra = '') {
+  return `<div class="item r-${it.rarity}"><div class="ico">${ICON[it.weapon] || '🔫'}</div><div class="w">${it.weapon}</div><div class="n">${it.skin}</div><div class="v">${fmt(it.value)} 🪙</div>${extra}</div>`;
+}
+function addToInv(it) {
+  state.inv.unshift({ weapon: it.weapon, skin: it.skin, rarity: it.rarity, value: it.value, id: Date.now() + Math.random() });
+  state.opened++;
+  if (!state.best || it.value > state.best.value) state.best = { weapon: it.weapon, skin: it.skin, value: it.value };
+  save(); renderBalance();
+}
+
+// ---------- универсальная прокрутка ленты ----------
+const W = 136;   // ширина/высота карточки вместе с отступом
+function spinTrack(track, viewport, winIdx, duration, axis = 'x', tickFreq = 900) {
+  return new Promise(resolve => {
+    const vsize = axis === 'x' ? viewport.clientWidth : viewport.clientHeight;
+    const card = axis === 'x' ? (track.firstElementChild.offsetWidth + 6) : (track.firstElementChild.offsetHeight + 6);
+    const jitter = rand(-0.4, 0.4) * (card - 6);
+    const target = winIdx * card + (card - 6) / 2 - vsize / 2 + jitter;
+    const tr = v => axis === 'x' ? `translateX(${-v}px)` : `translateY(${-v}px)`;
+    track.style.transition = 'none';
+    track.style.transform = tr(0);
+    track.offsetWidth; // reflow
+    track.style.transition = `transform ${duration}ms cubic-bezier(.08,.75,.18,1)`;
+    track.style.transform = tr(target);
+    let last = -1, done = false;
+    const tick = () => {
+      if (done) return;
+      const m = new DOMMatrixReadOnly(getComputedStyle(track).transform);
+      const pos = -(axis === 'x' ? m.m41 : m.m42) + vsize / 2;
+      const idx = Math.floor(pos / card);
+      if (idx !== last) { if (last !== -1) beep(tickFreq, 0.02, 0.03); last = idx; }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    setTimeout(() => { done = true; resolve(); }, duration + 60);
+  });
+}
+
+// ---------- вкладки ----------
+$('#nav').onclick = e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (busy) { toast('Дождись конца прокрутки'); return; }
+  document.querySelectorAll('#nav button').forEach(x => x.classList.toggle('active', x === b));
+  document.querySelectorAll('main section').forEach(s => s.classList.toggle('active', s.id === 'tab-' + b.dataset.tab));
+  if (b.dataset.tab === 'inventory') renderInv();
+};
+let busy = false;
+
+// ---------- КЕЙСЫ ----------
+let current = null;
+$('#cases').innerHTML = CASES.map(c => `<div class="case-card" data-id="${c.id}"><div class="box">${c.box}</div><b>${c.name}</b><div class="price">${fmt(c.price)} 🪙</div></div>`).join('');
+$('#cases').onclick = e => { const card = e.target.closest('.case-card'); if (card) showCase(CASES.find(c => c.id === card.dataset.id)); };
+$('#backCases').onclick = () => { if (busy) return; $('#caseOpen').style.display = 'none'; $('#caseList').style.display = ''; };
+
+function fillStrip(track, c, winner, len = 60, winIdx = 50) {
+  const items = [];
+  for (let i = 0; i < len; i++) items.push(i === winIdx ? winner : roll(c));
+  track.innerHTML = items.map(it => itemHTML(it)).join('');
+}
+function showCase(c) {
+  current = c;
+  $('#caseList').style.display = 'none'; $('#caseOpen').style.display = '';
+  $('#caseTitle').textContent = `${c.box} ${c.name} — ${fmt(c.price)} 🪙`;
+  $('#openBtn').textContent = `Открыть за ${fmt(c.price)} 🪙`;
+  $('#dropBox').classList.remove('show');
+  fillStrip($('#caseTrack'), c, roll(c));
+  $('#caseTrack').style.transition = 'none'; $('#caseTrack').style.transform = 'translateX(0)';
+  const sorted = [...c.pool].sort((a, b) => b.value - a.value);
+  $('#caseContents').innerHTML = sorted.map(it => itemHTML(it, `<div class="chance">${it.weight.toFixed(2)}%</div>`)).join('');
+}
+async function openCase(fast) {
+  const c = current;
+  if (busy) return;
+  if (state.balance < c.price) { toast('Не хватает фантиков — нажми «+ Фантики»'); return; }
+  busy = true; $('#openBtn').disabled = $('#fastBtn').disabled = true;
+  setBalance(-c.price);
+  const win = roll(c);
+  fillStrip($('#caseTrack'), c, win);
+  $('#dropBox').classList.remove('show');
+  await spinTrack($('#caseTrack'), $('#caseSpinner'), 50, fast ? 1200 : 5500);
+  addToInv(win);
+  const profit = win.value - c.price;
+  if (profit > 0) winSound(); else beep(220, 0.2, 0.05, 'sawtooth');
+  const idx = state.inv[0].id;
+  $('#dropBox').innerHTML = `${itemHTML(win)}<div><div class="muted">${RARITY[win.rarity].name}</div>
+    <div class="${profit >= 0 ? 'result-win' : 'result-lose'}">${profit >= 0 ? '+' : ''}${fmt(profit)} 🪙 к цене кейса</div>
+    <div class="row" style="margin-top:8px"><button class="primary" id="dropSell">Продать за ${fmt(win.value)} 🪙</button><button id="dropKeep">В инвентарь</button></div></div>`;
+  $('#dropBox').classList.add('show');
+  $('#dropSell').onclick = () => { sellItem(idx); $('#dropBox').classList.remove('show'); };
+  $('#dropKeep').onclick = () => $('#dropBox').classList.remove('show');
+  busy = false; $('#openBtn').disabled = $('#fastBtn').disabled = false;
+}
+$('#openBtn').onclick = () => openCase(false);
+$('#fastBtn').onclick = () => openCase(true);
+
+// ---------- КЕЙС-БАТЛ ----------
+const BOTS = ['🤖 Бот Вася', '🤖 Бот Петя', '👴 Дед'];
+$('#bCase').innerHTML = CASES.map(c => `<option value="${c.id}">${c.box} ${c.name} (${fmt(c.price)})</option>`).join('');
+function battleInfo() {
+  const c = CASES.find(x => x.id === $('#bCase').value), r = +$('#bRounds').value, p = +$('#bPlayers').value;
+  $('#bInfo').textContent = `Вход: ${fmt(c.price * r)} 🪙 · в банке примерно ${fmt(c.price * r * p)} 🪙`;
+}
+['#bCase', '#bRounds', '#bPlayers'].forEach(s => $(s).onchange = battleInfo); battleInfo();
+
+$('#bStart').onclick = async () => {
+  if (busy) return;
+  const c = CASES.find(x => x.id === $('#bCase').value), rounds = +$('#bRounds').value, n = +$('#bPlayers').value;
+  const cost = c.price * rounds;
+  if (state.balance < cost) { toast('Не хватает фантиков на батл'); return; }
+  busy = true; $('#bStart').disabled = true;
+  setBalance(-cost);
+  const players = [{ name: '😎 Ты', you: true }, ...BOTS.slice(0, n - 1).map(name => ({ name }))].map(p => ({ ...p, items: [], total: 0 }));
+  const arena = $('#arena');
+  arena.style.gridTemplateColumns = `repeat(${n}, minmax(0, 1fr))`;
+  arena.innerHTML = players.map((p, i) => `<div class="player" id="pl${i}"><h3><span>${p.name}</span><span class="total" id="pt${i}">0 🪙</span></h3>
+    <div class="vspin" id="pv${i}"><div class="track" id="ptr${i}"></div></div><div class="won" id="pw${i}"></div></div>`).join('');
+  for (let r = 0; r < rounds; r++) {
+    $('#bInfo').textContent = `Раунд ${r + 1} из ${rounds}`;
+    const wins = players.map(() => roll(c));
+    players.forEach((p, i) => fillStrip($('#ptr' + i), c, wins[i], 40, 32));
+    await Promise.all(players.map((p, i) => spinTrack($('#ptr' + i), $('#pv' + i), 32, 3500, 'y', i === 0 ? 900 : 0)));
+    players.forEach((p, i) => {
+      p.items.push(wins[i]); p.total += wins[i].value;
+      $('#pt' + i).textContent = fmt(p.total) + ' 🪙';
+      $('#pw' + i).insertAdjacentHTML('beforeend', `<span class="chip r-${wins[i].rarity}">${wins[i].skin} · ${fmt(wins[i].value)}</span>`);
+    });
+    await sleep(500);
+  }
+  const max = Math.max(...players.map(p => p.total));
+  const top = players.filter(p => p.total === max);
+  const winner = top[Math.floor(Math.random() * top.length)];
+  const wi = players.indexOf(winner);
+  $('#pl' + wi).classList.add('winner');
+  const pot = players.reduce((s, p) => s + p.total, 0);
+  if (winner.you) {
+    players.forEach(p => p.items.forEach(addToInv));
+    winSound();
+    $('#bInfo').innerHTML = `<span class="result-win">Ты победил! Забираешь ${players.length * rounds} предметов на ${fmt(pot)} 🪙 (вход был ${fmt(cost)})</span> — они в инвентаре.`;
+  } else {
+    beep(200, 0.3, 0.05, 'sawtooth');
+    $('#bInfo').innerHTML = `<span class="result-lose">Победил ${winner.name}.</span> Он забирает всё на ${fmt(pot)} 🪙.`;
+  }
+  busy = false; $('#bStart').disabled = false;
+};
+
+// ---------- СЛОТЫ ----------
+const SYMS = [
+  { s: '🍒', w: 30, pay: 5 }, { s: '🍋', w: 25, pay: 8 }, { s: '🔔', w: 18, pay: 15 },
+  { s: '⭐', w: 12, pay: 25 }, { s: '💎', w: 7, pay: 60 }, { s: '7️⃣', w: 3, pay: 150 },
+];
+function rollSym() { let x = Math.random() * SYMS.reduce((a, b) => a + b.w, 0); for (const s of SYMS) if ((x -= s.w) <= 0) return s; return SYMS[0]; }
+$('#paytable').innerHTML = SYMS.map(s => `<div>${s.s}${s.s}${s.s} → ×${s.pay}</div>`).join('') + `<div>🍒🍒 + любое → ×2</div><div>любые две 💎 → ×3</div>`;
+const REEL_LEN = 30;
+$('#reels').innerHTML = [0, 1, 2].map(i => `<div class="reel"><div class="strip" id="reel${i}"></div></div>`).join('');
+function fillReel(i, finalSyms) {
+  const arr = Array.from({ length: REEL_LEN }, () => rollSym().s);
+  arr[REEL_LEN - 3] = finalSyms[0]; arr[REEL_LEN - 2] = finalSyms[1]; arr[REEL_LEN - 1] = finalSyms[2];
+  $('#reel' + i).innerHTML = arr.map(s => `<div class="sym">${s}</div>`).join('');
+}
+[0, 1, 2].forEach(i => { fillReel(i, [rollSym().s, rollSym().s, rollSym().s]); $('#reel' + i).style.transform = `translateY(${-(REEL_LEN - 3) * 110}px)`; });
+
+$('#slotSpin').onclick = async () => {
+  if (busy) return;
+  const bet = +$('#slotBet').value;
+  if (state.balance < bet) { toast('Не хватает фантиков'); return; }
+  busy = true; $('#slotSpin').disabled = true; $('#slotMsg').textContent = '';
+  setBalance(-bet);
+  const mid = [rollSym(), rollSym(), rollSym()];
+  const ps = [0, 1, 2].map(i => {
+    const el = $('#reel' + i);
+    fillReel(i, [rollSym().s, mid[i].s, rollSym().s]);
+    el.style.transition = 'none'; el.style.transform = 'translateY(0)'; el.offsetWidth;
+    const d = 1400 + i * 500;
+    el.style.transition = `transform ${d}ms cubic-bezier(.15,.7,.2,1.02)`;
+    el.style.transform = `translateY(${-(REEL_LEN - 3) * 110}px)`;
+    return sleep(d).then(() => beep(500 + i * 150, 0.08, 0.05));
+  });
+  await Promise.all(ps);
+  const [a, b, c] = mid.map(m => m.s);
+  let mult = 0;
+  if (a === b && b === c) mult = mid[0].pay;
+  else if ([a, b, c].filter(x => x === '🍒').length >= 2) mult = 2;
+  else if ([a, b, c].filter(x => x === '💎').length >= 2) mult = 3;
+  if (mult) { setBalance(bet * mult); winSound(); $('#slotMsg').innerHTML = `<span class="result-win">Выигрыш ×${mult}: +${fmt(bet * mult)} 🪙</span>`; }
+  else $('#slotMsg').innerHTML = `<span class="muted">Мимо. Ещё разок?</span>`;
+  busy = false; $('#slotSpin').disabled = false;
+};
+
+// ---------- РУЛЕТКА ----------
+const ORDER = [0, 1, 8, 2, 9, 3, 10, 4, 11, 5, 12, 6, 13, 7, 14];
+const colorOf = n => n === 0 ? 'green' : n <= 7 ? 'red' : 'black';
+function tileHTML(n) { return `<div class="tile t-${colorOf(n)}">${n}</div>`; }
+const R_LEN = ORDER.length * 7;
+function fillRoulette() { $('#rTrack').innerHTML = Array.from({ length: R_LEN }, (_, i) => tileHTML(ORDER[i % ORDER.length])).join(''); }
+fillRoulette();
+const rHist = [];
+document.querySelectorAll('[data-x]').forEach(b => b.onclick = () => {
+  const inp = $('#rBet'); let v = +inp.value || 0;
+  if (b.dataset.x === 'half') v = Math.floor(v / 2);
+  if (b.dataset.x === 'double') v = v * 2;
+  if (b.dataset.x === 'max') v = state.balance;
+  inp.value = Math.max(1, Math.min(v, state.balance || 1));
+});
+document.querySelectorAll('.bet').forEach(b => b.onclick = async () => {
+  if (busy) return;
+  const bet = Math.floor(+$('#rBet').value);
+  if (!(bet > 0)) { toast('Введи ставку'); return; }
+  if (state.balance < bet) { toast('Не хватает фантиков'); return; }
+  busy = true; document.querySelectorAll('.bet').forEach(x => x.disabled = true);
+  setBalance(-bet);
+  const pick = b.dataset.color;
+  const posInOrder = Math.floor(Math.random() * ORDER.length);
+  const winIdx = ORDER.length * 5 + posInOrder;
+  const n = ORDER[posInOrder];
+  $('#rMsg').textContent = 'Крутим…';
+  await spinTrack($('#rTrack'), $('#rSpinner'), winIdx, 5000, 'x', 700);
+  const col = colorOf(n);
+  rHist.unshift(n); if (rHist.length > 20) rHist.pop();
+  $('#rHistory').innerHTML = rHist.map(x => `<span class="t-${colorOf(x)}">${x}</span>`).join('');
+  if (col === pick) {
+    const mult = col === 'green' ? 14 : 2;
+    setBalance(bet * mult); winSound();
+    $('#rMsg').innerHTML = `<span class="result-win">Выпало ${n}! +${fmt(bet * mult)} 🪙</span>`;
+  } else {
+    beep(200, 0.25, 0.05, 'sawtooth');
+    $('#rMsg').innerHTML = `<span class="result-lose">Выпало ${n}. Ставка сгорела.</span>`;
+  }
+  busy = false; document.querySelectorAll('.bet').forEach(x => x.disabled = false);
+});
+
+// ---------- ИНВЕНТАРЬ ----------
+function sellItem(id) {
+  const i = state.inv.findIndex(x => x.id === id); if (i < 0) return;
+  const it = state.inv.splice(i, 1)[0];
+  setBalance(it.value); toast(`Продано: ${it.skin} +${fmt(it.value)} 🪙`);
+  renderInv();
+}
+function renderInv() {
+  const total = state.inv.reduce((s, x) => s + x.value, 0);
+  $('#invValue').textContent = `${state.inv.length} шт. на ${fmt(total)} 🪙`;
+  $('#sellAll').disabled = !state.inv.length;
+  $('#stats').textContent = `Открыто предметов: ${state.opened}` + (state.best ? ` · Лучший дроп: ${state.best.weapon} | ${state.best.skin} (${fmt(state.best.value)} 🪙)` : '');
+  $('#inv').innerHTML = state.inv.length ? state.inv.map(it => itemHTML(it, `<button data-sell="${it.id}">Продать</button>`)).join('')
+    : '<p class="muted">Пусто. Открой пару кейсов!</p>';
+}
+$('#inv').onclick = e => { const b = e.target.closest('[data-sell]'); if (b) sellItem(+b.dataset.sell); };
+$('#sellAll').onclick = () => {
+  const total = state.inv.reduce((s, x) => s + x.value, 0);
+  if (!confirm(`Продать всё за ${fmt(total)} фантиков?`)) return;
+  state.inv = []; setBalance(total); renderInv(); toast(`+${fmt(total)} 🪙`);
+};
+
+renderBalance();
+</script>
+</body>
+</html>
