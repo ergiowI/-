@@ -103,6 +103,12 @@
   .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(120px); background: var(--panel2); border: 1px solid var(--line);
     padding: 12px 18px; border-radius: 10px; transition: transform .25s; z-index: 50; font-weight: 600; }
   .toast.show { transform: translateX(-50%) translateY(0); }
+  .modal { position: fixed; inset: 0; z-index: 60; display: none; align-items: center; justify-content: center; background: #000b; padding: 16px; }
+  .modal.show { display: flex; }
+  .modal .box { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px; text-align: center; max-width: 380px; width: 100%; }
+  .modal h2 { margin: 6px 0; }
+  .adbar { height: 6px; border-radius: 3px; background: var(--panel2); overflow: hidden; margin: 14px 0; }
+  .adbar div { height: 100%; width: 0; background: var(--accent); transition: width 1s linear; }
   .result-win { color: var(--win); font-weight: 700; } .result-lose { color: var(--lose); font-weight: 700; }
   @media (max-width: 600px) { .reel { width: 90px; } .bets { grid-template-columns: 1fr; } .wallet { margin-left: 0; } }
 </style>
@@ -119,7 +125,8 @@
   </nav>
   <div class="wallet">
     <button id="muteBtn" title="Звук">🔊</button>
-    <button id="bonusBtn">+ Фантики</button>
+    <button id="codeBtn" title="Ввести код">🔑</button>
+    <button id="adBtn">📺 Реклама +25</button>
     <div class="balance" id="balance">0</div>
   </div>
 </header>
@@ -199,6 +206,7 @@
       <div class="row">
         <span class="muted" id="invValue"></span>
         <button id="sellAll">Продать всё</button>
+        <button id="resetAll">Начать заново</button>
       </div>
     </div>
     <p class="muted" id="stats"></p>
@@ -208,10 +216,33 @@
 
 <div class="toast" id="toast"></div>
 
+<div class="modal" id="welcome">
+  <div class="box">
+    <div style="font-size:56px">🎁</div>
+    <h2>Добро пожаловать!</h2>
+    <p>Держи приветственные <b style="color:var(--accent)">100 фантиков</b>.<br>Кончатся — смотри рекламу, за каждую +25.</p>
+    <button class="primary" id="welcomeBtn">Забрать 100 🪙</button>
+  </div>
+</div>
+
+<div class="modal" id="ad">
+  <div class="box">
+    <div class="muted" style="font-size:12px; letter-spacing:1px">РЕКЛАМА</div>
+    <div id="adIco" style="font-size:64px"></div>
+    <h2 id="adTitle"></h2>
+    <p id="adText" class="muted"></p>
+    <div class="adbar"><div id="adBar"></div></div>
+    <button class="primary" id="adClaim" disabled></button>
+  </div>
+</div>
+
 <script>
 // ---------- хранилище ----------
-const SAVE_KEY = 'fantik-casino-v1';
-let state = { balance: 1000, inv: [], opened: 0, best: null, lastBonus: 0 };
+const SAVE_KEY = 'fantik-casino-v2';
+const WELCOME = 100, AD_REWARD = 25, AD_SECONDS = 5;
+const CHEAT_CODE = 'ДЕД1000', CHEAT_REWARD = 1000;   // чит-код только для тебя: поменяй слово тут, если хочешь
+const fresh = () => ({ balance: 0, inv: [], opened: 0, best: null, welcomed: false, cheatUsed: false });
+let state = fresh();
 try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s) state = Object.assign(state, s); } catch (e) {}
 function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {} }
 
@@ -227,14 +258,36 @@ function setBalance(delta) {
 function renderBalance() {
   $('#balance').textContent = fmt(state.balance) + ' 🪙';
   $('#invCount').textContent = state.inv.length ? `(${state.inv.length})` : '';
-  const wait = Math.max(0, state.lastBonus + BONUS_COOLDOWN - Date.now());
-  const bb = $('#bonusBtn');
-  bb.disabled = wait > 0;
-  bb.textContent = wait > 0 ? `+ Фантики через ${Math.ceil(wait / 1000)}с` : '+ 500 фантиков';
 }
-const BONUS_COOLDOWN = 60 * 1000;
-$('#bonusBtn').onclick = () => { state.lastBonus = Date.now(); setBalance(500); toast('+500 фантиков 🪙'); };
-setInterval(renderBalance, 1000);
+
+// ---------- реклама за фантики ----------
+$('#adBtn').onclick = () => {
+  if (busy) { toast('Дождись конца прокрутки'); return; }
+  const ads = [
+    ['🍔', 'Бургерная «У Деда»', 'Двойной чизбургер за 1 фантик. Шутка. Но вкусно.'],
+    ['🚗', 'Такси «Быстрее ножа»', 'Довезём быстрее, чем падает Karambit.'],
+    ['🧃', 'Сок «Фантик»', 'Пей и крути. Крути и пей.'],
+    ['🎮', 'Клуб «Хедшот»', 'Первый час бесплатно, второй — тоже шутка.'],
+  ];
+  const [ico, title, text] = ads[Math.floor(Math.random() * ads.length)];
+  $('#adIco').textContent = ico; $('#adTitle').textContent = title; $('#adText').textContent = text;
+  $('#ad').classList.add('show');
+  const claim = $('#adClaim'); claim.disabled = true;
+  let left = AD_SECONDS;
+  const upd = () => { claim.textContent = left > 0 ? `Забрать через ${left}…` : `Забрать +${AD_REWARD} 🪙`; $('#adBar').style.width = (100 * (AD_SECONDS - left) / AD_SECONDS) + '%'; };
+  upd();
+  const t = setInterval(() => { left--; upd(); if (left <= 0) { clearInterval(t); claim.disabled = false; } }, 1000);
+  claim.onclick = () => { $('#ad').classList.remove('show'); setBalance(AD_REWARD); winSound(); toast(`+${AD_REWARD} фантиков за рекламу 🪙`); };
+};
+
+// ---------- чит-код ----------
+$('#codeBtn').onclick = () => {
+  const code = (prompt('Введи код:') || '').trim().toUpperCase();
+  if (!code) return;
+  if (code !== CHEAT_CODE) { toast('Неверный код'); return; }
+  if (state.cheatUsed) { toast('Этот код уже активирован'); return; }
+  state.cheatUsed = true; setBalance(CHEAT_REWARD); winSound(); toast(`🔑 Код принят: +${fmt(CHEAT_REWARD)} фантиков`);
+};
 
 let toastT;
 function toast(msg) { const t = $('#toast'); t.innerHTML = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2200); }
@@ -674,7 +727,16 @@ $('#sellAll').onclick = () => {
   state.inv = []; setBalance(total); renderInv(); toast(`+${fmt(total)} 🪙`);
 };
 
+$('#resetAll').onclick = () => {
+  if (!confirm('Стереть баланс и инвентарь и начать с нуля?')) return;
+  state = fresh(); save(); renderBalance(); renderInv(); showWelcome();
+};
+
+function showWelcome() { if (!state.welcomed) $('#welcome').classList.add('show'); }
+$('#welcomeBtn').onclick = () => { $('#welcome').classList.remove('show'); state.welcomed = true; setBalance(WELCOME); winSound(); };
+
 renderBalance();
+showWelcome();
 </script>
 </body>
 </html>
