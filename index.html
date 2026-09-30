@@ -37,22 +37,25 @@
   .cases { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
   .case-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: transform .15s, border-color .15s; }
   .case-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .case-card.sel { border-color: var(--accent); box-shadow: 0 0 14px #f5b83d44; }
   .case-card .box { font-size: 54px; line-height: 1.2; }
   .case-card .price { color: var(--accent); font-weight: 700; margin-top: 6px; }
 
-  .spinner { position: relative; overflow: hidden; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; height: 150px; margin: 16px 0; }
+  .spinner { position: relative; overflow: hidden; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; height: 170px; margin: 16px 0; }
   .spinner::after { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 3px; margin-left: -1.5px; background: var(--accent); box-shadow: 0 0 12px var(--accent); z-index: 2; }
   .track { display: flex; position: absolute; top: 15px; left: 0; will-change: transform; }
-  .item { flex: 0 0 auto; width: 130px; height: 120px; margin-right: 6px; border-radius: 8px; background: linear-gradient(180deg, var(--panel2), #151821);
+  .item { flex: 0 0 auto; width: 130px; height: 140px; margin-right: 6px; border-radius: 8px; background: linear-gradient(180deg, var(--panel2), #151821);
     border-bottom: 4px solid var(--rc); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 6px; overflow: hidden; }
   .item .ico { font-size: 30px; }
-  .item .w { font-size: 12px; color: var(--muted); }
-  .item .n { font-size: 13px; font-weight: 600; color: var(--rc); line-height: 1.15; }
+  .item .pic { width: 100%; height: 58px; object-fit: contain; filter: drop-shadow(0 4px 8px #000a); }
+  .item { background: radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--rc) 22%, transparent), transparent 70%), linear-gradient(180deg, var(--panel2), #151821); }
+  .item .w { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; color: var(--muted); }
+  .item .n { font-size: 12px; font-weight: 600; color: var(--rc); line-height: 1.15; }
   .item .v { font-size: 12px; color: var(--accent); margin-top: 2px; }
   .r-blue { --rc: var(--r-blue); } .r-purple { --rc: var(--r-purple); } .r-pink { --rc: var(--r-pink); } .r-red { --rc: var(--r-red); } .r-gold { --rc: var(--r-gold); }
 
   .contents { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin-top: 12px; }
-  .contents .item { width: auto; margin: 0; }
+  .contents .item { width: auto; margin: 0; height: 158px; }
   .chance { font-size: 11px; color: var(--muted); }
 
   .drop { margin: 10px 0; padding: 14px; border-radius: 10px; background: var(--panel); border: 1px solid var(--line); display: none; }
@@ -64,7 +67,7 @@
   .player.winner { border-color: var(--win); box-shadow: 0 0 18px #3ddc8455; }
   .player h3 { margin: 0 0 6px; font-size: 15px; display: flex; justify-content: space-between; }
   .player .total { color: var(--accent); }
-  .vspin { position: relative; overflow: hidden; height: 240px; border-radius: 8px; background: #12141b; }
+  .vspin { position: relative; overflow: hidden; height: 300px; border-radius: 8px; background: #12141b; }
   .vspin::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 3px; margin-top: -1.5px; background: var(--accent); box-shadow: 0 0 10px var(--accent); z-index: 2; }
   .vspin .track { flex-direction: column; top: 0; left: 50%; margin-left: -65px; }
   .vspin .item { margin: 0 0 6px 0; }
@@ -94,7 +97,7 @@
 
   /* инвентарь */
   .inv { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
-  .inv .item { width: auto; margin: 0; height: 150px; }
+  .inv .item { width: auto; margin: 0; height: 175px; }
   .inv .item button { margin-top: 6px; padding: 4px 10px; font-size: 12px; }
 
   .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(120px); background: var(--panel2); border: 1px solid var(--line);
@@ -137,6 +140,7 @@
       <div class="row">
         <button class="primary" id="openBtn">Открыть</button>
         <button id="fastBtn">⚡ Быстро</button>
+        <button id="toBattle">⚔️ В батл с этим кейсом</button>
       </div>
       <div class="drop" id="dropBox"></div>
       <h3>Содержимое кейса</h3>
@@ -148,6 +152,7 @@
   <section id="tab-battle">
     <h2>Кейс-батл</h2>
     <p class="muted">Все игроки открывают одинаковые кейсы. У кого сумма дропа больше — забирает все предметы.</p>
+    <div class="cases" id="bCases" style="margin-bottom:14px"></div>
     <div class="row">
       <label>Кейс <select id="bCase"></select></label>
       <label>Раундов <select id="bRounds"><option>1</option><option selected>3</option><option>5</option><option>10</option></select></label>
@@ -259,36 +264,131 @@ const RARITY = {
   red:    { name: 'Тайное',        weight: 0.64,  mult: [10, 20] },
   gold:   { name: '★ Редкое',      weight: 0.26,  mult: [30, 60] },
 };
-const ICON = { 'AK-47': '🔫', 'M4A4': '🔫', 'M4A1-S': '🔫', 'AWP': '🎯', 'Desert Eagle': '🔫', 'Glock-18': '🔫', 'USP-S': '🔫', 'P250': '🔫',
-  'MP9': '🔫', 'MAC-10': '🔫', 'P90': '🔫', 'UMP-45': '🔫', 'FAMAS': '🔫', 'Galil AR': '🔫', 'SSG 08': '🎯', 'Nova': '🔫',
-  '★ Нож-бабочка': '🔪', '★ Керамбит': '🔪', '★ Штык-нож': '🗡️', '★ Перчатки': '🧤' };
-
+// настоящие скины из CS2; картинки грузятся со Steam (нужен интернет, иначе будет значок)
 const CASES = [
   { id: 'novice', name: 'Новичок', box: '📦', price: 25, items: {
-    blue: [['Glock-18', 'Песчаная буря'], ['P250', 'Серый туман'], ['Nova', 'Ржавчина'], ['MP9', 'Болото'], ['UMP-45', 'Камуфляж']],
-    purple: [['FAMAS', 'Неон'], ['Galil AR', 'Кислота'], ['MAC-10', 'Граффити'], ['USP-S', 'Тёмная вода']],
-    pink: [['M4A1-S', 'Лунный свет'], ['AK-47', 'Сланец'], ['AWP', 'Сафари']],
-    red: [['AK-47', 'Красная линия'], ['Desert Eagle', 'Пламя']],
-    gold: [['★ Штык-нож', 'Ночь']] } },
+    blue: [
+      ["Glock-18", "Night", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL2kpnj9h1I4M2gYaNlNM-fB2CY1aAmtOU-S33jwEwhtWvdzIr4cHvCPwR1DZdxQrFZt0bsloLjP7jg4VGMlcsbmvNarNNc"],
+      ["P250", "Sand Dune", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLhzMOwwjFU0OGvZqBSLPmUBnPelesn5-RrSXDlwRhx5TjSwtmocCifPwQpDpshReBfsxPrk4DhNu3jshue1dy8VcXxuA"],
+      ["Nova", "Predator", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL_kYDhwjFL0OirarZsI_GeMWuZxuZi_rE8Fy2xx0h25z-Eyt77eSnEbw8mXJEmQeMP5EXrx4ezN7jgtAKNjIlbjXKpxHjTAt0"],
+      ["MP9", "Storm", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8js_f7i1k_OaheqlrMv-dGlicyOl-pK8_S3zjxRh_5mmGn9epIymQPQBxDpQlFuUJ5xa6kt2yZLjkswLY2ooT02yg2WH9Y1dp"],
+      ["UMP-45", "Urban DDPAT", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLkk4a0qB1T9s2qbLRsNM-GHGWvzedxuPUnGS3hwBxxtm6Am4yreH2TP1N0A5EhROBb5Ba5k9TjYuLrtQWMjdhCyTK-0H2MxuWOFg"],
+      ["P90", "Sand Spray", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLhx8bf7jJk_OK8ab1SM_GdClicyOl-pK88Sn3gxU91sGiAw9mreSqROgJyCsF5EOVf50S_x9SzP7iztlaLiYJF02yg2VFl2-bi"],
+    ],
+    purple: [
+      ["FAMAS", "Djinn", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL3n5vh7h1a_s2oaalsM8-ZB2me_uJ_t-l9AXzhwxt-5TiAzdmgd3yeaQ50DZRxEe5b4BXrm4HkPr7kslfcg9pCznjgznQepOOy8CM"],
+      ["USP-S", "Guardian", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLkjYbf7itX6vytbbZSI-WsG3SA_ut6teZoQT2MmRQguynLyd76I32fbFUkD5EmRu4Ct0O4m9fmY-zlsQSMiN9CnHj2jitL531o4fFCD_TZrkjVNw"],
+      ["MAC-10", "Heat", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8n5WxrR1Y-s2jaac8cM-BC2OYzvpJvOhuRz39xR5w4GzUyo6pdnuUawMpWJokTLUL50K6l9XiNO7i4lGKiYsRxCv6jTQJsHim4lDW8g"],
+      ["Galil AR", "Firefight", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL2n5rp8SNJ0PW9V6NsLPmfD3WvyOB1te9sXSinmg8YvzSCkpu3eH_EZ1IgDsR1ReYPshm6x9XnZe204VCMiIsXzS_33S0b7X5t4-dQUb1lpPOTHSUAOw"],
+    ],
+    pink: [
+      ["M4A4", "Desert-Strike", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8ypexwiFO0OanfKVjM-ScHGqvzedxuPUnHnjnxEsi4WTTntqucnuUaA92CZR2E-IDtRa-mobnYeLksQbXg4hDyTK-0H1Bbz5yqg"],
+      ["Desert Eagle", "Conspiracy", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL1m5fn8Sdk7OeRbKFsJ_yWMWaF0-tjo95lRi67gVMk4WTSm9moI3-QPVBxDJByQOJe40O6k4fnM-zgsQXci4gUyH3_3CMa8G81tJHuULJI"],
+      ["AK-47", "Frontside Misty", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLwlcK3wiFO0POlPPNSN_mdGmKC_v1mv_N9cCW6khUz_WvRm9r8JS-SaFMmWcN5ReMD4BDsltDkN-Prs1DfjN9Cn3r_jC4YvHl1o7FVgJsyBlQ"],
+    ],
+    red: [
+      ["AK-47", "Redline", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLwlcK3wiFO0POlPPNSI_-RHGavzedxuPUnFniykEtzsWWBzoyuIiifaAchDZUjTOZe4RC_w4buM-6z7wzbgokUyzK-0H08hRGDMA"],
+      ["AWP", "Hyper Beast", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLwiYbf_jdk7uW-V6x0MPWBMWWVwP1ij-1gSCGn20pxtm_WzNuoeHKeaFAnCZUiTe5bt0HqxofmZOrm5Q2IjoMQzS_5iShXrnE8NzWs__c"],
+    ],
+    gold: [
+      ["★ Bayonet", "Night", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLzn4_v8ydP0OGhV6pkJ_iHMWuZxuZi_rQ4Snzhxkkj4m3Tm4uqcS2fagNxDZJ0QOMNuha6kIfhYumx4gDeidlbjXKpXW1AuvM"],
+      ["★ Flip Knife", "Safari Mesh", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1d4_u-V7d9H_2WHW-v1e94j-1gSCGn20Vz4G3Wztn9JHufO1UhWMclQ-AJ4BTqxIfgM7mzs1OLiosWmXr_hytXrnE8XsE6vh0"],
+      ["★ Gut Knife", "Doppler", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1c-uaRaalSIvySDWyAxO9kvN5kTjuxmRguqTiBpYPwJiPTcFInDpVyELMOshO9wYHvZujk5VPagotHnC6viixLui5jsr1XWKcgqKTJz1aW4QQYg2A"],
+    ],
+  } },
   { id: 'city', name: 'Ночной город', box: '🌃', price: 100, items: {
-    blue: [['P90', 'Асфальт'], ['MP9', 'Неоновый дождь'], ['Glock-18', 'Такси'], ['Nova', 'Метро'], ['SSG 08', 'Бетон']],
-    purple: [['USP-S', 'Киберпанк'], ['M4A4', 'Вывеска'], ['MAC-10', 'Ночной клуб'], ['Galil AR', 'Смог']],
-    pink: [['AWP', 'Неоновый тигр'], ['Desert Eagle', 'Хром'], ['M4A1-S', 'Небоскрёб']],
-    red: [['AK-47', 'Неоновая революция'], ['AWP', 'Азимов']],
-    gold: [['★ Керамбит', 'Гамма-волна']] } },
+    blue: [
+      ["P90", "Asiimov", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLhx8bf_jdk_6v-JaV-KfmeAXGvzedxuPUnTSjikRgksjuBzoz4dXLFb1QoC8QlTLQD4EPqk4LvN-Pns1aMioNBzTK-0H3gQVv65g"],
+      ["MP9", "Ruby Poison Dart", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8js_f_C9k4uL3V6pkNOKcCWKe_uJ_t-l9AXzhkEsm527Xy9r_JynEP1IiWJZ3FOYP4xTqmtznNO-34VCKiYJExSjgznQeVzj6siQ"],
+      ["Glock-18", "Water Elemental", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL2kpnj9h1Y-s2pZKtuK72fB3aFxP11te99cCW6khUz_TjVyompc3-QOFR2DJQkFOMJtBbqk9LlY-7n5QLZjtkTxCWqhixPv311o7FVIf8eASQ"],
+      ["Nova", "Hyper Beast", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL_kYDhwiFO0PyhfqVSKOmDC3WSxO9lpN5lRi67gVMhsGrTmd2seH6XbA4pDZR1EbMCtES8m4fiNenl4FDcid1Az32ri3tM8G81tMCTwFwB"],
+      ["SSG 08", "Dragonfire", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLijZGwpR1Y-s29e6M9eM-XHGaXzuBwufNscDqwmg0ijDGMnYftbyrFPVAoWcQjELQOuxO4k4e1N-nnsQfW2I5Mz3ivi3wb7Stj5ukAUKY7uvqAqS55_Pw"],
+    ],
+    purple: [
+      ["USP-S", "Cyrex", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLkjYbf7itX6vytbbZSI-WsG3SA_u1vouRxcCW6khUz_TjdzdmsJyiTZg8kX8N4ELUP5EPsw9G1YeLn5VTXjY0WxS6rhiIYuCd1o7FV2N83Spg"],
+      ["M4A4", "Neo-Noir", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8ypexwiFO0P_6afBSLvWcMWmfyPxJvOhuRz39wE1142vSztmvInvBOgV0W5R1FLYNuxW4wIbgNrmx4g2Kj4tMmCX93zQJsHgJr0dqFw"],
+      ["MAC-10", "Neon Rider", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8n5WxrR1Y-s2jaac8cM-dC2ie0-dytfNWQyC0nQlp5DzTntmgdC7COABxX5NxQrUOtUS5w4LgMu6zsVCK2IJCmyisjitM6DErvbicsEA0SQ"],
+      ["Galil AR", "Chatterbox", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL2n5rp8SNJ0PG7V6NsLPmfMWaS0-9lue5ncCS2kRQyvnPXnIn7eSrEZ1AnD5NxTeII4ESwxN3jN7zl5QHXjdhAnyuo2y9Nv3xs_a9cBuAhdjfO"],
+    ],
+    pink: [
+      ["AWP", "Neo-Noir", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLwiYbf_jdk7uW-V6poL_6cB3WvzedxuPUnHirrxR4l423SyI39I3KXPwdxWZclQeNZ5EXskYfnNeyw71OMi9lNzDK-0H3r66pOTw"],
+      ["Desert Eagle", "Kumicho Dragon", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL1m5fn8Sdk7uORbKF-JeKHC2aXzetJu_RkRiq7mhk1sjqKlLD1KCzPKhh0CcBwQLVe5BHrloKyZOnr5w3XiYhDnC39iCpK7X1psrlUWaFw8qXekUifZlV_fDVZ"],
+      ["M4A1-S", "Cyrex", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8ypexwjFS4_ega6F_H_OGMWrEwL9lj-JwXSyrqhEutDWR1N77cimSbQQgC8F5QLYCsELpltTnZuvk7wbcjdhDzy_43yMb6ilvt7kcEf1yDWu2yf8"],
+    ],
+    red: [
+      ["AK-47", "Neon Revolution", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLwlcK3wiFO0POlPPNSIf6SHGSY2NF6ueZhW2e3w0524mjQzomreXqVbAAhWJF3RuZfuxC5x920Yurh7gONjY0RxHr4kGoXuT5bpI-V"],
+      ["AWP", "Asiimov", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLwiYbf_jdk7uW-V6V-Kf2cGFidxOp_pewnF3nhxEt0sGnSzN76dH3GOg9xC8FyEORftRe-x9PuYurq71bW3d8UnjK-0H0YSTpMGQ"],
+    ],
+    gold: [
+      ["★ Karambit", "Gamma Doppler", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1Q7uCvZaZkNM-SA1iVzOtkse1tcCSyhx8rtjSfn4vGLSLANkI-X8MjTLFYskTsw9bnZOuwsgSIj4sTniz-2i5A7yY6tbwGV6Nx-qGEjxaBb-MuPavopw"],
+      ["★ M9 Bayonet", "Crimson Web", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1Wts2sab1iLvWHMW-J_vlzsvJWQyC0nQlp4GrWzYuqeHjDZlN1XJohTecO5xawwdDvNuLm5wPcjY0QzyX83Xsd7zErvbgxKe4lfw"],
+      ["★ Specialist Gloves", "Crimson Kimono", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Tk71ruQBH4jYLf-i5U-fe9V7d9JfOaD2uZ0vpJu-hkQCe8qhkusjCKlIvqHjnCOml8U8UoAfkItBLswdbuNbjr5FHdjNkUzSv73C1K5y46tu4EUvAg-6bU3FrBMOE4_9BdcyhkRns5"],
+    ],
+  } },
   { id: 'dragon', name: 'Дракон', box: '🐉', price: 500, items: {
-    blue: [['UMP-45', 'Чешуя'], ['P250', 'Пепел'], ['FAMAS', 'Коготь'], ['MP9', 'Лава'], ['Nova', 'Уголь']],
-    purple: [['Glock-18', 'Огненное дыхание'], ['USP-S', 'Кровавый тигр'], ['M4A4', 'Дракон-страж'], ['SSG 08', 'Пламенный']],
-    pink: [['Desert Eagle', 'Золотой дракон'], ['AK-47', 'Огненный змей'], ['M4A1-S', 'Горячий асфальт']],
-    red: [['AWP', 'Драконья легенда'], ['M4A4', 'Вой']],
-    gold: [['★ Нож-бабочка', 'Мраморный градиент']] } },
+    blue: [
+      ["UMP-45", "Primal Saber", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLkk4a0qB1Y-s27ZbQ5dc-DHG6dwOJlseNsXRa_nBovp3PRn478JHmePQ8hDcF2Q7YDtxXrk92zYbyw7gXYjIhEyCn_3Hsbui44_a9cBklqRdMs"],
+      ["P250", "Asiimov", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLhzMOwwiFO0OL8PfRSIeOaB2qf19F6ueZhW2fixx53tWqEm4ugeXuebQN0CZJyRrMJuxm4loCyPr_i51TfjtgXzi79kGoXuUXmUJzm"],
+      ["FAMAS", "Roll Cage", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL3n5vh7h1c_M2oaalsM8-BD2uc2NF6ueZhW2exzUhz4WjWmNqpdy-UbwJxDJtxReEMtRGwloflP7m04wfXi94QyXj9kGoXuV3JhaXD"],
+      ["MP7", "Bloodsport", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8jsHf-jFk4uL5V6ZhL_-XHXef0_pJvOhuRz39lxsk4W3Ry96pIHrFOgElDZN2Q-9etUSwk4LnYu3h5wLejYwWxSr43zQJsHiIGMoJQA"],
+      ["Nova", "Antique", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL_kYDhwiFO0PyhfqVSIf6HB3aFxNF6ueZhW2fmwRwl6jyHw96vIn2UbVVzXMdyRuYLt0O7ltPjZbu0tQTejo9Hyn2skGoXucYtjcOH"],
+    ],
+    purple: [
+      ["Glock-18", "Wasteland Rebel", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL2kpnj9h1Y-s2pZKtuK8-ED3SExOJ3vuVWXSyxkBEYvzSCkpu3Iy7GPFUnC5t3EO4I4Bm6w4DmNu3k4lCN3YNNniz23HsY6Xxv5rwCU71lpPMpvj9PCw"],
+      ["USP-S", "Kill Confirmed", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLkjYbf7itX6vytbbZSI-WsG3SA_uV_vO1WTCa9kxQ1vjiBpYPwJiPTcFB2Xpp5TO5cskG9lYCxZu_jsVCL3o4Xnij23ClO5ik9tegFA_It8qHJz1aWe-uc160"],
+      ["M4A4", "Buzz Kill", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8ypexwiVI0P_6afBSM_WQGmiC_uJ_t-l9AX22kBh0tm3Qn92qdS7GPARyW5t0QLQD4xi6w9XkZe3jsgDW3ogUnH3gznQeqfpfmso"],
+      ["SSG 08", "Blood in the Water", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLijZGwpR1Y-s29YKV_K8-fB2CY1aAmsbFtFnDilkUl5j7UzoqsInmVaFd0XMMlELYDshbuxNPvP-yxtlCMlcsbmlWiixNl"],
+    ],
+    pink: [
+      ["Desert Eagle", "Blaze", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL1m5fn8Sdk7vORbqhsLfWAMWuZxuZi_uI_TX6wxxkjsGXXnImsJ37COlUoWcByEOMOtxa5kdXmNu3htVPZjN1bjXKpkHLRfQU"],
+      ["AK-47", "Fire Serpent", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLwlcK3wiFO0PSneqF-JeKDC2mE_u995LZWTTuygxIYvzSCkpu3cnvFPQB2DpUkROFY4Rntw93lP7i241DbiI1BxSuviHlKunk_6-sHU71lpPMTRLyP4Q"],
+      ["M4A1-S", "Hot Rod", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8ypexwjFS4_ega6F_H_GdMXWVxdF75OA4XBa_nBovp3PXyt2uJ32QaQciDZUhReUM5hLskdy2Pu_n4wLe2doXm3j-2i5A7X5i_a9cBuWkb97d"],
+    ],
+    red: [
+      ["M4A4", "Howl", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8ypexwiFO0P_6afVSKP-EAm6extF6ueZhW2exwkl2tmTXwt39eCiUPQR2DMN4TOVetUK8xoLgM-K341eM2otDnC6okGoXufBz_TAB"],
+      ["AWP", "Dragon Lore", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLwiYbf_jdk4veqYaF7IfysCnWRxuF4j-B-Xxa_nBovp3Pdwtj9cC_GaAd0DZdwQu9fuhS4kNy0NePntVTbjYpCyyT_3CgY5i9j_a9cBkcCWUKV"],
+    ],
+    gold: [
+      ["★ Butterfly Knife", "Fade", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1Z-ua6bbZrLOmsD2avx-9ytd5lRi67gVNwsDvSwtqqc3iXZg4kCZYjReYLtRbum9XgYuvm5wbWjtgUzCn3iSsf8G81tFEeH9rw"],
+      ["★ Karambit", "Doppler", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1Q7uCvZaZkNM-SA1iSze91u_FsTju_qhAmoT-Jn4bjJC_4Ml93UtZuRLQPsBawkNfiMbnl5AKMiopCnin7iCJBv31j4rkBBKEg-6zUjV3GY6p9v8dpLWT3Fg"],
+      ["★ Sport Gloves", "Pandora's Box", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Tk5UvzWCL2kpn2-DFk_OKherB0H-CGHHecxNF6ueZhW2exk01w4j7cmYn4eHPCbAMhApdwTOIN5BPsx9yyYu605FTeid0Uy3j3kGoXueKyz5wo"],
+    ],
+  } },
   { id: 'gold', name: 'Золотой', box: '👑', price: 2500, items: {
-    blue: [['MAC-10', 'Позолота'], ['P90', 'Слиток'], ['Galil AR', 'Корона'], ['Nova', 'Сокровище'], ['MP9', 'Монета']],
-    purple: [['USP-S', 'Королевская гвардия'], ['Glock-18', 'Фейд'], ['FAMAS', 'Трон'], ['P250', 'Скипетр']],
-    pink: [['M4A1-S', 'Золотая спираль'], ['Desert Eagle', 'Блейз'], ['AK-47', 'Золотая арабеска']],
-    red: [['AWP', 'Медуза'], ['AK-47', 'Дикий лотос']],
-    gold: [['★ Перчатки', 'Пандора'], ['★ Керамбит', 'Изумруд']] } },
+    blue: [
+      ["MAC-10", "Gold Brick", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8n5WxrR1a4s2pZ6hpH_KBB2Sb_uJ_t-l9AX2wwhl35jzRw4yodymWO1R0X5V0FrRc4Bi-m4DuY-2xsgzY39oRmSTgznQe6Q1Q_KE"],
+      ["P90", "Emerald Dragon", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLhx8bf_jdk6-Cvb6tjH-DKXliS0-9gv95lRi67gVMm4m3Vzdmqci-SO1clX8Z1QeYO5xi5mtTuPu7l4FDc2o4TmH32jC1P8G81tLxM49od"],
+      ["Galil AR", "Cerberus", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL2n5rp8SNJ0PG7V6doMvKBG3Svxu96ue1WQyC0nQlpsTjVzdb8IH-UOw8lX8B5EeYJ40a8k4XnPuvqsgzYjt0QnCyqh3wb7DErvbjusqqqdw"],
+      ["Nova", "Graphite", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL_kYDhwiNW0PG8fal9LPWsAm6Xyfo4teA5TSjnx05ztjnRz4v6dX2UZg8hW5B1EbMLtxW-k9XhMLjjslHbiZUFk3velnlINA"],
+      ["MP9", "Hot Rod", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8js_f_Cxk_feqV6hkJ_iHQD7Cl7ou5rlsGyi2wBgh4WyDytmqcC6fbQAhC8chEeZZtRLrw4LlNLz8p1uJeM3XA-E"],
+    ],
+    purple: [
+      ["USP-S", "Orion", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJKz2lu_XuWbwcuyMESA4Fdl-4nnpU7iQA3-kKn17jJk_PuibapuJeLdWGLFwL8i4eVsFiqxxUt34jmHnoysJ3qVOAYgCJZwQrRb5EPul4XlYvSiuVIHgy4Xvg"],
+      ["Glock-18", "Fade", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL2kpnj9h1a7s2oaaBoH_yaCW-Ej-8u5bZvHnq1w0Vz62TUzNj4eCiVblMmXMAkROJeskLpkdXjMrzksVTAy9US8PY25So"],
+      ["FAMAS", "Afterimage", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL3n5vh7h1Y-s2seqtmJf6sHmaEydFwsexoXBa_nBovp3PQn46ucH_COwcoCMchTe4CshG7loG2NrmztFTajoIXyiitiCpLvSk6_a9cBkMHi1qM"],
+      ["P250", "Undertow", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLhzMOwwiNW0OL8PfRSIvWSCmKU_v53ue99cCW6khUz_W3dzIuueSqWblJ0WMNwFuYK4xawk9S0Y-7n4Afag4JDzSz73XtK5nt1o7FVPKoITvg"],
+    ],
+    pink: [
+      ["M4A1-S", "Golden Coil", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8ypexwjFS4_ega6F_H_eAMWrEwL9lj_JnTiK2lxQztgKClYP9HifOOV5kFJclQ-Jb5xW-m9CxPuLq4QTfjd0XzyX6jCpL6X5o5OgDVfYn_a2Ci1rfcepqgV49FrE"],
+      ["AK-47", "Gold Arabesque", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLwlcK3wiVI0POlPPNSJ_-fCliR0-90tfJ4WiyMmRQguynLntmvICieOARzCpMhF-BYsRe-xoHvYu_g5lSNj4NDyy2viCwY6Hlu5_FCD_Q1jEqYuQ"],
+      ["Desert Eagle", "Printstream", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL1m5fn8Sdk7OeRbKFsJ8-DHG6e1f1iouRoQha_nBovp3OGmdeqInyVP1V0XsYlRbEI50a5wNyzZr605AyI3t5MmCSohylAuC89_a9cBoMY9UkV"],
+    ],
+    red: [
+      ["AWP", "Medusa", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLwiYbf_jdk4veqfbdsH_GEHlicyOl-pK85TC23wk12tWSGnNr6JXqRPVUnA5J5RLIKshS-l4HuYbji7lfajdgU02yg2bOcOBD3"],
+      ["AK-47", "Wild Lotus", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLwlcK3wiFO0POlV61-LPGdCliWzeFkse1WQyC0nQlpsDuGyt-pdnyRPA4hDcYkR-QPuhi-wdPuYbyx5AaMidkQnC_-2ilIuzErvbi4ijV5Mw"],
+    ],
+    gold: [
+      ["★ Karambit", "Fade", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1Q7uCvZaZkNM-SD1iWwOpzj-1gSCGn20tztm_UyIn_JHKUbgYlWMcmQ-ZcskSwldS0MOnntAfd3YlMzH35jntXrnE8SOGRGG8"],
+      ["★ Butterfly Knife", "Doppler", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1Z-ua6bbZrLOmsD2qvw-J3s-p5SiihmSIqsi-HlorwOy7DAVRPVssnHaMUuhe9xIHlMuvqtgPf2IoTyC383Sod7CY-sr4DVfZ2qKPU3g-TNuE-545DeqjFvb87vg"],
+      ["★ Sport Gloves", "Vice", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Tk5UvzWCL2kpn2-DFk_OKherB0H_KfG2Kv0ed4u95lRi67gVNx4T-Bw434IHyVb1QlAsd1FOUDthG4xNznMu3m4QXXg90Wzn_33C1I8G81tLaDi_rK"],
+      ["★ M9 Bayonet", "Lore", "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL6kJ_m-B1Wts2sab1iLvWHMWSF_uMvj-NoVha_mg8ijDGMnYftbyrBOw52D5R0FOYPtkG6ltOxNrjl4FPdiN0WzC723SxP6ypp6u8LVKY7uvqAFpeI3XY"],
+    ],
+  } },
 ];
+
+// картинки по названию — чтобы и старые предметы в инвентаре их находили
+const IMG = {};
+CASES.forEach(c => Object.values(c.items).forEach(list => list.forEach(([w, s, img]) => IMG[w + ' | ' + s] = img)));
 
 // раскладываем предметы: цена = цена кейса × множитель редкости
 CASES.forEach(c => {
@@ -308,7 +408,11 @@ function roll(c) {
   return c.pool[0];
 }
 function itemHTML(it, extra = '') {
-  return `<div class="item r-${it.rarity}"><div class="ico">${ICON[it.weapon] || '🔫'}</div><div class="w">${it.weapon}</div><div class="n">${it.skin}</div><div class="v">${fmt(it.value)} 🪙</div>${extra}</div>`;
+  const img = IMG[it.weapon + ' | ' + it.skin];
+  const fallback = it.weapon.startsWith('★') ? (it.weapon.includes('Gloves') ? '🧤' : '🔪') : '🔫';
+  const pic = img ? `<img class="pic" src="${img}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ico',textContent:'${fallback}'}))">`
+                  : `<div class="ico">${fallback}</div>`;
+  return `<div class="item r-${it.rarity}">${pic}<div class="w">${it.weapon}</div><div class="n">${it.skin}</div><div class="v">${fmt(it.value)} 🪙</div>${extra}</div>`;
 }
 function addToInv(it) {
   state.inv.unshift({ weapon: it.weapon, skin: it.skin, rarity: it.rarity, value: it.value, id: Date.now() + Math.random() });
@@ -400,6 +504,7 @@ async function openCase(fast) {
   busy = false; $('#openBtn').disabled = $('#fastBtn').disabled = false;
 }
 $('#openBtn').onclick = () => openCase(false);
+$('#toBattle').onclick = () => { if (busy) return; $('#bCase').value = current.id; battleInfo(); battleCases(); document.querySelector('[data-tab=battle]').click(); };
 $('#fastBtn').onclick = () => openCase(true);
 
 // ---------- КЕЙС-БАТЛ ----------
@@ -410,6 +515,16 @@ function battleInfo() {
   $('#bInfo').textContent = `Вход: ${fmt(c.price * r)} 🪙 · в банке примерно ${fmt(c.price * r * p)} 🪙`;
 }
 ['#bCase', '#bRounds', '#bPlayers'].forEach(s => $(s).onchange = battleInfo); battleInfo();
+// карточки кейсов в батле: видно главный приз, клик выбирает кейс
+function battleCases() {
+  $('#bCases').innerHTML = CASES.map(c => {
+    const top = [...c.pool].sort((a, b) => b.value - a.value)[0];
+    return `<div class="case-card${c.id === $('#bCase').value ? ' sel' : ''}" data-id="${c.id}"><div class="box">${c.box}</div><b>${c.name}</b><div class="price">${fmt(c.price)} 🪙</div>
+      <div class="muted" style="font-size:12px">до ${top.weapon} | ${top.skin}</div></div>`;
+  }).join('');
+}
+$('#bCases').onclick = e => { const card = e.target.closest('.case-card'); if (!card || busy) return; $('#bCase').value = card.dataset.id; battleInfo(); battleCases(); };
+$('#bCase').addEventListener('change', battleCases); battleCases();
 
 $('#bStart').onclick = async () => {
   if (busy) return;
