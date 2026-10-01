@@ -1,0 +1,298 @@
+<title>Бот записи шиномонтажа</title>
+<style>
+/* Layout: two Telegram-like chat windows side by side (client / owner), stacking on phones */
+:root {
+  --page: #e9eef3;
+  --chat-bg: #cfdcc4;
+  --panel: #ffffff;
+  --bubble-in: #ffffff;
+  --bubble-out: #e1fec6;
+  --fg: #17212b;
+  --muted: #6d7883;
+  --accent: #3390ec;
+  --accent-fg: #ffffff;
+  --btn: rgba(255,255,255,.72);
+  --btn-fg: #2a5f91;
+  --line: #dde3e9;
+  --brand: #ff6b1a;
+  --font: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Rubik", "Roboto", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --page:#0e1621; --chat-bg:#0f1b26; --panel:#17212b; --bubble-in:#182533; --bubble-out:#2b5278;
+  --fg:#e6edf3; --muted:#7d8b99; --accent:#5aa7f0; --accent-fg:#0e1621; --btn:rgba(40,58,78,.9); --btn-fg:#cfe4fb; --line:#253241; --brand:#ff8a45; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --page:#0e1621; --chat-bg:#0f1b26; --panel:#17212b; --bubble-in:#182533; --bubble-out:#2b5278;
+  --fg:#e6edf3; --muted:#7d8b99; --accent:#5aa7f0; --accent-fg:#0e1621; --btn:rgba(40,58,78,.9); --btn-fg:#cfe4fb; --line:#253241; --brand:#ff8a45; color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { background: var(--page); color: var(--fg); font: 15px/1.4 var(--font); padding-inline: 16px; padding-block: 24px 40px; }
+.wrap { max-width: 1040px; margin: 0 auto; display: grid; gap: 20px; }
+header h1 { font: 600 clamp(1.4rem, 4vw, 1.9rem)/1.15 var(--display); margin: 0 0 6px; text-wrap: balance; }
+header p { margin: 0; color: var(--muted); max-width: 65ch; }
+.phones { display: grid; gap: 20px; grid-template-columns: 1fr; }
+@media (min-width: 860px) { .phones { grid-template-columns: 1.15fr 1fr; } }
+
+.chat { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: 640px; min-width: 0; }
+.chat-head { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.ava { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; background: var(--brand); flex: none; }
+.ava.owner { background: #7b5cd6; }
+.chat-head b { display: block; }
+.chat-head small { color: var(--muted); }
+.chat-head .role { margin-left: auto; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.feed { flex: 1; overflow-y: auto; padding: 14px 12px; display: flex; flex-direction: column; gap: 6px; background: var(--chat-bg); }
+.msg { max-width: 86%; padding: 7px 11px 6px; border-radius: 14px; white-space: pre-wrap; word-wrap: break-word; background: var(--bubble-in); align-self: flex-start; box-shadow: 0 1px 1px rgba(0,0,0,.08); }
+.msg.out { align-self: flex-end; background: var(--bubble-out); }
+.msg .t { font-size: 11px; color: var(--muted); text-align: right; margin-top: 2px; }
+.ikb { align-self: flex-start; max-width: 86%; display: grid; gap: 4px; margin-top: -2px; }
+.ikb .row { display: grid; gap: 4px; grid-auto-flow: column; grid-auto-columns: 1fr; }
+.ikb button, .rkb button { font: inherit; font-size: 14px; border: 0; border-radius: 8px; padding: 8px 10px; cursor: pointer; background: var(--btn); color: var(--btn-fg); font-weight: 500; }
+.ikb button:hover, .rkb button:hover { filter: brightness(1.05); }
+.ikb.dead button { opacity: .45; pointer-events: none; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.rkb { display: grid; gap: 6px; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); padding: 8px 10px 0; background: var(--panel); }
+.rkb button { background: var(--page); color: var(--fg); }
+.compose { display: flex; gap: 8px; padding: 8px 10px 10px; background: var(--panel); }
+.compose input { flex: 1; min-width: 0; font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 20px; background: var(--page); color: var(--fg); }
+.compose button { border: 0; border-radius: 50%; width: 42px; height: 42px; background: var(--accent); color: var(--accent-fg); font-size: 18px; cursor: pointer; flex: none; }
+.tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.tools button { font: inherit; font-size: 13px; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); cursor: pointer; }
+.tools span { color: var(--muted); font-size: 13px; }
+.note { color: var(--muted); font-size: 13px; max-width: 75ch; }
+@media (prefers-reduced-motion: no-preference) { .msg, .ikb { animation: pop .18s ease-out; } }
+@keyframes pop { from { transform: translateY(4px); opacity: .4; } }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Rubik:wght@600&display=swap">
+
+<div class="wrap">
+  <header>
+    <h1>Бот записи «Шиномонтаж на Ветеранов»</h1>
+    <p>Интерактивная демо-копия Telegram-бота. Слева вы клиент: запишитесь на услугу. Справа владелец: подтвердите или отмените запись, посмотрите /today и /week. Логика слотов та же, что в коде бота: часы работы, длительность услуги, без двойных записей.</p>
+  </header>
+
+  <div class="phones">
+    <section class="chat" aria-label="Чат клиента">
+      <div class="chat-head"><div class="ava">Ш</div><div><b>Шиномонтаж на Ветеранов</b><small>бот</small></div><span class="role">Клиент</span></div>
+      <div class="feed" id="c-feed"></div>
+      <div class="rkb" id="c-rkb"></div>
+      <form class="compose" id="c-form"><input id="c-input" placeholder="Сообщение" autocomplete="off"><button aria-label="Отправить">➤</button></form>
+    </section>
+    <section class="chat" aria-label="Чат владельца">
+      <div class="chat-head"><div class="ava owner">В</div><div><b>Шиномонтаж на Ветеранов</b><small>бот · OWNER_CHAT_ID</small></div><span class="role">Владелец</span></div>
+      <div class="feed" id="o-feed"></div>
+      <div class="rkb" id="o-rkb"></div>
+    </section>
+  </div>
+
+  <div class="tools">
+    <button id="other">👥 Другой клиент занимает время</button>
+    <button id="reset">↺ Начать заново</button>
+    <span>Время демо идёт по Москве. Напоминание за 2 часа в реальном боте приходит автоматически.</span>
+  </div>
+  <p class="note">Все данные выдуманы и живут только на этой странице. В настоящем боте записи хранятся в SQLite, а услуги и часы работы задаются в config.yaml.</p>
+</div>
+
+<script>
+// ===== config.yaml (то же, что в боте) =====
+const CFG = {
+  name: "Шиномонтаж на Ветеранов", address: "Санкт-Петербург, пр. Ветеранов, 101", phone: "+7 (812) 000-00-00",
+  hours: { 0: ["09:00","20:00"], 1: ["09:00","20:00"], 2: ["09:00","20:00"], 3: ["09:00","20:00"], 4: ["09:00","20:00"], 5: ["10:00","18:00"], 6: ["10:00","18:00"] },
+  step: 30, daysAhead: 7,
+  services: [
+    { id: "r16", name: "Переобувка R13–R16", dur: 60, price: 2400 },
+    { id: "r19", name: "Переобувка R17–R19", dur: 90, price: 3200 },
+    { id: "bal", name: "Балансировка", dur: 30, price: 200 },
+    { id: "sto", name: "Хранение шин", dur: 30, price: 1500 },
+  ],
+};
+const WD = ["пн","вт","ср","чт","пт","сб","вс"];
+const STATUS = { pending: "⏳ ожидает подтверждения", confirmed: "✅ подтверждена", cancelled: "❌ отменена" };
+const svc = id => CFG.services.find(s => s.id === id);
+
+// ===== время по Москве: дни как "YYYY-MM-DD", время в минутах от полуночи =====
+function moscowNow() {
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Moscow", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date()).map(x => [x.type, x.value]));
+  return { day: `${p.year}-${p.month}-${p.day}`, min: +p.hour * 60 + +p.minute };
+}
+const toMin = s => { const [h, m] = s.split(":"); return h * 60 + +m; };
+const hhmm = m => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+const dateOf = d => new Date(d + "T12:00:00Z");
+const addDays = (d, n) => { const x = dateOf(d); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); };
+const weekday = d => (dateOf(d).getUTCDay() + 6) % 7; // 0 = пн
+const fmtDay = d => `${d.slice(8, 10)}.${d.slice(5, 7)} (${WD[weekday(d)]})`;
+
+// ===== slots.py =====
+const overlaps = (a0, a1, b0, b1) => a0 < b1 && b0 < a1;
+function freeSlots(day, dur) {
+  const h = CFG.hours[weekday(day)];
+  if (!h) return [];
+  const now = moscowNow();
+  const busy = bookings.filter(b => b.day === day && b.status !== "cancelled");
+  const res = [];
+  for (let s = toMin(h[0]); s + dur <= toMin(h[1]); s += CFG.step) {
+    if (day === now.day && s <= now.min) continue;           // прошедшее время сегодня
+    if (busy.some(b => overlaps(s, s + dur, b.start, b.end))) continue; // пересечение
+    res.push(s);
+  }
+  return res;
+}
+const bookableDays = id => Array.from({ length: CFG.daysAhead }, (_, i) => addDays(moscowNow().day, i)).filter(d => freeSlots(d, svc(id).dur).length);
+
+// ===== db.py =====
+let bookings = [], nextId = 1;
+function createBooking(b) { // повторная проверка перед вставкой — защита от двойной записи
+  if (bookings.some(x => x.day === b.day && x.status !== "cancelled" && overlaps(b.start, b.end, x.start, x.end))) return null;
+  const rec = { ...b, id: nextId++, status: "pending" }; bookings.push(rec); return rec;
+}
+function seed() { // пара чужих записей, чтобы было видно занятые слоты
+  bookings = []; nextId = 1;
+  const d1 = addDays(moscowNow().day, 1), d2 = addDays(moscowNow().day, 2);
+  [[d1, "r19", "11:00", "Сергей", "+7 921 555-12-34", "confirmed"], [d1, "r16", "14:00", "Ольга", "+7 911 222-33-44", "confirmed"], [d2, "bal", "10:00", "Дмитрий", "+7 905 777-00-11", "pending"]]
+    .forEach(([day, id, t, name, phone, st]) => { const r = createBooking({ day, svc: id, start: toMin(t), end: toMin(t) + svc(id).dur, name, phone, own: false }); if (r) r.status = st; });
+}
+
+const card = (b, client) => [`🔧 ${svc(b.svc).name} — ${svc(b.svc).price} ₽`, `🕒 ${fmtDay(b.day)} ${hhmm(b.start)} (${svc(b.svc).dur} мин)`, ...(client ? [`👤 ${b.name}`, `📞 ${b.phone}`] : []), `Статус: ${STATUS[b.status]}`].join("\n");
+
+// ===== мини-движок чата =====
+function Chat(prefix) {
+  const feed = document.getElementById(prefix + "-feed"), rkb = document.getElementById(prefix + "-rkb");
+  const time = () => hhmm(moscowNow().min);
+  const scroll = () => feed.scrollTo({ top: feed.scrollHeight });
+  return {
+    say(text, kb, out) {
+      const m = document.createElement("div"); m.className = "msg" + (out ? " out" : "");
+      m.textContent = text; const t = document.createElement("div"); t.className = "t"; t.textContent = time(); m.append(t); feed.append(m);
+      let box = null;
+      if (kb) {
+        box = document.createElement("div"); box.className = "ikb";
+        kb.forEach(row => { const r = document.createElement("div"); r.className = "row";
+          row.forEach(([label, fn]) => { const b = document.createElement("button"); b.type = "button"; b.textContent = label; b.onclick = () => fn(api); r.append(b); }); box.append(r); });
+        feed.append(box);
+      }
+      const api = { kill() { if (box) box.classList.add("dead"); } };
+      scroll(); return api;
+    },
+    reply(rows) { rkb.innerHTML = ""; rows.flat().forEach(([label, fn]) => { const b = document.createElement("button"); b.type = "button"; b.textContent = label; b.onclick = fn; rkb.append(b); }); },
+    clear() { feed.innerHTML = ""; rkb.innerHTML = ""; },
+  };
+}
+const C = Chat("c"), O = Chat("o");
+
+// ===== сценарий клиента (handlers/client.py) =====
+let st = {}, stage = "idle";
+const ME = { name: "Вы" };
+const mainMenu = () => C.reply([[["📅 Записаться", () => userText("📅 Записаться")]], [["📋 Мои записи", () => userText("📋 Мои записи")], ["📍 Контакты", () => userText("📍 Контакты")]]]);
+
+function userText(text) { C.say(text, null, true); handle(text); }
+function handle(text) {
+  if (text === "/start") { stage = "idle"; mainMenu(); return C.say(`👋 Добро пожаловать в «${CFG.name}»!\nЗапишитесь онлайн за минуту.`); }
+  if (text === "📍 Контакты") return C.say(`📍 ${CFG.address}\n📞 ${CFG.phone}\n\n🕒 Пн–Пт 09:00–20:00\nСб–Вс 10:00–18:00`);
+  if (text === "📋 Мои записи") {
+    const mine = bookings.filter(b => b.own && b.status !== "cancelled");
+    if (!mine.length) return C.say("У вас нет будущих записей.");
+    return mine.forEach(b => C.say(card(b), [[["❌ Отменить запись", a => clientCancel(b, a)]]]));
+  }
+  if (text === "📅 Записаться") { stage = "service"; st = {}; return askService(); }
+  if (stage === "name") {
+    if (text.trim().length < 2) return C.say("Введите имя (минимум 2 символа)");
+    st.name = text.trim().slice(0, 60); stage = "phone";
+    C.reply([[["📱 Поделиться контактом", () => { C.say("📱 Контакт: +7 999 123-45-67", null, true); gotPhone("+7 999 123-45-67"); }]]]);
+    return C.say("Поделитесь номером телефона кнопкой ниже (или напишите его):");
+  }
+  if (stage === "phone") {
+    const digits = text.replace(/\D/g, "");
+    if (digits.length < 10 || digits.length > 15) return C.say("Не похоже на номер телефона. Попробуйте ещё раз или нажмите кнопку.");
+    return gotPhone(text.trim());
+  }
+  C.say("Выберите действие в меню ниже 👇");
+}
+function askService() {
+  C.say("Выберите услугу:", CFG.services.map(s => [[`${s.name} — ${s.price} ₽`, a => { a.kill(); pickService(s.id); }]]));
+}
+function pickService(id) {
+  if (stage !== "service") return;
+  st.svc = id; C.say(svc(id).name, null, true);
+  const days = bookableDays(id);
+  if (!days.length) { stage = "idle"; return C.say("😔 На ближайшие дни свободного времени нет. Позвоните нам: " + CFG.phone); }
+  stage = "day"; askDay(days);
+}
+function askDay(days, prefix = "Выберите дату:") {
+  C.say(prefix, [...days.map(d => [[fmtDay(d), a => { a.kill(); pickDay(d); }]]), [["⬅️ Назад", a => { a.kill(); stage = "service"; askService(); }]]]);
+}
+function pickDay(d) {
+  if (stage !== "day") return;
+  st.day = d; C.say(fmtDay(d), null, true);
+  const slots = freeSlots(d, svc(st.svc).dur);
+  if (!slots.length) return askDay(bookableDays(st.svc), "На эту дату времени уже нет. Выберите другую:");
+  stage = "time";
+  const btns = slots.map(s => [hhmm(s), a => { a.kill(); pickTime(s); }]);
+  const rows = []; for (let i = 0; i < btns.length; i += 4) rows.push(btns.slice(i, i + 4));
+  rows.push([["⬅️ Другая дата", a => { a.kill(); stage = "day"; askDay(bookableDays(st.svc)); }]]);
+  C.say(`Свободное время на ${fmtDay(d)}:`, rows);
+}
+function pickTime(s) {
+  if (stage !== "time") return;
+  st.start = s; C.say(hhmm(s), null, true); stage = "name"; C.say("Как вас зовут?");
+}
+function gotPhone(p) {
+  st.phone = p; stage = "confirm"; mainMenu();
+  const s = svc(st.svc);
+  C.say(`Проверьте запись:\n\n🔧 ${s.name} — ${s.price} ₽\n🕒 ${fmtDay(st.day)} ${hhmm(st.start)} (${s.dur} мин)\n👤 ${st.name}\n📞 ${st.phone}\n📍 ${CFG.address}`,
+    [[["✅ Записаться", a => { a.kill(); confirm(); }], ["✖️ Отмена", a => { a.kill(); stage = "idle"; C.say("Запись отменена. Начать заново: «📅 Записаться»"); }]]]);
+}
+function confirm() {
+  if (stage !== "confirm") return;
+  const b = createBooking({ day: st.day, svc: st.svc, start: st.start, end: st.start + svc(st.svc).dur, name: st.name, phone: st.phone, own: true });
+  if (!b) { stage = "day"; return askDay(bookableDays(st.svc), "😔 Это время только что заняли. Выберите другое:"); }
+  stage = "idle";
+  C.say("✅ Заявка отправлена! Мы подтвердим запись в ближайшее время.\n\n" + card(b));
+  notifyOwner(b);
+}
+function clientCancel(b, a) {
+  a.kill(); if (b.status === "cancelled") return;
+  b.status = "cancelled"; C.say("Запись отменена:\n\n" + card(b));
+  O.say("❗ Клиент отменил запись:\n\n" + card(b, true));
+}
+
+// ===== сторона владельца (handlers/owner.py) =====
+function notifyOwner(b) {
+  O.say("🆕 Новая запись!\n\n" + card(b, true), [[["✅ Подтвердить", a => decide(b, "ok", a)], ["❌ Отменить", a => decide(b, "no", a)]]]);
+}
+function decide(b, action, a) {
+  a.kill();
+  if (b.status === "cancelled") return O.say("Запись уже отменена.");
+  b.status = action === "ok" ? "confirmed" : "cancelled";
+  O.say(card(b, true));
+  if (b.own) C.say(action === "ok" ? "✅ Ваша запись подтверждена!\n\n" + card(b) + "\n📍 " + CFG.address : `😔 К сожалению, запись отменена. Позвоните нам: ${CFG.phone}\n\n` + card(b));
+}
+function schedule(days, title) {
+  O.say(title === "Записи на сегодня" ? "/today" : "/week", null, true);
+  const from = moscowNow().day, to = addDays(from, days);
+  const items = bookings.filter(b => b.status !== "cancelled" && b.day >= from && b.day < to).sort((x, y) => (x.day + hhmm(x.start)).localeCompare(y.day + hhmm(y.start)));
+  if (!items.length) return O.say(`${title}: записей нет.`);
+  let out = `📆 ${title}`, cur = null;
+  items.forEach(b => { if (b.day !== cur) { cur = b.day; out += `\n\n${fmtDay(cur)}`; } out += `\n${b.status === "confirmed" ? "✅" : "⏳"} ${hhmm(b.start)} — ${svc(b.svc).name}, ${b.name}, ${b.phone}`; });
+  O.say(out);
+}
+
+// ===== кнопки демо =====
+document.getElementById("c-form").addEventListener("submit", e => {
+  e.preventDefault(); const i = document.getElementById("c-input"); const v = i.value.trim(); if (!v) return; i.value = ""; userText(v);
+});
+document.getElementById("other").onclick = () => { // имитация: кто-то параллельно занимает выбранное время
+  const day = st.day || addDays(moscowNow().day, 1), id = st.svc || "r16";
+  const slot = st.start ?? freeSlots(day, svc(id).dur)[0];
+  if (slot == null) return O.say("Свободного времени для имитации нет.");
+  const b = createBooking({ day, svc: id, start: slot, end: slot + svc(id).dur, name: "Анна", phone: "+7 931 111-22-33", own: false });
+  if (b) notifyOwner(b); else O.say("Это время уже занято.");
+};
+document.getElementById("reset").onclick = start;
+
+function start() {
+  C.clear(); O.clear(); seed(); st = {}; stage = "idle";
+  O.reply([[["/today", () => schedule(1, "Записи на сегодня")], ["/week", () => schedule(7, "Записи на неделю")]]]);
+  O.say("Здесь появляются новые записи с кнопками «Подтвердить» / «Отменить». Команды /today и /week внизу.");
+  C.say("/start", null, true); handle("/start");
+}
+start();
+</script>
