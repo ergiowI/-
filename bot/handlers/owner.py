@@ -1,4 +1,4 @@
-"""Сторона владельца: уведомления, подтверждение/отмена, /today, /week."""
+"""Сторона владельца: уведомления, подтверждение/отмена, /today, /week, /stats, /help."""
 from datetime import datetime, time, timedelta
 
 from aiogram import Bot, Router
@@ -22,10 +22,10 @@ router.message.filter(IsOwner())
 router.callback_query.filter(IsOwner())
 
 
-async def notify_owner(bot: Bot, settings: Settings, booking: Booking) -> None:
+async def notify_owner(bot: Bot, settings: Settings, booking: Booking, title: str = "🆕 Новая запись!") -> None:
     await bot.send_message(
         settings.owner_chat_id,
-        "🆕 Новая запись!\n\n" + booking_card(booking, settings, with_client=True),
+        f"{title}\n\n" + booking_card(booking, settings, with_client=True),
         reply_markup=kb.owner_kb(booking.id),
     )
 
@@ -80,3 +80,50 @@ async def today(message: Message, settings: Settings, db: Database):
 @router.message(Command("week"))
 async def week(message: Message, settings: Settings, db: Database):
     await _schedule(message, settings, db, 7, "Записи на неделю")
+
+
+@router.message(Command("stats"))
+async def stats(message: Message, settings: Settings, db: Database):
+    """Сводка: прошедшие 7 дней (факт) и следующие 7 дней (загрузка)."""
+    now = datetime.now(settings.tz)
+    today = datetime.combine(now.date(), time.min, tzinfo=settings.tz)
+    past = db.all_between(today - timedelta(days=7), today)
+    future = db.all_between(today, today + timedelta(days=7))
+
+    done = [b for b in past if b.status == "confirmed"]
+    cancelled = [b for b in past if b.status == "cancelled"]
+    revenue = sum(settings.services[b.service_id].price for b in done)
+    ratings = [b.rating for b in past if b.rating]
+    upcoming = [b for b in future if b.status != "cancelled"]
+    pending = [b for b in upcoming if b.status == "pending"]
+
+    popular: dict[str, int] = {}
+    for b in done + upcoming:
+        popular[b.service_id] = popular.get(b.service_id, 0) + 1
+    top = max(popular, key=popular.get) if popular else None
+
+    lines = [
+        "📊 <b>Статистика</b>",
+        "",
+        "<b>Прошедшие 7 дней</b>",
+        f"Визитов: {len(done)} · отмен: {len(cancelled)}",
+        f"Выручка по прайсу: {revenue:,} ₽".replace(",", " "),
+        f"Средняя оценка: {sum(ratings) / len(ratings):.1f} ⭐ ({len(ratings)} шт.)" if ratings else "Оценок пока нет",
+        "",
+        "<b>Следующие 7 дней</b>",
+        f"Записей: {len(upcoming)} · ждут подтверждения: {len(pending)}",
+    ]
+    if top:
+        lines.append(f"Популярная услуга: {settings.services[top].name}")
+    await message.answer("\n".join(lines), parse_mode="HTML")
+
+
+@router.message(Command("help"))
+async def owner_help(message: Message):
+    await message.answer(
+        "Команды владельца:\n"
+        "/today — записи на сегодня\n"
+        "/week — записи на 7 дней\n"
+        "/stats — статистика и загрузка\n\n"
+        "Новые записи и переносы приходят сюда с кнопками «Подтвердить» / «Отменить»."
+    )

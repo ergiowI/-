@@ -30,6 +30,7 @@ class Settings:
     working_hours: dict[int, tuple[time, time]]
     slot_step_minutes: int
     reminder_hours_before: int
+    review_hours_after: int
     booking_days_ahead: int
     services: dict[str, Service]
     db_path: Path
@@ -67,6 +68,7 @@ def load_settings(config_path: Path | None = None) -> Settings:
         working_hours=hours,
         slot_step_minutes=int(raw.get("slot_step_minutes", 30)),
         reminder_hours_before=int(raw.get("reminder_hours_before", 2)),
+        review_hours_after=int(raw.get("review_hours_after", 1)),
         booking_days_ahead=int(raw.get("booking_days_ahead", 7)),
         services=services,
         db_path=ROOT / "bookings.db",

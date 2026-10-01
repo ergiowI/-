@@ -99,3 +99,43 @@ def test_reminders_window(tmp_path):
     assert [b.id for b in due] == [near.id]
     db.mark_reminded(near.id)
     assert db.due_reminders(now, 2) == []
+
+
+def test_db_reschedule_ignores_itself_and_checks_others(tmp_path):
+    db = Database(tmp_path / "t.db")
+    a = db.create_booking(1, "А", "+7", "x", dt(11), dt(12))
+    db.create_booking(2, "Б", "+7", "x", dt(13), dt(14))
+    db.set_status(a.id, "confirmed")
+    assert db.reschedule(a.id, dt(11, 30), dt(12, 30))  # пересекается только сама с собой — можно
+    moved = db.get(a.id)
+    assert moved.status == "pending" and moved.reminded == 0  # перенос снова ждёт подтверждения
+    assert not db.reschedule(a.id, dt(13, 30), dt(14, 30))  # занято другим клиентом
+
+
+def test_clients_are_remembered(tmp_path):
+    db = Database(tmp_path / "t.db")
+    assert db.get_client(1) is None
+    db.save_client(1, "Иван", "+7 999")
+    db.save_client(1, "Иван П.", "+7 888")
+    assert db.get_client(1) == ("Иван П.", "+7 888")
+
+
+def test_review_requested_after_visit_once(tmp_path):
+    db = Database(tmp_path / "t.db")
+    b = db.create_booking(1, "А", "+7", "x", dt(10), dt(11), comment="Kia Rio R15")
+    db.set_status(b.id, "confirmed")
+    assert db.due_reviews(dt(11, 30), 1) == []  # прошло меньше часа
+    assert [x.id for x in db.due_reviews(dt(12, 5), 1)] == [b.id]
+    db.mark_review_asked(b.id)
+    assert db.due_reviews(dt(12, 5), 1) == []
+    assert db.get(b.id).comment == "Kia Rio R15"
+
+
+def test_migration_adds_new_columns(tmp_path):
+    import sqlite3
+    path = tmp_path / "old.db"
+    con = sqlite3.connect(path)
+    con.execute("CREATE TABLE bookings (id INTEGER PRIMARY KEY AUTOINCREMENT, chat_id INTEGER NOT NULL, name TEXT NOT NULL, phone TEXT NOT NULL, service_id TEXT NOT NULL, start_ts INTEGER NOT NULL, end_ts INTEGER NOT NULL, status TEXT NOT NULL DEFAULT 'pending', reminded INTEGER NOT NULL DEFAULT 0)")
+    con.commit(); con.close()
+    db = Database(path)
+    assert db.create_booking(1, "А", "+7", "x", dt(10), dt(11), comment="ok").comment == "ok"

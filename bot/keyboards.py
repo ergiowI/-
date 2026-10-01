@@ -15,18 +15,18 @@ def services_kb(s: Settings) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
-def days_kb(days: list) -> InlineKeyboardMarkup:
+def days_kb(days: list, prefix: str = "day", back: str = "back:svc") -> InlineKeyboardMarkup:
     from .texts import fmt_day
 
-    rows = [[Btn(text=fmt_day(d), callback_data=f"day:{d.isoformat()}")] for d in days]
-    rows.append([Btn(text="⬅️ Назад", callback_data="back:svc")])
+    rows = [[Btn(text=fmt_day(d), callback_data=f"{prefix}:{d.isoformat()}")] for d in days]
+    rows.append([Btn(text="⬅️ Назад", callback_data=back)])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
-def times_kb(slots: list) -> InlineKeyboardMarkup:
-    buttons = [Btn(text=s.strftime("%H:%M"), callback_data=f"time:{s.strftime('%H%M')}") for s in slots]
+def times_kb(slots: list, prefix: str = "time", back: str = "back:day") -> InlineKeyboardMarkup:
+    buttons = [Btn(text=s.strftime("%H:%M"), callback_data=f"{prefix}:{s.strftime('%H%M')}") for s in slots]
     rows = [buttons[i : i + 4] for i in range(0, len(buttons), 4)]
-    rows.append([Btn(text="⬅️ Другая дата", callback_data="back:day")])
+    rows.append([Btn(text="⬅️ Другая дата", callback_data=back)])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -45,7 +45,23 @@ def confirm_kb() -> InlineKeyboardMarkup:
 
 
 def my_booking_kb(booking_id: int) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(inline_keyboard=[[Btn(text="❌ Отменить запись", callback_data=f"cancel:{booking_id}")]])
+    return InlineKeyboardMarkup(
+        inline_keyboard=[[Btn(text="🔁 Перенести", callback_data=f"move:{booking_id}"), Btn(text="❌ Отменить", callback_data=f"cancel:{booking_id}")]]
+    )
+
+
+def known_client_kb() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[[Btn(text="✅ Да, это я", callback_data="me:yes"), Btn(text="✏️ Другие данные", callback_data="me:no")]]
+    )
+
+
+def skip_kb() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[[Btn(text="Пропустить ➡️", callback_data="comment:skip")]])
+
+
+def rating_kb(booking_id: int) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[[Btn(text=f"{i} ⭐", callback_data=f"rate:{booking_id}:{i}") for i in range(1, 6)]])
 
 
 def owner_kb(booking_id: int) -> InlineKeyboardMarkup:

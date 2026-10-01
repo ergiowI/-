@@ -23,6 +23,8 @@ def booking_card(b: Booking, s: Settings, with_client: bool = False, with_status
         f"🔧 {service.name} — {service.price} ₽",
         f"🕒 {fmt_dt(start)} ({service.duration_minutes} мин)",
     ]
+    if b.comment:
+        lines.append(f"🚗 {b.comment}")
     if with_client:
         lines += [f"👤 {b.name}", f"📞 {b.phone}"]
     if with_status:

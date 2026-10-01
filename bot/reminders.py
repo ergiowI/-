@@ -1,4 +1,4 @@
-"""Фоновая задача: напоминание клиенту за N часов до подтверждённой записи."""
+"""Фоновая задача: напоминание за N часов до записи и запрос оценки после визита."""
 import asyncio
 import logging
 from datetime import datetime
@@ -7,6 +7,7 @@ from aiogram import Bot
 
 from .config import Settings
 from .db import Database
+from .keyboards import rating_kb
 from .texts import booking_card
 
 log = logging.getLogger(__name__)
@@ -22,6 +23,12 @@ async def reminder_loop(bot: Bot, settings: Settings, db: Database, interval: in
                     await bot.send_message(b.chat_id, text)
                 except Exception:
                     log.warning("Не удалось отправить напоминание %s", b.id)
+            for b in db.due_reviews(datetime.now(settings.tz), settings.review_hours_after):
+                db.mark_review_asked(b.id)
+                try:
+                    await bot.send_message(b.chat_id, "Как прошёл визит? Оцените, пожалуйста, нашу работу:", reply_markup=rating_kb(b.id))
+                except Exception:
+                    log.warning("Не удалось запросить оценку %s", b.id)
         except Exception:
             log.exception("Ошибка в цикле напоминаний")
         await asyncio.sleep(interval)

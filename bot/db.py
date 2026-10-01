@@ -1,4 +1,4 @@
-"""SQLite: записи. Двойная запись исключается проверкой пересечения внутри BEGIN IMMEDIATE."""
+"""SQLite: записи и клиенты. Двойная запись исключается проверкой пересечения внутри BEGIN IMMEDIATE."""
 import sqlite3
 from contextlib import contextmanager
 from dataclasses import dataclass
@@ -17,9 +17,17 @@ CREATE TABLE IF NOT EXISTS bookings (
     start_ts INTEGER NOT NULL,      -- unix time, UTC
     end_ts INTEGER NOT NULL,
     status TEXT NOT NULL DEFAULT 'pending',   -- pending | confirmed | cancelled
-    reminded INTEGER NOT NULL DEFAULT 0
+    reminded INTEGER NOT NULL DEFAULT 0,
+    comment TEXT NOT NULL DEFAULT '',          -- марка авто / размер шин
+    review_asked INTEGER NOT NULL DEFAULT 0,
+    rating INTEGER                             -- оценка 1..5 после визита
 );
 CREATE INDEX IF NOT EXISTS idx_bookings_start ON bookings(start_ts);
+CREATE TABLE IF NOT EXISTS clients (           -- запоминаем имя и телефон для повторных записей
+    chat_id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    phone TEXT NOT NULL
+);
 """
 
 
@@ -34,6 +42,9 @@ class Booking:
     end_ts: int
     status: str
     reminded: int
+    comment: str = ""
+    review_asked: int = 0
+    rating: int | None = None
 
     @property
     def start(self) -> datetime:
@@ -53,6 +64,11 @@ class Database:
         self.path = str(path)
         with self._conn() as c:
             c.executescript(SCHEMA)
+            # миграция для баз, созданных старой версией бота
+            cols = {r["name"] for r in c.execute("PRAGMA table_info(bookings)")}
+            for name, ddl in [("comment", "TEXT NOT NULL DEFAULT ''"), ("review_asked", "INTEGER NOT NULL DEFAULT 0"), ("rating", "INTEGER")]:
+                if name not in cols:
+                    c.execute(f"ALTER TABLE bookings ADD COLUMN {name} {ddl}")
 
     @contextmanager
     def _conn(self):
@@ -67,24 +83,45 @@ class Database:
     def _row(row) -> Booking:
         return Booking(**dict(row))
 
-    def create_booking(self, chat_id, name, phone, service_id, start: datetime, end: datetime) -> Booking | None:
+    @staticmethod
+    def _clash(c, start: datetime, end: datetime, exclude_id: int = 0) -> bool:
+        return c.execute(
+            "SELECT 1 FROM bookings WHERE status IN (?, ?) AND start_ts < ? AND end_ts > ? AND id != ? LIMIT 1",
+            (*ACTIVE, _ts(end), _ts(start), exclude_id),
+        ).fetchone() is not None
+
+    def create_booking(self, chat_id, name, phone, service_id, start: datetime, end: datetime, comment: str = "") -> Booking | None:
         """Создаёт запись или возвращает None, если время уже занято."""
         with self._conn() as c:
             c.execute("BEGIN IMMEDIATE")  # блокируем запись: проверка + вставка атомарны
             try:
-                clash = c.execute(
-                    "SELECT 1 FROM bookings WHERE status IN (?, ?) AND start_ts < ? AND end_ts > ? LIMIT 1",
-                    (*ACTIVE, _ts(end), _ts(start)),
-                ).fetchone()
-                if clash:
+                if self._clash(c, start, end):
                     c.execute("ROLLBACK")
                     return None
                 cur = c.execute(
-                    "INSERT INTO bookings (chat_id, name, phone, service_id, start_ts, end_ts) VALUES (?,?,?,?,?,?)",
-                    (chat_id, name, phone, service_id, _ts(start), _ts(end)),
+                    "INSERT INTO bookings (chat_id, name, phone, service_id, start_ts, end_ts, comment) VALUES (?,?,?,?,?,?,?)",
+                    (chat_id, name, phone, service_id, _ts(start), _ts(end), comment),
                 )
                 c.execute("COMMIT")
                 return self.get(cur.lastrowid)
+            except Exception:
+                c.execute("ROLLBACK")
+                raise
+
+    def reschedule(self, booking_id: int, start: datetime, end: datetime) -> bool:
+        """Переносит запись на новое время (саму себя при проверке не учитываем). Снова ждёт подтверждения."""
+        with self._conn() as c:
+            c.execute("BEGIN IMMEDIATE")
+            try:
+                if self._clash(c, start, end, exclude_id=booking_id):
+                    c.execute("ROLLBACK")
+                    return False
+                c.execute(
+                    "UPDATE bookings SET start_ts=?, end_ts=?, status='pending', reminded=0 WHERE id=?",
+                    (_ts(start), _ts(end), booking_id),
+                )
+                c.execute("COMMIT")
+                return True
             except Exception:
                 c.execute("ROLLBACK")
                 raise
@@ -137,3 +174,42 @@ class Database:
     def mark_reminded(self, booking_id: int) -> None:
         with self._conn() as c:
             c.execute("UPDATE bookings SET reminded=1 WHERE id=?", (booking_id,))
+
+    def due_reviews(self, now: datetime, hours_after: int) -> list[Booking]:
+        """Подтверждённые визиты, закончившиеся hours_after часов назад (но не раньше суток), без запроса оценки."""
+        edge = _ts(now) - hours_after * 3600
+        with self._conn() as c:
+            rows = c.execute(
+                "SELECT * FROM bookings WHERE status='confirmed' AND review_asked=0 AND end_ts <= ? AND end_ts > ?",
+                (edge, edge - 24 * 3600),
+            ).fetchall()
+        return [self._row(r) for r in rows]
+
+    def mark_review_asked(self, booking_id: int) -> None:
+        with self._conn() as c:
+            c.execute("UPDATE bookings SET review_asked=1 WHERE id=?", (booking_id,))
+
+    def set_rating(self, booking_id: int, rating: int) -> None:
+        with self._conn() as c:
+            c.execute("UPDATE bookings SET rating=? WHERE id=?", (rating, booking_id))
+
+    def all_between(self, start: datetime, end: datetime) -> list[Booking]:
+        """Все записи периода, включая отменённые (для статистики)."""
+        with self._conn() as c:
+            rows = c.execute(
+                "SELECT * FROM bookings WHERE start_ts >= ? AND start_ts < ? ORDER BY start_ts", (_ts(start), _ts(end))
+            ).fetchall()
+        return [self._row(r) for r in rows]
+
+    def get_client(self, chat_id: int) -> tuple[str, str] | None:
+        with self._conn() as c:
+            row = c.execute("SELECT name, phone FROM clients WHERE chat_id=?", (chat_id,)).fetchone()
+        return (row["name"], row["phone"]) if row else None
+
+    def save_client(self, chat_id: int, name: str, phone: str) -> None:
+        with self._conn() as c:
+            c.execute(
+                "INSERT INTO clients (chat_id, name, phone) VALUES (?,?,?) "
+                "ON CONFLICT(chat_id) DO UPDATE SET name=excluded.name, phone=excluded.phone",
+                (chat_id, name, phone),
+            )
