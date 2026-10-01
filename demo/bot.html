@@ -67,7 +67,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 <div class="wrap">
   <header>
     <h1>Бот записи «Шиномонтаж на Ветеранов»</h1>
-    <p>Интерактивная демо-копия Telegram-бота. Слева вы клиент: запишитесь на услугу. Справа владелец: подтвердите или отмените запись, посмотрите /today и /week. Логика слотов та же, что в коде бота: часы работы, длительность услуги, без двойных записей.</p>
+    <p>Интерактивная демо-копия Telegram-бота. Слева вы клиент: запишитесь, перенесите запись, оцените визит. Справа владелец: подтверждает записи и смотрит /today, /week, /stats. Логика слотов та же, что в коде бота: часы работы, длительность услуги, без двойных записей.</p>
   </header>
 
   <div class="phones">
@@ -86,8 +86,9 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 
   <div class="tools">
     <button id="other">👥 Другой клиент занимает время</button>
+    <button id="visit">⏩ Визит состоялся (запрос оценки)</button>
     <button id="reset">↺ Начать заново</button>
-    <span>Время демо идёт по Москве. Напоминание за 2 часа в реальном боте приходит автоматически.</span>
+    <span>Время по Москве. В настоящем боте напоминание за 2 часа и запрос оценки приходят автоматически.</span>
   </div>
   <p class="note">Все данные выдуманы и живут только на этой странице. В настоящем боте записи хранятся в SQLite, а услуги и часы работы задаются в config.yaml.</p>
 </div>
@@ -139,19 +140,19 @@ function freeSlots(day, dur) {
 const bookableDays = id => Array.from({ length: CFG.daysAhead }, (_, i) => addDays(moscowNow().day, i)).filter(d => freeSlots(d, svc(id).dur).length);
 
 // ===== db.py =====
-let bookings = [], nextId = 1;
+let bookings = [], nextId = 1, knownClient = null;
 function createBooking(b) { // повторная проверка перед вставкой — защита от двойной записи
   if (bookings.some(x => x.day === b.day && x.status !== "cancelled" && overlaps(b.start, b.end, x.start, x.end))) return null;
   const rec = { ...b, id: nextId++, status: "pending" }; bookings.push(rec); return rec;
 }
 function seed() { // пара чужих записей, чтобы было видно занятые слоты
-  bookings = []; nextId = 1;
+  bookings = []; nextId = 1; knownClient = null;
   const d1 = addDays(moscowNow().day, 1), d2 = addDays(moscowNow().day, 2);
   [[d1, "r19", "11:00", "Сергей", "+7 921 555-12-34", "confirmed"], [d1, "r16", "14:00", "Ольга", "+7 911 222-33-44", "confirmed"], [d2, "bal", "10:00", "Дмитрий", "+7 905 777-00-11", "pending"]]
     .forEach(([day, id, t, name, phone, st]) => { const r = createBooking({ day, svc: id, start: toMin(t), end: toMin(t) + svc(id).dur, name, phone, own: false }); if (r) r.status = st; });
 }
 
-const card = (b, client) => [`🔧 ${svc(b.svc).name} — ${svc(b.svc).price} ₽`, `🕒 ${fmtDay(b.day)} ${hhmm(b.start)} (${svc(b.svc).dur} мин)`, ...(client ? [`👤 ${b.name}`, `📞 ${b.phone}`] : []), `Статус: ${STATUS[b.status]}`].join("\n");
+const card = (b, client) => [`🔧 ${svc(b.svc).name} — ${svc(b.svc).price} ₽`, `🕒 ${fmtDay(b.day)} ${hhmm(b.start)} (${svc(b.svc).dur} мин)`, ...(b.comment ? [`🚗 ${b.comment}`] : []), ...(client ? [`👤 ${b.name}`, `📞 ${b.phone}`] : []), `Статус: ${STATUS[b.status]}`].join("\n");
 
 // ===== мини-движок чата =====
 function Chat(prefix) {
@@ -183,14 +184,17 @@ let st = {}, stage = "idle";
 const ME = { name: "Вы" };
 const mainMenu = () => C.reply([[["📅 Записаться", () => userText("📅 Записаться")]], [["📋 Мои записи", () => userText("📋 Мои записи")], ["📍 Контакты", () => userText("📍 Контакты")]]]);
 
-function userText(text) { C.say(text, null, true); handle(text); }
+function userText(text) { // как в Telegram: после ответа текстом старые кнопки шага больше не нужны
+  document.querySelectorAll("#c-feed .ikb:not(.dead)").forEach(k => k.classList.add("dead"));
+  C.say(text, null, true); handle(text);
+}
 function handle(text) {
   if (text === "/start") { stage = "idle"; mainMenu(); return C.say(`👋 Добро пожаловать в «${CFG.name}»!\nЗапишитесь онлайн за минуту.`); }
   if (text === "📍 Контакты") return C.say(`📍 ${CFG.address}\n📞 ${CFG.phone}\n\n🕒 Пн–Пт 09:00–20:00\nСб–Вс 10:00–18:00`);
   if (text === "📋 Мои записи") {
     const mine = bookings.filter(b => b.own && b.status !== "cancelled");
     if (!mine.length) return C.say("У вас нет будущих записей.");
-    return mine.forEach(b => C.say(card(b), [[["❌ Отменить запись", a => clientCancel(b, a)]]]));
+    return mine.forEach(b => C.say(card(b), [[["🔁 Перенести", a => { a.kill(); moveStart(b); }], ["❌ Отменить", a => clientCancel(b, a)]]]));
   }
   if (text === "📅 Записаться") { stage = "service"; st = {}; return askService(); }
   if (stage === "name") {
@@ -204,7 +208,8 @@ function handle(text) {
     if (digits.length < 10 || digits.length > 15) return C.say("Не похоже на номер телефона. Попробуйте ещё раз или нажмите кнопку.");
     return gotPhone(text.trim());
   }
-  C.say("Выберите действие в меню ниже 👇");
+  if (stage === "comment") { st.comment = text.trim().slice(0, 120); return summary(); }
+  C.say("Не совсем понял 🙂 Воспользуйтесь кнопками меню ниже.");
 }
 function askService() {
   C.say("Выберите услугу:", CFG.services.map(s => [[`${s.name} — ${s.price} ₽`, a => { a.kill(); pickService(s.id); }]]));
@@ -232,18 +237,31 @@ function pickDay(d) {
 }
 function pickTime(s) {
   if (stage !== "time") return;
-  st.start = s; C.say(hhmm(s), null, true); stage = "name"; C.say("Как вас зовут?");
+  st.start = s; C.say(hhmm(s), null, true);
+  if (knownClient) { // повторный клиент: имя и телефон уже известны
+    stage = "known";
+    return C.say(`Записать вас как ${knownClient.name}, ${knownClient.phone}?`, [[["✅ Да, это я", a => { a.kill(); if (stage !== "known") return; st.name = knownClient.name; st.phone = knownClient.phone; askComment(); }], ["✏️ Другие данные", a => { a.kill(); stage = "name"; C.say("Как вас зовут?"); }]]]);
+  }
+  stage = "name"; C.say("Как вас зовут?");
+}
+function askComment() {
+  stage = "comment";
+  C.say("Напишите марку авто и размер шин (например: Kia Rio, 185/65 R15). Это поможет подготовиться.", [[["Пропустить ➡️", a => { a.kill(); if (stage !== "comment") return; st.comment = ""; summary(); }]]]);
 }
 function gotPhone(p) {
-  st.phone = p; stage = "confirm"; mainMenu();
+  st.phone = p; mainMenu(); askComment();
+}
+function summary() {
+  stage = "confirm";
   const s = svc(st.svc);
-  C.say(`Проверьте запись:\n\n🔧 ${s.name} — ${s.price} ₽\n🕒 ${fmtDay(st.day)} ${hhmm(st.start)} (${s.dur} мин)\n👤 ${st.name}\n📞 ${st.phone}\n📍 ${CFG.address}`,
+  C.say(`Проверьте запись:\n\n🔧 ${s.name} — ${s.price} ₽\n🕒 ${fmtDay(st.day)} ${hhmm(st.start)} (${s.dur} мин)\n${st.comment ? `🚗 ${st.comment}\n` : ""}👤 ${st.name}\n📞 ${st.phone}\n📍 ${CFG.address}`,
     [[["✅ Записаться", a => { a.kill(); confirm(); }], ["✖️ Отмена", a => { a.kill(); stage = "idle"; C.say("Запись отменена. Начать заново: «📅 Записаться»"); }]]]);
 }
 function confirm() {
   if (stage !== "confirm") return;
-  const b = createBooking({ day: st.day, svc: st.svc, start: st.start, end: st.start + svc(st.svc).dur, name: st.name, phone: st.phone, own: true });
+  const b = createBooking({ day: st.day, svc: st.svc, start: st.start, end: st.start + svc(st.svc).dur, name: st.name, phone: st.phone, comment: st.comment, own: true });
   if (!b) { stage = "day"; return askDay(bookableDays(st.svc), "😔 Это время только что заняли. Выберите другое:"); }
+  knownClient = { name: st.name, phone: st.phone };
   stage = "idle";
   C.say("✅ Заявка отправлена! Мы подтвердим запись в ближайшее время.\n\n" + card(b));
   notifyOwner(b);
@@ -254,9 +272,54 @@ function clientCancel(b, a) {
   O.say("❗ Клиент отменил запись:\n\n" + card(b, true));
 }
 
+// ===== перенос записи =====
+function moveStart(b) {
+  if (b.status === "cancelled") return;
+  const others = bookings.filter(x => x !== b);
+  const free = d => { const keep = bookings; bookings = others; const r = freeSlots(d, svc(b.svc).dur); bookings = keep; return r; }; // сама запись не мешает себе
+  const days = Array.from({ length: CFG.daysAhead }, (_, i) => addDays(moscowNow().day, i)).filter(d => free(d).length);
+  stage = "move";
+  C.say("На какую дату перенести?", [...days.map(d => [[fmtDay(d), a => { a.kill(); if (stage !== "move") return; C.say(fmtDay(d), null, true); moveDay(b, d, free(d)); }]]), [["⬅️ Не переносить", a => { a.kill(); stage = "idle"; C.say("Перенос отменён. Запись осталась без изменений."); }]]]);
+}
+function moveDay(b, d, slots) {
+  const btns = slots.map(s => [hhmm(s), a => { a.kill(); if (stage !== "move") return; C.say(hhmm(s), null, true); moveDone(b, d, s); }]);
+  const rows = []; for (let i = 0; i < btns.length; i += 4) rows.push(btns.slice(i, i + 4));
+  C.say(`Новое время на ${fmtDay(d)}:`, rows);
+}
+function moveDone(b, d, s) {
+  const end = s + svc(b.svc).dur;
+  if (bookings.some(x => x !== b && x.day === d && x.status !== "cancelled" && overlaps(s, end, x.start, x.end))) return C.say("😔 Это время только что заняли. Выберите другое.");
+  const old = card(b).split("\n").slice(0, 2).join("\n");
+  Object.assign(b, { day: d, start: s, end, status: "pending", rated: false });
+  stage = "idle";
+  C.say("🔁 Запись перенесена и ждёт подтверждения.\n\n" + card(b));
+  notifyOwner(b, `🔁 Перенос записи\nБыло:\n${old}\n\nСтало:`);
+}
+
+// ===== оценка после визита =====
+function askRating() {
+  const b = bookings.find(x => x.own && x.status === "confirmed" && !x.rated);
+  if (!b) return C.say("(Демо) Сначала запишитесь и подтвердите запись справа, затем нажмите «Визит состоялся».");
+  b.rated = true;
+  C.say("Как прошёл визит? Оцените, пожалуйста, нашу работу:\n\n" + card(b).split("\n").slice(0, 2).join("\n"),
+    [[1, 2, 3, 4, 5].map(i => [`${i} ⭐`, a => { a.kill(); b.rating = i;
+      C.say(`Ваша оценка: ${"⭐".repeat(i)}\n\n` + (i >= 4 ? "Спасибо за высокую оценку! Будем рады видеть вас снова 🙌" : `Спасибо за честность. Нам жаль, что что-то пошло не так. Управляющий свяжется с вами, или позвоните: ${CFG.phone}`));
+      O.say(`${"⭐".repeat(i)} Оценка визита\n\n` + card(b, true).split("\nСтатус")[0]); }])]);
+}
+
 // ===== сторона владельца (handlers/owner.py) =====
-function notifyOwner(b) {
-  O.say("🆕 Новая запись!\n\n" + card(b, true), [[["✅ Подтвердить", a => decide(b, "ok", a)], ["❌ Отменить", a => decide(b, "no", a)]]]);
+function stats() {
+  O.say("/stats", null, true);
+  const act = bookings.filter(b => b.status !== "cancelled");
+  const conf = bookings.filter(b => b.status === "confirmed");
+  const rated = bookings.filter(b => b.rating);
+  const pop = {}; act.forEach(b => pop[b.svc] = (pop[b.svc] || 0) + 1);
+  const top = Object.keys(pop).sort((a, b) => pop[b] - pop[a])[0];
+  O.say(`📊 Статистика (демо)\n\nЗаписей на неделю: ${act.length}\nПодтверждено: ${conf.length} · ждут: ${act.length - conf.length}\nОтмен: ${bookings.length - act.length}\nСумма по прайсу: ${act.reduce((s, b) => s + svc(b.svc).price, 0).toLocaleString("ru-RU")} ₽\n` +
+    (rated.length ? `Средняя оценка: ${(rated.reduce((s, b) => s + b.rating, 0) / rated.length).toFixed(1)} ⭐` : "Оценок пока нет") + (top ? `\nПопулярная услуга: ${svc(top).name}` : ""));
+}
+function notifyOwner(b, title = "🆕 Новая запись!") {
+  O.say(title + "\n\n" + card(b, true), [[["✅ Подтвердить", a => decide(b, "ok", a)], ["❌ Отменить", a => decide(b, "no", a)]]]);
 }
 function decide(b, action, a) {
   a.kill();
@@ -287,11 +350,12 @@ document.getElementById("other").onclick = () => { // имитация: кто-�
   if (b) notifyOwner(b); else O.say("Это время уже занято.");
 };
 document.getElementById("reset").onclick = start;
+document.getElementById("visit").onclick = askRating;
 
 function start() {
   C.clear(); O.clear(); seed(); st = {}; stage = "idle";
-  O.reply([[["/today", () => schedule(1, "Записи на сегодня")], ["/week", () => schedule(7, "Записи на неделю")]]]);
-  O.say("Здесь появляются новые записи с кнопками «Подтвердить» / «Отменить». Команды /today и /week внизу.");
+  O.reply([[["/today", () => schedule(1, "Записи на сегодня")], ["/week", () => schedule(7, "Записи на неделю")], ["/stats", stats]]]);
+  O.say("Здесь появляются новые записи и переносы с кнопками «Подтвердить» / «Отменить». Команды /today, /week и /stats внизу.");
   C.say("/start", null, true); handle("/start");
 }
 start();
