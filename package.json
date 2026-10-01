@@ -1,0 +1,11 @@
+{
+  "name": "tire-site",
+  "private": true,
+  "description": "Сайт шиномонтажа: тесты в браузере (сам сайт работает без сборки и зависимостей)",
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.1"
+  }
+}
