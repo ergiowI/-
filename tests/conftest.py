@@ -26,10 +26,16 @@ class FakeBot(Bot):
     def __init__(self):
         super().__init__("123:TEST")
         self.sent: list[dict] = []
+        self.blocked: set[int] = set()  # чаты, которые «заблокировали бота»
 
     async def __call__(self, method, request_timeout=None):
         name = type(method).__name__
+        if getattr(method, "chat_id", None) in self.blocked:
+            from aiogram.exceptions import TelegramForbiddenError
+            raise TelegramForbiddenError(method=method, message="Forbidden: bot was blocked by the user")
+        doc = getattr(method, "document", None)
         self.sent.append({
+            "document": (doc.filename, doc.data) if doc is not None and hasattr(doc, "data") else None,
             "method": name,
             "chat_id": getattr(method, "chat_id", None),
             "text": getattr(method, "text", None),
@@ -78,6 +84,9 @@ class Harness:
 
     def last(self, chat: int) -> str:
         return self.texts(chat)[-1]
+
+    def documents(self, chat: int) -> list[tuple[str, bytes]]:
+        return [s["document"] for s in self.api.sent if s["chat_id"] == chat and s["document"]]
 
     def last_alert(self) -> str | None:
         alerts = [s["alert"] for s in self.api.sent if s["method"] == "AnswerCallbackQuery"]

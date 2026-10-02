@@ -26,7 +26,8 @@ CREATE INDEX IF NOT EXISTS idx_bookings_start ON bookings(start_ts);
 CREATE TABLE IF NOT EXISTS clients (           -- запоминаем имя и телефон для повторных записей
     chat_id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
-    phone TEXT NOT NULL
+    phone TEXT NOT NULL,
+    subscribed INTEGER NOT NULL DEFAULT 1        -- получать рассылки владельца
 );
 """
 
@@ -69,6 +70,8 @@ class Database:
             for name, ddl in [("comment", "TEXT NOT NULL DEFAULT ''"), ("review_asked", "INTEGER NOT NULL DEFAULT 0"), ("rating", "INTEGER")]:
                 if name not in cols:
                     c.execute(f"ALTER TABLE bookings ADD COLUMN {name} {ddl}")
+            if "subscribed" not in {r["name"] for r in c.execute("PRAGMA table_info(clients)")}:
+                c.execute("ALTER TABLE clients ADD COLUMN subscribed INTEGER NOT NULL DEFAULT 1")
 
     @contextmanager
     def _conn(self):
@@ -213,3 +216,15 @@ class Database:
                 "ON CONFLICT(chat_id) DO UPDATE SET name=excluded.name, phone=excluded.phone",
                 (chat_id, name, phone),
             )
+
+    def set_subscribed(self, chat_id: int, value: bool) -> None:
+        with self._conn() as c:
+            c.execute("UPDATE clients SET subscribed=? WHERE chat_id=?", (int(value), chat_id))
+
+    def subscribers(self) -> list[int]:
+        with self._conn() as c:
+            return [r["chat_id"] for r in c.execute("SELECT chat_id FROM clients WHERE subscribed=1 ORDER BY chat_id")]
+
+    def count_active(self, chat_id: int, now: datetime) -> int:
+        """Сколько будущих незакрытых записей у клиента (для лимита)."""
+        return len(self.user_upcoming(chat_id, now))

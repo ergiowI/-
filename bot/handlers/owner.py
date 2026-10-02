@@ -1,9 +1,14 @@
-"""Сторона владельца: уведомления, подтверждение/отмена, /today, /week, /stats, /help."""
+"""Сторона владельца: уведомления, подтверждение/отмена, /today, /week, /stats, /broadcast, /export, /help."""
+import asyncio
+import csv
+import io
 from datetime import datetime, time, timedelta
 
 from aiogram import Bot, Router
-from aiogram.filters import Command, Filter
-from aiogram.types import CallbackQuery, Message
+from aiogram.exceptions import TelegramAPIError
+from aiogram.filters import Command, CommandObject, Filter
+from aiogram.fsm.context import FSMContext
+from aiogram.types import BufferedInputFile, CallbackQuery, Message
 
 from .. import keyboards as kb
 from ..config import Settings
@@ -124,6 +129,71 @@ async def owner_help(message: Message):
         "Команды владельца:\n"
         "/today — записи на сегодня\n"
         "/week — записи на 7 дней\n"
-        "/stats — статистика и загрузка\n\n"
+        "/stats — статистика и загрузка\n"
+        "/broadcast текст — рассылка всем клиентам (сначала покажу предпросмотр)\n"
+        "/export — все записи в CSV для Excel / Google Таблиц\n\n"
         "Новые записи и переносы приходят сюда с кнопками «Подтвердить» / «Отменить»."
     )
+
+
+# ===== Рассылка =====
+@router.message(Command("broadcast"))
+async def broadcast_preview(message: Message, command: CommandObject, state: FSMContext, db: Database, settings: Settings):
+    text = (command.args or "").strip()
+    if not text:
+        return await message.answer(
+            "Напишите текст после команды, например:\n"
+            "/broadcast Скоро снег! Есть свободные окна на переобувку во вторник и среду."
+        )
+    recipients = [c for c in db.subscribers() if c != settings.owner_chat_id]
+    if not recipients:
+        return await message.answer("Пока некому отправлять: клиенты появятся после первых записей.")
+    await state.update_data(broadcast=text)
+    await message.answer(f"Предпросмотр рассылки:\n\n{text}", reply_markup=kb.broadcast_kb(len(recipients)))
+
+
+@router.callback_query(lambda c: c.data in ("bc:send", "bc:cancel"))
+async def broadcast_send(cb: CallbackQuery, state: FSMContext, db: Database, settings: Settings):
+    text = (await state.get_data()).get("broadcast")
+    await state.update_data(broadcast=None)
+    if cb.data == "bc:cancel" or not text:
+        await cb.message.edit_text("Рассылка отменена." if text else "Рассылка уже отправлена или устарела.")
+        return await cb.answer()
+    await cb.message.edit_text(f"Отправляю…\n\n{text}")
+    await cb.answer()
+    sent = failed = 0
+    for chat_id in db.subscribers():
+        if chat_id == settings.owner_chat_id:
+            continue
+        try:
+            await cb.bot.send_message(chat_id, text, reply_markup=kb.unsubscribe_kb())
+            sent += 1
+        except TelegramAPIError:  # клиент заблокировал бота или удалил аккаунт
+            failed += 1
+        await asyncio.sleep(0.05)  # не больше ~20 сообщений в секунду — лимит Telegram
+    report = f"✅ Рассылка отправлена: {sent}"
+    if failed:
+        report += f"\nНе доставлено: {failed} (заблокировали бота)"
+    await cb.message.edit_text(f"{report}\n\n{text}")
+
+
+# ===== Выгрузка =====
+@router.message(Command("export"))
+async def export_csv(message: Message, settings: Settings, db: Database):
+    """Все записи за последние 90 дней и будущие — CSV (разделитель «;», открывается в Excel и Google Таблицах)."""
+    now = datetime.now(settings.tz)
+    items = db.all_between(now - timedelta(days=90), now + timedelta(days=365))
+    if not items:
+        return await message.answer("Записей пока нет — выгружать нечего.")
+    buf = io.StringIO()
+    w = csv.writer(buf, delimiter=";")
+    w.writerow(["№", "Дата", "Время", "Услуга", "Цена, ₽", "Клиент", "Телефон", "Комментарий", "Статус", "Оценка"])
+    status = {"pending": "ожидает", "confirmed": "подтверждена", "cancelled": "отменена"}
+    for b in items:
+        start = b.start.astimezone(settings.tz)
+        svc = settings.services.get(b.service_id)
+        w.writerow([b.id, start.strftime("%d.%m.%Y"), start.strftime("%H:%M"), svc.name if svc else b.service_id,
+                    svc.price if svc else "", b.name, b.phone, b.comment, status.get(b.status, b.status), b.rating or ""])
+    data = buf.getvalue().encode("utf-8-sig")  # BOM — чтобы Excel правильно показал русские буквы
+    name = f"zapisi_{now:%Y-%m-%d}.csv"
+    await message.answer_document(BufferedInputFile(data, filename=name), caption=f"📄 Записей: {len(items)} (90 дней назад и все будущие)")

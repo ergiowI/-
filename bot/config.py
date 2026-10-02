@@ -32,6 +32,7 @@ class Settings:
     reminder_hours_before: int
     review_hours_after: int
     booking_days_ahead: int
+    max_active_bookings: int
     services: dict[str, Service]
     comment_prompt: str
     comment_icon: str
@@ -77,6 +78,7 @@ def load_settings(config_path: Path | None = None) -> Settings:
         reminder_hours_before=int(raw.get("reminder_hours_before", 2)),
         review_hours_after=int(raw.get("review_hours_after", 1)),
         booking_days_ahead=int(raw.get("booking_days_ahead", 7)),
+        max_active_bookings=int(raw.get("max_active_bookings", 2)),
         services=services,
         comment_prompt=texts.get("comment_prompt", "Добавьте комментарий к записи или нажмите «Пропустить»."),
         comment_icon=texts.get("comment_icon", "📝"),

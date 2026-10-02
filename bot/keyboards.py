@@ -68,3 +68,13 @@ def owner_kb(booking_id: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[[Btn(text="✅ Подтвердить", callback_data=f"own:ok:{booking_id}"), Btn(text="❌ Отменить", callback_data=f"own:no:{booking_id}")]]
     )
+
+
+def broadcast_kb(count: int) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[[Btn(text=f"📤 Отправить {count} клиентам", callback_data="bc:send"), Btn(text="✖️ Отмена", callback_data="bc:cancel")]]
+    )
+
+
+def unsubscribe_kb() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[[Btn(text="🔕 Не присылать рассылки", callback_data="unsub")]])

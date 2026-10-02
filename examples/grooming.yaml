@@ -20,6 +20,7 @@ slot_step_minutes: 30
 reminder_hours_before: 3
 review_hours_after: 2
 booking_days_ahead: 10
+max_active_bookings: 3
 
 services:
   - id: hygiene

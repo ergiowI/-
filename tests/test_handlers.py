@@ -251,3 +251,87 @@ def test_grooming_config_full_flow(grooming_bot):
     booking = b.db.get(1)
     assert booking.service_id == "full_small" and (booking.end - booking.start) == dt.timedelta(minutes=120)
     assert "2800 ₽" in b.last(OWNER)
+
+
+# ---------- рассылка, выгрузка, лимит записей ----------
+
+def test_broadcast_preview_then_send_with_unsubscribe(bot):
+    bot.book(CLIENT, hhmm="1000")
+    bot.book(OTHER, hhmm="1200", name="Пётр")
+    bot.send(OWNER, "/broadcast Скоро снег! Есть окна во вторник.")
+    assert "Предпросмотр" in bot.last(OWNER)
+    assert bot.buttons(OWNER) == ["bc:send", "bc:cancel"]
+    assert "Скоро снег" not in bot.last(CLIENT)  # до подтверждения ничего не ушло
+    bot.press(OWNER, "bc:send")
+    assert bot.last(CLIENT) == "Скоро снег! Есть окна во вторник."
+    assert bot.buttons(CLIENT) == ["unsub"]
+    assert "Рассылка отправлена: 2" in bot.last(OWNER)
+    # повторное нажатие не шлёт второй раз
+    bot.press(OWNER, "bc:send")
+    assert sum("Скоро снег" in t for t in bot.texts(CLIENT)) == 1
+
+
+def test_broadcast_cancel_and_empty(bot):
+    bot.send(OWNER, "/broadcast Привет")
+    assert "некому отправлять" in bot.last(OWNER)
+    bot.book(CLIENT)
+    bot.send(OWNER, "/broadcast")
+    assert "Напишите текст после команды" in bot.last(OWNER)
+    bot.send(OWNER, "/broadcast Акция")
+    bot.press(OWNER, "bc:cancel")
+    assert "Рассылка отменена" in bot.last(OWNER)
+    assert "Акция" not in bot.texts(CLIENT)
+
+
+def test_unsubscribed_and_blocked_clients(bot):
+    bot.book(CLIENT, hhmm="1000")
+    bot.book(OTHER, hhmm="1200", name="Пётр")
+    bot.book(7, hhmm="1500", name="Ира")
+    bot.press(CLIENT, "unsub")
+    bot.api.blocked.add(7)
+    bot.send(OWNER, "/broadcast Новость")
+    assert "📤 Отправить 2 клиентам" in [b.text for row in bot.api.sent[-1]["markup"].inline_keyboard for b in row]
+    bot.press(OWNER, "bc:send")
+    assert "Новость" not in bot.texts(CLIENT)  # отписался
+    assert bot.last(OTHER) == "Новость"
+    assert "Рассылка отправлена: 1" in bot.last(OWNER) and "Не доставлено: 1" in bot.last(OWNER)
+
+
+def test_client_cannot_broadcast_or_export(bot):
+    bot.book(CLIENT)
+    bot.send(CLIENT, "/broadcast спам")
+    bot.send(CLIENT, "/export")
+    assert "спам" not in bot.texts(OTHER)
+    assert bot.documents(CLIENT) == []
+
+
+def test_export_csv(bot):
+    bot.book(CLIENT, hhmm="1000", comment="Kia Rio; R15")  # «;» внутри поля не ломает CSV
+    bot.press(OWNER, "own:ok:1")
+    bot.book(OTHER, hhmm="1200", name="Пётр")
+    bot.press(OWNER, "own:no:2")
+    bot.send(OWNER, "/export")
+    name, data = bot.documents(OWNER)[-1]
+    assert name.startswith("zapisi_") and name.endswith(".csv")
+    assert data.startswith(b"\xef\xbb\xbf")  # BOM для Excel
+    import csv, io
+    rows = list(csv.reader(io.StringIO(data.decode("utf-8-sig")), delimiter=";"))
+    assert rows[0][:4] == ["№", "Дата", "Время", "Услуга"]
+    assert rows[1][3] == "Переобувка R13–R16" and rows[1][4] == "2400" and rows[1][7] == "Kia Rio; R15" and rows[1][8] == "подтверждена"
+    assert rows[2][5] == "Пётр" and rows[2][8] == "отменена"
+    assert len(rows) == 3
+
+
+def test_export_empty(bot):
+    bot.send(OWNER, "/export")
+    assert "выгружать нечего" in bot.last(OWNER)
+
+
+def test_active_bookings_limit(bot):
+    bot.book(CLIENT, hhmm="1000")
+    bot.book(CLIENT, hhmm="1200")
+    bot.send(CLIENT, "📅 Записаться")
+    assert "это максимум" in bot.last(CLIENT)
+    bot.press(CLIENT, "cancel:1")
+    bot.send(CLIENT, "📅 Записаться")
+    assert bot.last(CLIENT) == "Выберите услугу:"

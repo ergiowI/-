@@ -23,6 +23,8 @@ reminder_hours_before: 2
 # Через сколько часов после визита попросить оценку
 review_hours_after: 1
 booking_days_ahead: 7
+# Сколько будущих записей может быть у одного клиента одновременно
+max_active_bookings: 2
 
 services:
   - id: tyres_r13_16

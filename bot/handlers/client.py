@@ -71,8 +71,13 @@ async def contacts(message: Message, settings: Settings):
 
 
 @router.message(F.text == "📅 Записаться")
-async def begin(message: Message, state: FSMContext, settings: Settings):
+async def begin(message: Message, state: FSMContext, settings: Settings, db: Database):
     await state.clear()
+    if db.count_active(message.chat.id, datetime.now(settings.tz)) >= settings.max_active_bookings:
+        return await message.answer(
+            f"У вас уже {settings.max_active_bookings} активные записи — это максимум. "
+            "Перенесите или отмените одну из них в «📋 Мои записи», чтобы записаться снова."
+        )
     await state.set_state(Booking.service)
     await message.answer("Выберите услугу:", reply_markup=kb.services_kb(settings))
 
@@ -351,6 +356,14 @@ async def rate(cb: CallbackQuery, settings: Settings, db: Database):
     await cb.message.edit_text(f"Ваша оценка: {'⭐' * rating}\n\n{reply}")
     await cb.bot.send_message(settings.owner_chat_id, f"{'⭐' * rating} Оценка визита\n\n" + booking_card(b, settings, with_client=True, with_status=False))
     await cb.answer()
+
+
+# ===== Рассылки: отписка =====
+@router.callback_query(F.data == "unsub")
+async def unsubscribe(cb: CallbackQuery, db: Database):
+    db.set_subscribed(cb.from_user.id, False)
+    await cb.message.edit_reply_markup(reply_markup=None)
+    await cb.answer("Вы отписались от рассылок. Напоминания о записях будут приходить как обычно.", show_alert=True)
 
 
 @router.message()
