@@ -7,7 +7,7 @@
 |---|---|
 | `Beverly-Hills.html` | `beverly-site/index.html` (сайт, открывается и в предпросмотре телефона) |
 | `Strizhka-sobak-i-koshek.html` | `grooming-site/index.html` (сайт, открывается и в предпросмотре телефона) |
-| `Garmoniya-yoga.html` | `yoga-bot/demo.html` |
+| `Garmoniya-yoga.html` | `yoga-site/index.html` (сайт, открывается и в предпросмотре телефона; демо бота — `yoga-bot/demo.html`) |
 | `Avtoboty-Shinomontazh-24.html` | `avtoboty-bot/demo.html` |
 | `Nikola-shinomontazh-evakuaciya.html` | `nikola-bot/demo.html` |
 | `Shinomontazh-Tallinskoe-25A.html` | `shinomontazh-bot/demo.html` |
