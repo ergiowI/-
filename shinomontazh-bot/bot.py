@@ -103,12 +103,21 @@ def busy_slots():
     return ",".join(f"{d}_{t}" for d, t, n in rows if n >= SLOT_CAPACITY)
 
 
-def main_keyboard():
+def my_param(user_id):
+    """Будущие записи клиента для страницы «Мои записи»: 0012~2026-10-03~10:00~full~R16~car~2400,..."""
+    rows = db.execute("SELECT id, day, time, service, radius, car, price FROM bookings WHERE user_id=? AND status!='cancelled' "
+                      "AND day>=? ORDER BY day, time", (user_id, date.today().isoformat())).fetchall()
+    return ",".join(f"{bid:04d}~{d}~{t}~{s}~{r}~{c}~{p}" for bid, d, t, s, r, c, p in rows)
+
+
+def main_keyboard(user_id=None):
     """Постоянная кнопка снизу: открывает мини-приложение (sendData работает только из такой кнопки)."""
     if not WEBAPP_URL:
         return None
     sep = "&" if "?" in WEBAPP_URL else "?"
     url = f"{WEBAPP_URL}{sep}busy={busy_slots()}"
+    if user_id is not None:
+        url += f"&my={my_param(user_id)}"
     return ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text="🛞 Записаться онлайн", web_app=WebAppInfo(url=url))]],
                                resize_keyboard=True, is_persistent=True)
 
@@ -141,25 +150,28 @@ async def start(m: Message, state: FSMContext):
         await m.answer(caption, parse_mode="HTML", reply_markup=buttons)
     if WEBAPP_URL:
         await m.answer("Нажмите «🛞 Записаться онлайн» внизу: там выбор машины, радиуса и времени с ценой на лету.",
-                       reply_markup=main_keyboard())
+                       reply_markup=main_keyboard(m.from_user.id))
 
 
 # ---------- mini app ----------
 
 @dp.message(F.web_app_data)
-async def from_webapp(m: Message, state: FSMContext):
+async def from_webapp(m: Message, state: FSMContext, bot: Bot):
     try:
         p = json.loads(m.web_app_data.data)
+        if p.get("action") == "cancel":
+            await cancel_booking(bot, int(p["no"]), m.from_user.id, m)
+            return
         data = {"type": p["type"], "radius": p["radius"], "service": p["service"],
                 "extras": [e for e in p.get("extras", []) if e in EXTRAS], "day": p["day"], "time": p["time"]}
         PRICES[data["type"]][data["radius"]], SERVICES[data["service"]]  # проверка, что значения из прайса
         date.fromisoformat(data["day"])
     except (KeyError, ValueError, TypeError):
-        await m.answer("Не получилось прочитать заявку, попробуйте ещё раз.", reply_markup=main_keyboard())
+        await m.answer("Не получилось прочитать заявку, попробуйте ещё раз.", reply_markup=main_keyboard(m.from_user.id))
         return
     if busy_count(data["day"], data["time"]) >= SLOT_CAPACITY:
         await m.answer("Это время только что заняли 😔 Откройте запись ещё раз и выберите другое.",
-                       reply_markup=main_keyboard())
+                       reply_markup=main_keyboard(m.from_user.id))
         return
     await state.set_data(data)  # цену пересчитываем на сервере, не доверяем присланной
     await ask_phone(m, state)
@@ -258,7 +270,7 @@ async def finish(m: Message, state: FSMContext, bot: Bot):
     data = await state.get_data()
     if busy_count(data["day"], data["time"]) >= SLOT_CAPACITY:
         await state.clear()
-        await m.answer("Это время только что заняли 😔 Выберите другое: /start", reply_markup=main_keyboard())
+        await m.answer("Это время только что заняли 😔 Выберите другое: /start", reply_markup=main_keyboard(m.from_user.id))
         return
     total = calc(data)
     cur = db.execute("INSERT INTO bookings (user_id, day, time, car, radius, service, extras, price, phone, created) "
@@ -268,7 +280,7 @@ async def finish(m: Message, state: FSMContext, bot: Bot):
     db.commit()
     bid = cur.lastrowid
     await state.clear()
-    await m.answer("Готово! 🎉", reply_markup=main_keyboard())
+    await m.answer("Готово! 🎉", reply_markup=main_keyboard(m.from_user.id))
     await m.answer(receipt(bid, data, total), parse_mode="HTML",
                    reply_markup=kb([("📍 Маршрут", f"url:{MAP_URL}"), ("❌ Отменить", f"cancel:{bid}")]))
     extras = "".join(f"\n➕ {EXTRAS[e][0]}" for e in data["extras"])
@@ -298,17 +310,22 @@ async def my_bookings(event):
         await event.answer()
 
 
+async def cancel_booking(bot: Bot, bid: int, user_id: int, m: Message):
+    row = db.execute("SELECT day, time FROM bookings WHERE id=? AND user_id=? AND status!='cancelled'",
+                     (bid, user_id)).fetchone()
+    if not row:
+        return False
+    db.execute("UPDATE bookings SET status='cancelled' WHERE id=?", (bid,))
+    db.commit()
+    await m.answer("Запись отменена. Будем рады видеть вас в другой раз: /start", reply_markup=main_keyboard(user_id))
+    await bot.send_message(ADMIN_CHAT_ID, f"❌ Клиент отменил запись № {bid:04d} ({human_day(row[0])}, {row[1]}), окно свободно.")
+    return True
+
+
 @dp.callback_query(F.data.startswith("cancel:"))
 async def cancel(c: CallbackQuery, bot: Bot):
-    bid = int(c.data.split(":")[1])
-    row = db.execute("SELECT day, time FROM bookings WHERE id=? AND user_id=? AND status!='cancelled'",
-                     (bid, c.from_user.id)).fetchone()
-    if row:
-        db.execute("UPDATE bookings SET status='cancelled' WHERE id=?", (bid,))
-        db.commit()
+    if await cancel_booking(bot, int(c.data.split(":")[1]), c.from_user.id, c.message):
         await c.message.edit_reply_markup(reply_markup=None)
-        await c.message.answer("Запись отменена. Будем рады видеть вас в другой раз: /start")
-        await bot.send_message(ADMIN_CHAT_ID, f"❌ Клиент отменил запись № {bid:04d} ({human_day(row[0])}, {row[1]}), окно свободно.")
     await c.answer()
 
 

@@ -147,6 +147,69 @@ body.tg .go { display: none }
 .feat b { display: block; font-weight: 600 } .feat small { color: var(--muted); font-size: 13px }
 .note { color: var(--muted); font-size: 12px; margin: 10px 0 0 }
 
+/* ---------- pages + tab bar ---------- */
+.view { animation: fade .25s ease both; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+.app { padding-bottom: 170px; }
+.app.notbook { padding-bottom: 90px; }
+.tabs { position: absolute; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: var(--panel); border-top: 1px solid var(--line); padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)); z-index: 2; }
+.tabs button { background: none; border: 0; display: grid; justify-items: center; gap: 3px; padding: 6px 0; font-size: 11px; color: var(--muted); cursor: pointer; position: relative; }
+.tabs button svg { width: 22px; height: 22px; }
+.tabs button[aria-selected="true"] { color: var(--yellow); }
+.tabs .badge { position: absolute; top: 2px; left: calc(50% + 6px); min-width: 16px; height: 16px; border-radius: 8px; background: var(--yellow); color: var(--yellow-ink); font: 700 10px/16px var(--font-mono); padding: 0 4px; }
+.bar { bottom: 62px; }
+body.tg .bar { bottom: 62px; }
+.pagehead { padding: 20px 0 6px; }
+.pagehead h2 { font: 700 20px/1.15 var(--font-display); margin: 0 0 4px; }
+.pagehead p { margin: 0; color: var(--muted); font-size: 13px; }
+.seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; background: var(--panel); border-radius: 12px; padding: 4px; margin: 14px 0 12px; }
+.seg button { background: none; border: 0; border-radius: 9px; padding: 9px 4px; font-size: 13px; cursor: pointer; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--panel-2); color: var(--ink); font-weight: 600; }
+.ptable { width: 100%; border-collapse: collapse; font-size: 14px; }
+.ptable th { text-align: right; font: 500 11px/1.2 var(--font-body); color: var(--muted); text-transform: uppercase; letter-spacing: .05em; padding: 0 6px 8px; }
+.ptable th:first-child { text-align: left }
+.ptable td { padding: 0; border-top: 1px solid var(--line); }
+.ptable td.n { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; padding: 11px 6px; }
+.ptable td.r { font: 700 15px/1 var(--font-mono); padding: 11px 6px; }
+.ptable td.a { width: 40px; text-align: right; }
+.ptable td.a button { background: var(--yellow); color: var(--yellow-ink); border: 0; border-radius: 8px; width: 32px; height: 28px; font-weight: 700; cursor: pointer; }
+.list { display: grid; gap: 1px; background: var(--line); border-radius: 14px; overflow: hidden; margin-top: 10px; }
+.list > div { background: var(--panel); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 12px 14px; align-items: center; }
+.list b { font-weight: 600 } .list small { color: var(--muted); grid-column: 1; font-size: 12px }
+.list .p { grid-row: 1 / span 2; grid-column: 2; font: 700 14px/1 var(--font-mono); }
+.sub { font: 600 13px/1.2 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 22px 0 0; }
+.howto { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; background: var(--panel); border-radius: 14px; padding: 14px; margin-top: 10px; }
+.howto .size { font: 700 24px/1 var(--font-mono); letter-spacing: .02em; }
+.howto .size span { color: var(--yellow); }
+.howto p { margin: 0; color: var(--muted); font-size: 13px; }
+.empty-state { text-align: center; padding: 40px 10px; color: var(--muted); display: grid; gap: 14px; justify-items: center; }
+.empty-state svg { width: 64px; height: 64px; opacity: .5 }
+.mine { display: grid; gap: 14px; margin-top: 14px; }
+.mine .ticket .acts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.mine .ticket .acts a, .mine .ticket .acts button { text-align: center; text-decoration: none; background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 10px; font-size: 13px; color: var(--ink); cursor: pointer; }
+.mine .ticket.cancelled { opacity: .45 }
+.mine .ticket .status { font-size: 12px; color: var(--ok); }
+.contact { display: grid; gap: 10px; margin-top: 14px; }
+.contact .row { background: var(--panel); border-radius: 14px; padding: 14px; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; align-items: center; }
+.contact .row > span { width: 36px; height: 36px; border-radius: 10px; background: var(--panel-2); display: grid; place-items: center; }
+.contact .row b { display: block; font-weight: 600 } .contact .row small { color: var(--muted) }
+.contact .row .copy { user-select: all; font-family: var(--font-mono); }
+.hours { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin-top: 8px; }
+.hours div { text-align: center; background: var(--panel-2); border-radius: 8px; padding: 6px 0; font-size: 11px; color: var(--muted); }
+.hours div.today { background: var(--yellow); color: var(--yellow-ink); font-weight: 700; }
+.cta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.cta a { text-align: center; text-decoration: none; border-radius: 12px; padding: 13px; font-weight: 600; }
+.cta a.y { background: var(--yellow); color: var(--yellow-ink) }
+.cta a.g { background: var(--panel-2); color: var(--ink); border: 1px solid var(--line) }
+details { background: var(--panel); border-radius: 12px; padding: 0 14px; }
+details + details { margin-top: 6px }
+summary { cursor: pointer; padding: 13px 0; font-weight: 500; list-style: none; display: flex; justify-content: space-between; gap: 10px; }
+summary::-webkit-details-marker { display: none }
+summary::after { content: "+"; color: var(--yellow); font: 700 18px/1 var(--font-mono); }
+details[open] summary::after { content: "−"; }
+details p { margin: 0 0 14px; color: var(--muted); font-size: 14px; }
+
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important } }
 </style>
 </head><body>
@@ -155,7 +218,7 @@ body.tg .go { display: none }
   <header class="intro">
     <span class="tag">Демо · Telegram Mini App</span>
     <h1>Запись на шиномонтаж: Таллинское ш., 25А</h1>
-    <p>Так выглядит запись внутри Telegram. Клиент выбирает машину и радиус и сразу видит цену, которая потом не меняется. Попробуйте записаться: справа появится сообщение, которое получит мастер.</p>
+    <p>Так выглядит запись внутри Telegram. Клиент выбирает машину и радиус и сразу видит цену, которая потом не меняется. Попробуйте записаться: справа появится сообщение, которое получит мастер. Внизу меню: запись, цены, мои записи и контакты.</p>
   </header>
 
   <div class="stage">
@@ -163,6 +226,7 @@ body.tg .go { display: none }
       <div class="screen" id="screen">
         <div class="tgbar"><b>Шиномонтаж 25А</b><span>мини-приложение</span></div>
         <main class="app" id="app">
+          <div class="view" id="v-book">
           <section class="hero">
             <svg viewBox="0 0 64 64" aria-hidden="true">
               <circle cx="32" cy="32" r="28" fill="#22262c" stroke="#3a3f47" stroke-width="2"/>
@@ -214,12 +278,63 @@ body.tg .go { display: none }
             <div class="times" id="times"></div>
             <p class="hint">Зачёркнутое время уже занято.</p>
           </section>
+          </div>
+
+          <div class="view" id="v-prices" hidden>
+            <div class="pagehead"><h2>Цены</h2><p>За 4 колеса. Нажмите «→», чтобы записаться с этим радиусом.</p></div>
+            <div class="seg" id="ptype"></div>
+            <table class="ptable"><thead><tr><th>Радиус</th><th>Переобувка</th><th>Колёса</th><th>Баланс.</th><th></th></tr></thead><tbody id="prows"></tbody></table>
+            <h3 class="sub">Другие услуги</h3>
+            <div class="list">
+              <div><b>Ремонт прокола</b><small>жгут или латка, 1 колесо</small><span class="p">от 500 ₽</span></div>
+              <div><b>Хранение шин</b><small>сезон, 4 шины, мойка перед хранением</small><span class="p">от 3 000 ₽</span></div>
+              <div><b>Новые вентили</b><small>4 шт., ставим при переобувке</small><span class="p">400 ₽</span></div>
+              <div><b>Пакеты для шин</b><small>4 шт.</small><span class="p">200 ₽</span></div>
+            </div>
+            <h3 class="sub">Как узнать свой радиус</h3>
+            <div class="howto">
+              <div class="size">205/55 <span>R16</span> 91V</div>
+              <p>Найдите такую надпись на боку шины. Нужна часть с буквой R: это диаметр диска в дюймах. Здесь это R16.</p>
+            </div>
+            <p class="note">Цены примерные, для демонстрации.</p>
+          </div>
+
+          <div class="view" id="v-my" hidden>
+            <div class="pagehead"><h2>Мои записи</h2><p>Отменить или построить маршрут можно отсюда.</p></div>
+            <div class="mine" id="mine"></div>
+          </div>
+
+          <div class="view" id="v-info" hidden>
+            <div class="pagehead"><h2>Контакты</h2><p>Шиномонтаж на Таллинском шоссе</p></div>
+            <div class="contact">
+              <div class="row"><span>📍</span><div><b>Таллинское ш., 25А</b><small>рядом с гипермаркетом «О’кей»</small></div></div>
+              <div class="row"><span>📞</span><div><b class="copy">+7 911 208-16-86</b><small>звонки и WhatsApp</small></div></div>
+              <div class="row"><span>🕘</span><div><b>Ежедневно 9:00–21:00</b><div class="hours" id="hours"></div></div></div>
+              <div class="cta">
+                <a class="y" href="https://yandex.ru/maps/?text=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3%2C%20%D0%A2%D0%B0%D0%BB%D0%BB%D0%B8%D0%BD%D1%81%D0%BA%D0%BE%D0%B5%20%D1%88%D0%BE%D1%81%D1%81%D0%B5%2C%2025%D0%90" target="_blank" rel="noopener">Маршрут</a>
+                <a class="g" href="https://wa.me/79112081686" target="_blank" rel="noopener">WhatsApp</a>
+              </div>
+            </div>
+            <h3 class="sub">Частые вопросы</h3>
+            <div style="margin-top:10px">
+              <details><summary>Сколько длится переобувка?</summary><p>Около 40 минут на легковую машину, у внедорожника чуть дольше. По записи ждать очередь не нужно.</p></details>
+              <details><summary>Цена точно не изменится на месте?</summary><p>Да. Цена считается по радиусу и типу машины и фиксируется в записи. Если мастер заметит, что нужно что-то ещё, например ремонт прокола, он сначала спросит вас.</p></details>
+              <details><summary>Можно приехать без записи?</summary><p>Можно, но в сезон очередь бывает до пары часов. С записью приезжаете ко времени.</p></details>
+              <details><summary>Не знаю свой радиус</summary><p>Он написан на боку шины, например 205/55 R16. Посмотрите подсказку на странице «Цены».</p></details>
+            </div>
+          </div>
         </main>
 
         <div class="bar">
           <div class="sum"><small id="sumlabel">Итого, 4 колеса</small><b id="sum">0 ₽</b></div>
           <button class="go" id="go" type="button" disabled>Выберите время</button>
         </div>
+        <nav class="tabs" role="tablist" id="tabs">
+          <button type="button" role="tab" data-v="book" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/></svg>Запись</button>
+          <button type="button" role="tab" data-v="prices" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Цены</button>
+          <button type="button" role="tab" data-v="my" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Мои записи<span class="badge" id="badge" hidden>0</span></button>
+          <button type="button" role="tab" data-v="info" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Контакты</button>
+        </nav>
         <div class="done" id="done" hidden></div>
       </div>
     </div>
@@ -326,7 +441,7 @@ function render() {
   const label = ready ? `Записаться · ${fmt(total())}` : "Выберите время";
   $("go").disabled = !ready; $("go").textContent = ready ? "Записаться" : "Выберите время";
   $("sumlabel").textContent = ready ? `${dayLabel()} в ${st.time}` : "Итого, цена фиксируется";
-  if (tg) { tg.MainButton.setParams({ text: label, color: "#ffc21a", text_color: "#15130a", is_active: ready, is_visible: true }); }
+  if (tg) { tg.MainButton.setParams({ text: label, color: "#ffc21a", text_color: "#15130a", is_active: ready, is_visible: view === "book" }); }
 }
 
 let shown = 0, raf;
@@ -352,7 +467,10 @@ function submit() {
 }
 
 function showDone(p) {
-  const no = String(140 + Math.floor(Math.random() * 60)).padStart(4, "0");
+  const no = String(nextNo++).padStart(4, "0");
+  mine.push({ no, ...p, status: "new" });
+  busy.add(`${p.day}_${p.time}`);
+  updateBadge();
   const extras = p.extras.map(e => EXTRAS[e].name.toLowerCase()).join(", ");
   $("done").innerHTML = `
     <div class="check"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#121417" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
@@ -366,10 +484,11 @@ function showDone(p) {
       </div>
     </div>
     <p class="hint" style="text-align:center">В настоящем боте дальше: кнопка «Отправить номер», напоминание за 2 часа, отмена в один клик.</p>
-    <button class="again" id="again" type="button">Записать ещё одну машину</button>`;
+    <div class="cta"><button class="again" id="again" type="button">Записать ещё машину</button><button class="again" id="tomine" type="button">Мои записи</button></div>`;
   $("done").hidden = false;
   requestAnimationFrame(() => $("done").querySelector(".ticket").style.setProperty("--cut", $("done").querySelector(".top").offsetHeight + "px"));
   $("again").onclick = () => { $("done").hidden = true; st.time = null; render(); $("app").scrollTop = 0; };
+  $("tomine").onclick = () => { $("done").hidden = true; st.time = null; render(); show("my"); };
 
   const o = $("owner");
   o.querySelector(".empty")?.remove();
@@ -382,6 +501,90 @@ ${TYPES[p.type]}, ${p.radius} · ${SERVICES[p.service].name}${extras ? "\n+ " + 
 <div class="ikb" style="margin-top:6px"><span>✔ Подтвердить</span><span>✖ Отказать</span></div>`;
   o.appendChild(b);
 }
+
+function ownerSay(html) {
+  const o = $("owner");
+  o.querySelector(".empty")?.remove();
+  const b = document.createElement("div");
+  b.className = "bubble"; b.innerHTML = html;
+  o.appendChild(b);
+}
+
+/* ---------- pages ---------- */
+let view = "book";
+function show(v) {
+  view = v;
+  ["book", "prices", "my", "info"].forEach(k => { $("v-" + k).hidden = k !== v; });
+  document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.v === v ? "true" : "false"));
+  document.querySelector(".bar").hidden = v !== "book";
+  $("app").classList.toggle("notbook", v !== "book");
+  $("app").scrollTop = 0;
+  if (v === "prices") renderPrices();
+  if (v === "my") renderMine();
+  if (tg) render();
+  haptic();
+}
+document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => show(b.dataset.v));
+
+let ptype = "car";
+function renderPrices() {
+  $("ptype").replaceChildren(...Object.keys(TYPES).map(t => {
+    const b = document.createElement("button");
+    b.type = "button"; b.textContent = TYPES[t]; b.setAttribute("aria-pressed", ptype === t ? "true" : "false");
+    b.onclick = () => { ptype = t; haptic(); renderPrices(); };
+    return b;
+  }));
+  $("prows").innerHTML = Object.entries(PRICES[ptype]).map(([r, base]) =>
+    `<tr><td class="r">${r}</td>${["full", "wheels", "bal"].map(k => `<td class="n">${round50(base * SERVICES[k].k).toLocaleString("ru-RU")}</td>`).join("")}<td class="a"><button type="button" data-r="${r}" aria-label="Записаться, ${r}">→</button></td></tr>`).join("");
+  $("prows").querySelectorAll("button").forEach(b => b.onclick = () => { st.type = ptype; st.radius = b.dataset.r; show("book"); render(); });
+}
+
+// my bookings: in Telegram the bot passes ?my=0012~2026-10-03~10:00~full~R16~car~2400,...
+const mine = [];
+let nextNo = 140 + Math.floor(Math.random() * 60);
+const qm = new URLSearchParams(location.search).get("my");
+if (qm) qm.split(",").forEach(x => { const [no, day, time, service, radius, type, total] = x.split("~"); if (SERVICES[service] && TYPES[type]) mine.push({ no, day, time, service, radius, type, total: +total, extras: [], status: "new" }); });
+function updateBadge() {
+  const n = mine.filter(m => m.status !== "cancelled").length;
+  $("badge").textContent = n; $("badge").hidden = n === 0;
+}
+function renderMine() {
+  const box = $("mine");
+  if (!mine.length) {
+    box.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><div>Записей пока нет</div><button class="go" type="button" id="emptygo">Записаться</button></div>`;
+    $("emptygo").onclick = () => show("book");
+    return;
+  }
+  box.replaceChildren(...mine.slice().reverse().map(m => {
+    const d = document.createElement("div");
+    d.className = "ticket" + (m.status === "cancelled" ? " cancelled" : "");
+    const when = new Date(m.day + "T12:00").toLocaleDateString("ru-RU", { day: "numeric", month: "long", weekday: "short" });
+    d.innerHTML = `<div class="top"><div class="no">ЗАПИСЬ № ${m.no}</div><div class="when">${when}, ${m.time}</div></div>
+      <div class="bottom"><dl><dt>Машина</dt><dd>${TYPES[m.type]}, ${m.radius}</dd><dt>Услуга</dt><dd>${SERVICES[m.service].name}</dd></dl>
+      <div class="total"><span>К оплате</span><b>${fmt(m.total)}</b></div>
+      ${m.status === "cancelled" ? `<div class="status" style="color:var(--muted)">Запись отменена</div>` :
+        `<div class="acts"><a href="https://yandex.ru/maps/?text=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3%2C%20%D0%A2%D0%B0%D0%BB%D0%BB%D0%B8%D0%BD%D1%81%D0%BA%D0%BE%D0%B5%20%D1%88%D0%BE%D1%81%D1%81%D0%B5%2C%2025%D0%90" target="_blank" rel="noopener">📍 Маршрут</a><button type="button">Отменить</button></div>`}</div>`;
+    const c = d.querySelector(".acts button");
+    if (c) c.onclick = () => cancelBooking(m, c);
+    return d;
+  }));
+  requestAnimationFrame(() => box.querySelectorAll(".ticket").forEach(t => t.style.setProperty("--cut", t.querySelector(".top").offsetHeight + "px")));
+}
+function cancelBooking(m, btnEl) {
+  if (btnEl.dataset.armed !== "1") { btnEl.dataset.armed = "1"; btnEl.textContent = "Точно отменить?"; return; }
+  if (tg) { tg.sendData(JSON.stringify({ action: "cancel", no: m.no })); return; }
+  m.status = "cancelled";
+  busy.delete(`${m.day}_${m.time}`);
+  updateBadge(); renderMine(); render();
+  ownerSay(`❌ Клиент отменил запись № ${m.no} (${m.time}), окно снова свободно.`);
+}
+
+// opening hours strip
+(() => {
+  const names = ["пн", "вт", "ср", "чт", "пт", "сб", "вс"], t = (new Date().getDay() + 6) % 7;
+  $("hours").innerHTML = names.map((n, i) => `<div class="${i === t ? "today" : ""}">${n}</div>`).join("");
+})();
+updateBadge();
 
 $("go").onclick = submit;
 if (tg) tg.MainButton.onClick(submit);
