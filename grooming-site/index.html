@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Стрижка собак и кошек · груминг на Гарькавого</title>
+<meta name="description" content="Груминг на ул. Пограничника Гарькавого, 42к2: стрижка собак и кошек, мытьё, когти, уши. Онлайн-запись и напоминание, когда пора на стрижку.">
+<script>document.documentElement.classList.add("js")</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap">
+<style>
+/* Friendly, tidy look: warm cream, teal, a soft peach; rounded headings. Content is static HTML, JS only adds booking and animation. */
+:root {
+  --cream: #fbf7f0;
+  --paper: #fffdf9;
+  --line: #ece3d6;
+  --ink: #24302e;
+  --muted: #74807d;
+  --teal: #2f8f83;
+  --teal-dark: #23736a;
+  --teal-soft: #dff0ec;
+  --peach: #f0a675;
+  --peach-soft: #fde9db;
+  --font-display: "Comfortaa", "Trebuchet MS", sans-serif;
+  --font-body: "Nunito", "Segoe UI", Roboto, Arial, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box }
+[hidden] { display: none !important }
+html { scroll-behavior: smooth }
+body { margin: 0; background: var(--cream); color: var(--ink); font: 17px/1.6 var(--font-body); }
+a { color: inherit }
+button { font: inherit; color: inherit; cursor: pointer }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px }
+@media (max-width: 600px) { .wrap { padding-inline: 16px } }
+.demo { background: var(--ink); color: #e3ebe9; font-size: 13px; text-align: center; padding: 8px 16px }
+.demo b { color: #fff }
+
+header.nav { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--cream) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line) }
+header.nav .wrap { display: flex; align-items: center; gap: 28px; height: 70px }
+.logo { display: flex; align-items: center; gap: 10px; text-decoration: none }
+.logo .mark { width: 40px; height: 40px; border-radius: 14px; background: var(--teal); display: grid; place-items: center }
+.logo .mark svg { width: 24px; height: 24px; fill: #fff }
+.logo b { display: block; font: 700 17px/1.1 var(--font-display) }
+.logo small { display: block; font-size: 12px; color: var(--muted) }
+nav.links { display: flex; gap: 24px; margin-left: auto; font-size: 15px; font-weight: 600 }
+nav.links a { text-decoration: none; color: var(--muted) }
+nav.links a:hover { color: var(--ink) }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 16px; padding: 14px 24px; font-weight: 800; text-decoration: none;
+  background: var(--teal); color: #fff; transition: transform .15s, background .2s }
+.btn:hover { background: var(--teal-dark) } .btn:active { transform: scale(.98) }
+.btn.light { background: var(--paper); color: var(--ink); border: 1.5px solid var(--line) }
+.btn.light:hover { border-color: var(--teal) }
+.btn.sm { padding: 10px 18px; font-size: 15px }
+@media (max-width: 760px) { nav.links { display: none } header.nav .btn { margin-left: auto } }
+
+.hero { padding: 60px 0 76px }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 52px; align-items: center }
+@media (max-width: 860px) { .hero { padding: 34px 0 56px } .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 32px } }
+.pill { display: inline-flex; gap: 8px; align-items: center; background: var(--teal-soft); color: var(--teal-dark); font-weight: 800; font-size: 13px; border-radius: 999px; padding: 6px 12px }
+.hero h1 { font: 700 clamp(36px, 5.4vw, 64px)/1.08 var(--font-display); margin: 18px 0 18px; letter-spacing: -.01em; text-wrap: balance }
+.hero h1 em { font-style: normal; color: var(--teal) }
+.hero p.lead { font-size: 19px; color: var(--muted); max-width: 46ch; margin: 0 0 28px }
+.hero .ctas { display: flex; flex-wrap: wrap; gap: 12px }
+.hero .meta { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 26px; font-size: 15px; color: var(--muted) }
+.hero .meta b { color: var(--ink) }
+.art { position: relative; aspect-ratio: 1; max-width: 450px; width: 100%; justify-self: center }
+.art .blob { position: absolute; inset: 4%; border-radius: 46% 54% 50% 50% / 50% 46% 54% 50%; background: var(--teal-soft) }
+.art svg.pet { position: absolute; left: 50%; top: 52%; width: 74%; transform: translate(-50%, -50%) }
+.bubble-float { position: absolute; right: -8px; bottom: 30px; background: var(--paper); border: 1px solid var(--line); border-radius: 18px 18px 4px 18px; padding: 12px 16px; box-shadow: 0 18px 36px -22px rgba(36, 48, 46, .4); max-width: 230px; font-size: 14px }
+.bubble-float b { display: block; font-size: 13px; color: var(--teal-dark) }
+.paw-float { position: absolute; left: 0; top: 10%; width: 54px; fill: var(--peach); opacity: .8; transform: rotate(-18deg) }
+@media (max-width: 860px) { .bubble-float { right: 4px; bottom: 6px } }
+
+section { padding: 84px 0 }
+@media (max-width: 600px) { section { padding: 58px 0 } }
+.sec-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 32px; flex-wrap: wrap }
+.sec-head h2 { font: 700 clamp(30px, 4vw, 46px)/1.1 var(--font-display); margin: 12px 0 0 }
+.sec-head p { margin: 0; color: var(--muted); max-width: 44ch }
+
+/* reminder */
+.remind { background: var(--teal); color: #effaf7 }
+.remind .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: center }
+@media (max-width: 860px) { .remind .grid { grid-template-columns: minmax(0, 1fr); gap: 28px } }
+.remind .pill { background: rgba(255, 255, 255, .16); color: #fff }
+.remind h2 { font: 700 clamp(30px, 4.2vw, 48px)/1.1 var(--font-display); margin: 14px 0 14px; color: #fff }
+.remind p { margin: 0 0 12px; color: #d3ece7; max-width: 46ch }
+.phone { background: #e9f4f1; border-radius: 30px; padding: 18px; max-width: 380px; width: 100%; justify-self: center; box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .35) }
+.phone .top { display: flex; gap: 10px; align-items: center; padding-bottom: 12px; border-bottom: 1px solid #d3e6e1; margin-bottom: 12px; color: var(--ink) }
+.phone .top .mark { width: 34px; height: 34px; border-radius: 50%; background: var(--teal); display: grid; place-items: center } .phone .top svg { width: 18px; fill: #fff }
+.phone .top b { display: block; font-size: 14px } .phone .top small { color: var(--muted); font-size: 12px }
+.msg { background: #fff; color: var(--ink); border-radius: 16px 16px 16px 4px; padding: 10px 12px; font-size: 14px; margin-bottom: 8px }
+.msg time { display: block; text-align: right; font-size: 11px; color: var(--muted) }
+.kbd { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px }
+.kbd span { background: #fff; border-radius: 10px; padding: 8px; text-align: center; font-size: 13px; color: #2a7bbf; font-weight: 600 }
+
+/* prices */
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px }
+.price-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px }
+@media (max-width: 860px) { .price-grid { grid-template-columns: minmax(0, 1fr) } }
+.pcard { background: var(--paper); border: 1px solid var(--line); border-radius: 26px; padding: 8px 0; overflow: hidden }
+.pcard h3 { display: flex; align-items: center; gap: 10px; font: 700 22px/1.2 var(--font-display); margin: 14px 22px 8px }
+.pcard h3 span { font-size: 26px }
+.prow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; padding: 12px 22px; border-top: 1px solid var(--line); align-items: center }
+.prow b { font-weight: 700 } .prow small { color: var(--muted); font-size: 14px; grid-column: 1 }
+.prow .p { grid-row: 1 / span 2; grid-column: 2; font: 700 18px/1 var(--font-display); white-space: nowrap }
+.prow .p small { display: block; font: 600 12px/1.4 var(--font-body); color: var(--muted); text-align: right }
+.extras { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px }
+.extras span { background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; font-size: 15px }
+.extras b { color: var(--teal-dark) }
+
+/* works */
+.works { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px }
+@media (max-width: 860px) { .works { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (max-width: 480px) { .works { grid-template-columns: minmax(0, 1fr) } }
+.work { border-radius: 24px; overflow: hidden; background: var(--paper); border: 1px solid var(--line) }
+.work .pics { display: grid; grid-template-columns: 1fr 1fr; aspect-ratio: 2 / 1.1 }
+.work .pics div { display: grid; place-items: center; font-size: 13px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; position: relative }
+.work .pics div svg { width: 54%; opacity: .85 }
+.work .pics div i { position: absolute; left: 10px; top: 10px; font-style: normal; background: rgba(255, 255, 255, .85); border-radius: 999px; padding: 2px 9px; font-size: 11px }
+.work .before { background: #efe6da } .work .after { background: var(--teal-soft) }
+.work p { margin: 0; padding: 12px 16px; font-size: 15px } .work p small { color: var(--muted) }
+.note { color: var(--muted); font-size: 14px; margin: 16px 0 0 }
+
+/* how */
+.how { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px }
+@media (max-width: 900px) { .how { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (max-width: 480px) { .how { grid-template-columns: minmax(0, 1fr) } }
+.how div { background: var(--paper); border: 1px solid var(--line); border-radius: 24px; padding: 22px }
+.how .n { width: 40px; height: 40px; border-radius: 14px; background: var(--peach-soft); color: #b5683a; display: grid; place-items: center; font: 700 18px/1 var(--font-display); margin-bottom: 12px }
+.how b { display: block; font-size: 18px; margin-bottom: 4px } .how p { margin: 0; color: var(--muted); font-size: 15px }
+
+/* booking */
+.book { background: var(--peach-soft) }
+.bk { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 24px; align-items: start }
+@media (max-width: 900px) { .bk { grid-template-columns: minmax(0, 1fr) } }
+.form { background: var(--paper); border-radius: 28px; padding: 26px }
+@media (max-width: 600px) { .form { padding: 20px } }
+.field { margin-bottom: 20px }
+.field > .lbl, .field > label { display: block; font-weight: 800; font-size: 14px; color: var(--muted); margin-bottom: 10px }
+.chips { display: flex; flex-wrap: wrap; gap: 8px }
+.chips button { border: 1.5px solid var(--line); background: var(--cream); border-radius: 14px; padding: 9px 14px; font-size: 15px; font-weight: 600; text-align: left }
+.chips button small { display: block; font-size: 12px; color: var(--muted); font-weight: 500 }
+.chips button[aria-pressed="true"] { background: var(--teal); border-color: var(--teal); color: #fff }
+.chips button[aria-pressed="true"] small { color: #d3ece7 }
+.chips button:disabled { opacity: .35; text-decoration: line-through; cursor: default }
+.chips.big button { font-size: 17px; padding: 12px 18px }
+.form input { width: 100%; background: var(--cream); border: 1.5px solid var(--line); border-radius: 14px; padding: 13px 14px; font: inherit }
+.three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px }
+@media (max-width: 700px) { .three { grid-template-columns: minmax(0, 1fr) } }
+.toggle { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; width: 100%; text-align: left; border: 1.5px solid var(--line); background: var(--cream); border-radius: 16px; padding: 12px 14px }
+.toggle .box { width: 22px; height: 22px; border-radius: 7px; border: 1.5px solid #cfc4b5; display: grid; place-items: center }
+.toggle[aria-pressed="true"] { border-color: var(--teal); background: var(--teal-soft) }
+.toggle[aria-pressed="true"] .box { background: var(--teal); border-color: var(--teal) }
+.toggle[aria-pressed="true"] .box::after { content: ""; width: 10px; height: 5px; border: solid #fff; border-width: 0 0 2.5px 2.5px; transform: translateY(-1px) rotate(-45deg) }
+.toggle b { display: block } .toggle small { color: var(--muted); font-size: 14px }
+.summary { position: sticky; top: 90px; background: var(--ink); color: #eef5f3; border-radius: 28px; padding: 26px }
+.summary h3 { font: 700 24px/1.2 var(--font-display); margin: 0 0 14px }
+.summary dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 16px; margin: 0 0 16px; font-size: 15px }
+.summary dt { color: #9fb0ac } .summary dd { margin: 0 }
+.summary .total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid #3a4845; padding-top: 14px; margin-bottom: 16px }
+.summary .total b { font: 700 30px/1 var(--font-display) }
+.summary .btn { width: 100% }
+.summary .btn:disabled { opacity: .45; cursor: default }
+.summary .hint { display: block; text-align: center; margin-top: 10px; font-size: 13px; color: #9fb0ac }
+.done { text-align: center }
+.done .ok { width: 64px; height: 64px; border-radius: 50%; background: var(--teal); display: grid; place-items: center; margin: 0 auto 12px; font-size: 30px }
+.done p { color: #c4d2cf; margin: 0 0 12px; font-size: 15px }
+.admin { margin-top: 16px; background: #2f3d3a; border-radius: 18px; padding: 14px; text-align: left; font-size: 14px; white-space: pre-line }
+.admin small { display: block; color: #8fa29e; margin-bottom: 6px; letter-spacing: .08em; text-transform: uppercase; font-size: 10px }
+html:not(.js) #bookForm { display: none }
+html:not(.js) .bk { grid-template-columns: minmax(0, 1fr) }
+
+details { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 0 18px }
+details + details { margin-top: 8px }
+summary { cursor: pointer; padding: 15px 0; font-weight: 800; list-style: none; display: flex; justify-content: space-between; gap: 10px }
+summary::-webkit-details-marker { display: none }
+summary::after { content: "+"; color: var(--teal); font-weight: 800 }
+details[open] summary::after { content: "−" }
+details p { margin: 0 0 16px; color: var(--muted) }
+
+.contacts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px }
+@media (max-width: 860px) { .contacts { grid-template-columns: minmax(0, 1fr) } }
+.contacts > div { background: var(--paper); border: 1px solid var(--line); border-radius: 24px; padding: 24px }
+.contacts small { font-weight: 800; font-size: 13px; color: var(--muted) }
+.contacts b { display: block; font: 700 22px/1.3 var(--font-display); margin: 10px 0 6px }
+.contacts p { margin: 0 0 16px; color: var(--muted); font-size: 15px }
+footer { padding: 36px 0 48px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line) }
+footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap }
+
+.js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease }
+.js .reveal.in { opacity: 1; transform: none }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto } .js .reveal { opacity: 1; transform: none; transition: none } *, *::before, *::after { animation: none !important; transition: none !important } }
+</style>
+</head>
+<body>
+<div class="demo"><b>Демо-версия сайта</b> для мастера «Стрижка собак и кошек». Цены и часы примерные, фото работ будут ваши.</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="paw" viewBox="0 0 64 64"><ellipse cx="32" cy="42" rx="14" ry="12"/><ellipse cx="14" cy="28" rx="6" ry="8"/><ellipse cx="25" cy="17" rx="6" ry="8"/><ellipse cx="39" cy="17" rx="6" ry="8"/><ellipse cx="50" cy="28" rx="6" ry="8"/></symbol>
+  <symbol id="dog" viewBox="0 0 200 200">
+    <path d="M52 62 C 30 50, 18 80, 30 112 C 36 128, 50 126, 56 112 Z" fill="#c98a5e"/>
+    <path d="M148 62 C 170 50, 182 80, 170 112 C 164 128, 150 126, 144 112 Z" fill="#c98a5e"/>
+    <ellipse cx="100" cy="100" rx="56" ry="58" fill="#f2c79f"/>
+    <ellipse cx="100" cy="128" rx="30" ry="22" fill="#fff4e8"/>
+    <circle cx="78" cy="94" r="7" fill="#24302e"/><circle cx="122" cy="94" r="7" fill="#24302e"/>
+    <circle cx="80" cy="92" r="2.2" fill="#fff"/><circle cx="124" cy="92" r="2.2" fill="#fff"/>
+    <ellipse cx="100" cy="118" rx="10" ry="7" fill="#24302e"/>
+    <path d="M100 125 v8 M90 136 q10 8 20 0" stroke="#24302e" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M70 46 q30 -22 60 0 q-30 10 -60 0z" fill="#fff4e8"/>
+    <circle cx="66" cy="112" r="6" fill="#f0a675" opacity=".55"/><circle cx="134" cy="112" r="6" fill="#f0a675" opacity=".55"/>
+  </symbol>
+  <symbol id="cat" viewBox="0 0 200 200">
+    <path d="M50 70 L 58 22 L 92 52 Z" fill="#9aa5a3"/><path d="M150 70 L 142 22 L 108 52 Z" fill="#9aa5a3"/>
+    <path d="M60 60 L 62 36 L 82 54 Z" fill="#f0a675" opacity=".6"/><path d="M140 60 L 138 36 L 118 54 Z" fill="#f0a675" opacity=".6"/>
+    <ellipse cx="100" cy="104" rx="58" ry="54" fill="#b6c0be"/>
+    <ellipse cx="100" cy="128" rx="26" ry="18" fill="#eef2f1"/>
+    <ellipse cx="80" cy="98" rx="7" ry="9" fill="#24302e"/><ellipse cx="120" cy="98" rx="7" ry="9" fill="#24302e"/>
+    <path d="M94 118 h12 l-6 7 z" fill="#f0a675"/>
+    <path d="M100 125 v5 M92 134 q8 6 16 0" stroke="#24302e" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M60 122 h-26 M60 130 h-24 M140 122 h26 M140 130 h24" stroke="#7f8b89" stroke-width="2" stroke-linecap="round"/>
+  </symbol>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top"><span class="mark"><svg viewBox="0 0 64 64"><use href="#paw"/></svg></span><span><b>Стрижка собак и кошек</b><small>груминг на Гарькавого</small></span></a>
+    <nav class="links"><a href="#prices">Цены</a><a href="#works">Работы</a><a href="#remind">Напоминания</a><a href="#contacts">Контакты</a></nav>
+    <a class="btn sm" href="#booking">Записаться</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="pill"><svg width="14" height="14" fill="currentColor" viewBox="0 0 64 64"><use href="#paw"/></svg>ул. Пограничника Гарькавого, 42к2</span>
+        <h1>Аккуратная стрижка для <em>собак и кошек</em></h1>
+        <p class="lead">Частный мастер: спокойная обстановка, один питомец за раз, без очередей и клеток. Записывайтесь онлайн, звонить во время стрижки не нужно.</p>
+        <div class="ctas"><a class="btn" href="#booking">Записаться онлайн</a><a class="btn light" href="#prices">Цены</a></div>
+        <div class="meta"><span><b>По записи</b>, ежедневно</span><span><b>+7 963 341-13-52</b></span></div>
+      </div>
+      <div class="art" aria-hidden="true">
+        <div class="blob"></div>
+        <svg class="paw-float" viewBox="0 0 64 64"><use href="#paw"/></svg>
+        <svg class="pet" viewBox="0 0 200 200"><use href="#dog"/></svg>
+        <div class="bubble-float"><b>🐾 Через 6 недель</b>«Бусинке пора на стрижку! Записать на ту же субботу?»</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="remind" id="remind">
+    <div class="wrap grid">
+      <div class="reveal">
+        <span class="pill">Напоминания</span>
+        <h2>Сами напомним, когда пора на стрижку</h2>
+        <p>После визита вы указываете, как часто стрижётесь, например раз в 6 недель или в 2 месяца. Когда подойдёт срок, Telegram-бот напишет вам сам и предложит удобное время.</p>
+        <p>Шерсть не успевает сваляться, а вам не нужно помнить даты.</p>
+      </div>
+      <div class="phone reveal" aria-hidden="true">
+        <div class="top"><span class="mark"><svg viewBox="0 0 64 64"><use href="#paw"/></svg></span><div><b>Стрижка собак и кошек</b><small>бот записи</small></div></div>
+        <div class="msg">🐾 Здравствуйте! Прошло 6 недель с последней стрижки <b>Бусинки</b>. Пора освежиться?<time>11:00</time></div>
+        <div class="msg">Ближайшие окна: сб 14:00, вс 11:00<time>11:00</time></div>
+        <div class="kbd"><span>Сб 14:00</span><span>Вс 11:00</span><span>Другое время</span><span>Позже</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="prices">
+    <div class="wrap">
+      <div class="sec-head reveal"><div><span class="pill">Цены</span><h2>Услуги и стоимость</h2></div><p>Цена зависит от размера и состояния шерсти. Мастер назовёт точную стоимость до начала работы.</p></div>
+      <div class="price-grid">
+        <div class="pcard reveal"><h3><span>🐶</span>Собаки</h3>
+          <div class="prow"><div><b>Мини</b></div><small>до 5 кг: йорк, той, чихуахуа</small><span class="p">2 000 ₽<small>комплекс</small></span></div>
+          <div class="prow"><div><b>Малые</b></div><small>5–10 кг: ши-тцу, мальтипу, пудель той</small><span class="p">2 500 ₽<small>комплекс</small></span></div>
+          <div class="prow"><div><b>Средние</b></div><small>10–25 кг: кокер, шнауцер, корги</small><span class="p">3 300 ₽<small>комплекс</small></span></div>
+          <div class="prow"><div><b>Крупные</b></div><small>от 25 кг: самоед, хаски, ретривер</small><span class="p">от 4 500 ₽<small>комплекс</small></span></div>
+          <div class="prow"><div><b>Гигиеническая стрижка</b></div><small>лапы, мордочка, интимные зоны, когти</small><span class="p">от 1 200 ₽</span></div>
+        </div>
+        <div class="pcard reveal"><h3><span>🐱</span>Кошки</h3>
+          <div class="prow"><div><b>Модельная стрижка</b></div><small>«лев», «пума» и другие, когти включены</small><span class="p">2 800 ₽</span></div>
+          <div class="prow"><div><b>Комплекс без стрижки</b></div><small>мытьё, сушка, вычёсывание подшёрстка</small><span class="p">2 500 ₽</span></div>
+          <div class="prow"><div><b>Вычёсывание колтунов</b></div><small>без мытья</small><span class="p">от 1 500 ₽</span></div>
+          <div class="prow"><div><b>Гигиена</b></div><small>когти, уши, глазки</small><span class="p">700 ₽</span></div>
+        </div>
+      </div>
+      <div class="extras reveal"><span>Стрижка когтей <b>400 ₽</b></span><span>Чистка ушей <b>300 ₽</b></span><span>Экспресс-линька <b>от 1 500 ₽</b></span><span>Бантик или заколка <b>в подарок</b></span></div>
+    </div>
+  </section>
+
+  <section id="works" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head reveal"><div><span class="pill">Работы</span><h2>До и после</h2></div><p>Здесь будут фотографии ваших работ: удобно показать хозяевам, какую стрижку можно сделать.</p></div>
+      <div class="works">
+        <div class="work reveal"><div class="pics"><div class="before"><i>до</i><svg viewBox="0 0 200 200"><use href="#dog"/></svg></div><div class="after"><i>после</i><svg viewBox="0 0 200 200"><use href="#dog"/></svg></div></div><p><b>Шпиц</b> <small>· стрижка «под мишку»</small></p></div>
+        <div class="work reveal"><div class="pics"><div class="before"><i>до</i><svg viewBox="0 0 200 200"><use href="#cat"/></svg></div><div class="after"><i>после</i><svg viewBox="0 0 200 200"><use href="#cat"/></svg></div></div><p><b>Мейн-кун</b> <small>· стрижка «лев»</small></p></div>
+        <div class="work reveal"><div class="pics"><div class="before"><i>до</i><svg viewBox="0 0 200 200"><use href="#dog"/></svg></div><div class="after"><i>после</i><svg viewBox="0 0 200 200"><use href="#dog"/></svg></div></div><p><b>Йоркширский терьер</b> <small>· комплекс</small></p></div>
+      </div>
+      <p class="note">В демо вместо фото иллюстрации. В вашей версии будут настоящие фото «до/после».</p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head reveal"><div><span class="pill">Как проходит визит</span><h2>Спокойно и без стресса</h2></div></div>
+      <div class="how">
+        <div class="reveal"><span class="n">1</span><b>Запись</b><p>Выбираете время онлайн, указываете породу и вес.</p></div>
+        <div class="reveal"><span class="n">2</span><b>Знакомство</b><p>Мастер даёт питомцу освоиться и обсуждает с вами стрижку.</p></div>
+        <div class="reveal"><span class="n">3</span><b>Уход</b><p>Мытьё, сушка, стрижка, когти и уши. Один питомец за раз.</p></div>
+        <div class="reveal"><span class="n">4</span><b>Напоминание</b><p>Через 1–2 месяца бот сам напомнит о следующей стрижке.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="book" id="booking">
+    <div class="wrap">
+      <div class="sec-head reveal"><div><span class="pill">Онлайн-запись</span><h2>Запишите питомца</h2></div><p>Заявка сразу приходит мастеру в Telegram, он подтвердит её, как только освободится.</p></div>
+      <div class="bk">
+        <form class="form" id="bookForm" novalidate>
+          <div class="field"><span class="lbl">Кто у вас?</span><div class="chips big" id="fPetType"></div></div>
+          <div class="field" id="sizeField"><span class="lbl">Размер</span><div class="chips" id="fSize"></div></div>
+          <div class="field"><span class="lbl">Услуга</span><div class="chips" id="fService"></div></div>
+          <div class="field"><span class="lbl">День</span><div class="chips" id="fDay"></div></div>
+          <div class="field"><span class="lbl">Время</span><div class="chips" id="fTime"></div></div>
+          <div class="three">
+            <div class="field"><label for="fPet">Кличка и порода</label><input id="fPet" placeholder="Бусинка, шпиц"></div>
+            <div class="field"><label for="fName">Ваше имя</label><input id="fName" autocomplete="given-name" placeholder="Как к вам обращаться"></div>
+            <div class="field"><label for="fPhone">Телефон</label><input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00"></div>
+          </div>
+          <div class="field" style="margin-bottom:0"><span class="lbl">Напомнить о следующей стрижке</span><div class="chips" id="fRemind"></div></div>
+        </form>
+        <aside class="summary" id="summary" aria-live="polite"><h3>Запись к мастеру</h3><p style="color:#c4d2cf;margin:0 0 18px">Позвоните или напишите в WhatsApp: подберём время и расскажем, что взять с собой.</p><a class="btn" href="https://wa.me/79633411352" style="width:100%">Написать в WhatsApp</a><span class="hint">+7 963 341-13-52</span></aside>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <div class="sec-head reveal"><div><span class="pill">Вопросы</span><h2>Частые вопросы</h2></div></div>
+      <div class="reveal">
+        <details open><summary>Сколько длится стрижка?</summary><p>От 1 часа для маленьких собак и кошек до 3 часов для крупных пород. Точное время мастер скажет при записи.</p></details>
+        <details><summary>Мой питомец боится. Что делать?</summary><p>Предупредите при записи. Мастер работает спокойно, делает паузы и не торопит. В студии одновременно только один питомец.</p></details>
+        <details><summary>Можно остаться рядом во время стрижки?</summary><p>Да, если питомцу так спокойнее. Некоторые, наоборот, ведут себя лучше без хозяина, мастер подскажет.</p></details>
+        <details><summary>Нужны ли прививки?</summary><p>Да, нужна актуальная прививка от бешенства. Перед визитом лучше выгулять собаку и не кормить плотно за 2–3 часа.</p></details>
+        <details><summary>Как отменить или перенести запись?</summary><p>Кнопкой в сообщении от бота или по телефону. Освободившееся время сразу смогут занять другие.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacts" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head reveal"><div><span class="pill">Контакты</span><h2>Ждём вас и вашего питомца</h2></div></div>
+      <div class="contacts">
+        <div><small>Адрес</small><b>ул. Пограничника Гарькавого, 42к2</b><p>Санкт-Петербург</p><a class="btn light sm" href="https://yandex.ru/maps/?text=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%9F%D0%BE%D0%B3%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%BD%D0%B8%D0%BA%D0%B0%20%D0%93%D0%B0%D1%80%D1%8C%D0%BA%D0%B0%D0%B2%D0%BE%D0%B3%D0%BE%2C%2042%D0%BA2" target="_blank" rel="noopener">Построить маршрут</a></div>
+        <div><small>Телефон</small><b>+7 963 341-13-52</b><p>Звонки и WhatsApp</p><a class="btn light sm" href="https://wa.me/79633411352" target="_blank" rel="noopener">Написать в WhatsApp</a></div>
+        <div><small>Часы работы</small><b>Ежедневно по записи</b><p>Утром, днём и вечером</p><a class="btn sm" href="#booking">Записаться онлайн</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap"><span>© Стрижка собак и кошек · ул. Пограничника Гарькавого, 42к2</span><span>Демо-версия сайта. Цены примерные.</span></div></footer>
+
+<script>
+// Цены те же, что в разделе «Цены» выше
+const DOG_SIZES = { mini: ["Мини", "до 5 кг", 2000], small: ["Малые", "5–10 кг", 2500], mid: ["Средние", "10–25 кг", 3300], big: ["Крупные", "от 25 кг", 4500] };
+const SERVICES = {
+  dog: { full: ["Комплекс", "мытьё, стрижка, когти, уши", 1, 120], hyg: ["Гигиеническая", "лапы, мордочка, когти", .5, 60], wash: ["Мытьё и вычёсывание", "без стрижки", .7, 90] },
+  cat: { model: ["Модельная стрижка", "«лев», «пума»", 2800, 90], full: ["Комплекс без стрижки", "мытьё, сушка, вычёсывание", 2500, 90], hyg: ["Гигиена", "когти, уши, глазки", 700, 30] }
+};
+const REMIND = { w4: "через 4 недели", w6: "через 6 недель", m2: "через 2 месяца", no: "не нужно" };
+const REMIND_DAYS = { w4: 28, w6: 42, m2: 60 };
+const HOURS = ["10:00", "11:30", "13:00", "14:30", "16:00", "17:30", "19:00"];
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString("ru-RU") + " ₽";
+const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const digits = s => (s || "").replace(/\D/g, "");
+const round50 = n => Math.round(n / 50) * 50;
+
+const st = { pet: "dog", size: "small", svc: "full", day: null, time: null, remind: "w6", sent: false };
+const busy = new Set();
+for (let i = 0; i < 10; i++) { const d = new Date(); d.setDate(d.getDate() + i); HOURS.forEach((h, j) => { if ((i * 3 + j * 5) % 6 < 2) busy.add(`${iso(d)}_${h}`); }); }
+
+function price() {
+  const s = SERVICES[st.pet][st.svc];
+  return st.pet === "dog" ? round50(DOG_SIZES[st.size][2] * s[2]) : s[2];
+}
+function chip(html, pressed, onClick, disabled) {
+  const b = document.createElement("button");
+  b.type = "button"; b.innerHTML = html; b.setAttribute("aria-pressed", pressed ? "true" : "false"); b.disabled = !!disabled;
+  b.onclick = () => { onClick(); render(); };
+  return b;
+}
+function render() {
+  $("fPetType").replaceChildren(chip("🐶 Собака", st.pet === "dog", () => { st.pet = "dog"; st.svc = "full"; }), chip("🐱 Кошка", st.pet === "cat", () => { st.pet = "cat"; st.svc = "model"; }));
+  $("sizeField").hidden = st.pet !== "dog";
+  $("fSize").replaceChildren(...Object.entries(DOG_SIZES).map(([k, [n, w]]) => chip(`${n}<small>${w}</small>`, st.size === k, () => { st.size = k; })));
+  $("fService").replaceChildren(...Object.entries(SERVICES[st.pet]).map(([k, [n, sub, p]]) => {
+    const pr = st.pet === "dog" ? round50(DOG_SIZES[st.size][2] * p) : p;
+    return chip(`${n} · ${st.pet === "dog" && st.size === "big" ? "от " : ""}${fmt(pr)}<small>${sub}</small>`, st.svc === k, () => { st.svc = k; });
+  }));
+  const now = new Date(), days = [];
+  for (let i = 0; i < 10; i++) { const d = new Date(); d.setDate(d.getDate() + i); days.push(d); }
+  const todayDone = !HOURS.some(h => +h.slice(0, 2) > now.getHours());
+  if (!st.day) st.day = iso(days[todayDone ? 1 : 0]);
+  $("fDay").replaceChildren(...days.map((d, i) => chip(`${d.getDate()}<small>${i === 0 ? "сегодня" : i === 1 ? "завтра" : d.toLocaleDateString("ru-RU", { weekday: "short" })}</small>`,
+    st.day === iso(d), () => { st.day = iso(d); st.time = null; }, i === 0 && todayDone)));
+  $("fTime").replaceChildren(...HOURS.map(h => chip(h, st.time === h, () => { st.time = h; },
+    busy.has(`${st.day}_${h}`) || (st.day === iso(now) && +h.slice(0, 2) <= now.getHours()))));
+  $("fRemind").replaceChildren(...Object.entries(REMIND).map(([k, v]) => chip(v, st.remind === k, () => { st.remind = k; })));
+  summary();
+}
+function remindDate() {
+  if (!REMIND_DAYS[st.remind] || !st.day) return null;
+  const d = new Date(st.day + "T12:00"); d.setDate(d.getDate() + REMIND_DAYS[st.remind]);
+  return d.toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
+}
+function summary() {
+  if (st.sent) return;
+  const s = SERVICES[st.pet][st.svc];
+  const ok = { time: !!st.time, pet: $("fPet").value.trim().length > 1, name: $("fName").value.trim().length > 1, phone: digits($("fPhone").value).length >= 10 };
+  const label = !ok.time ? "Выберите время" : !ok.pet ? "Укажите кличку" : !ok.name ? "Укажите имя" : !ok.phone ? "Укажите телефон" : "Записаться";
+  const when = st.time ? `${new Date(st.day + "T12:00").toLocaleDateString("ru-RU", { weekday: "short", day: "numeric", month: "long" })}, ${st.time}` : "выберите время";
+  $("summary").innerHTML = `<h3>Ваша запись</h3>
+    <dl><dt>Питомец</dt><dd>${st.pet === "dog" ? `собака, ${DOG_SIZES[st.size][0].toLowerCase()} (${DOG_SIZES[st.size][1]})` : "кошка"}</dd><dt>Услуга</dt><dd>${s[0]}</dd><dt>Когда</dt><dd>${when}</dd><dt>Напомнить</dt><dd>${REMIND[st.remind]}</dd></dl>
+    <div class="total"><span>${st.pet === "dog" && st.size === "big" ? "От" : "Стоимость"}</span><b>${fmt(price())}</b></div>
+    <button class="btn" type="button" id="send" ${Object.values(ok).every(Boolean) ? "" : "disabled"}>${label}</button>
+    <span class="hint">Оплата на месте после стрижки</span>`;
+  $("send").onclick = send;
+}
+["fPet", "fName", "fPhone"].forEach(id => $(id).addEventListener("input", summary));
+function send() {
+  const s = SERVICES[st.pet][st.svc], rd = remindDate();
+  const when = `${new Date(st.day + "T12:00").toLocaleDateString("ru-RU", { weekday: "short", day: "numeric", month: "long" })}, ${st.time}`;
+  busy.add(`${st.day}_${st.time}`);
+  st.sent = true;
+  $("summary").innerHTML = `<div class="done"><div class="ok">🐾</div><h3>Заявка отправлена</h3>
+    <p>${$("fName").value.trim()}, ждём вас ${when}. Мастер подтвердит запись в Telegram или по телефону.</p>
+    ${rd ? `<p>🔔 ${rd} бот напомнит о следующей стрижке.</p>` : ""}
+    <button class="btn light" type="button" id="again">Записать ещё питомца</button>
+    <div class="admin"><small>Мастеру в Telegram пришло</small>🐾 Новая запись с сайта
+${st.pet === "dog" ? "🐶" : "🐱"} ${$("fPet").value.trim()}${st.pet === "dog" ? ` · ${DOG_SIZES[st.size][1]}` : ""}
+✂️ ${s[0]} · ${fmt(price())}
+📅 ${when}
+👤 ${$("fName").value.trim()} · 📞 ${$("fPhone").value.trim()}${rd ? `\n🔔 Напомнить ${REMIND[st.remind]} (${rd})` : ""}</div></div>`;
+  $("again").onclick = () => { st.sent = false; st.time = null; $("fPet").value = ""; render(); };
+}
+
+const io = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .12 }) : null;
+document.querySelectorAll(".reveal").forEach(el => io ? io.observe(el) : el.classList.add("in"));
+render();
+</script>
+</body>
+</html>

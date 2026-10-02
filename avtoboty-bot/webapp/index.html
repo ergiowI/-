@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<title>Автоботы Шиномонтаж 24</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: the Telegram Mini App inside a phone frame (demo mode) beside the owner's chat; inside Telegram the app goes full screen.
+   Single deliberate dark look: asphalt + tire-shop yellow. */
+:root {
+  --asphalt: #121417;
+  --panel: #1b1e23;
+  --panel-2: #23272e;
+  --line: #30353d;
+  --ink: #eef0f2;
+  --muted: #8f97a2;
+  --yellow: #ffc21a;
+  --yellow-ink: #15130a;
+  --ok: #3ccf7a;
+  --font-display: "Unbounded", "Arial Black", sans-serif;
+  --font-body: "Onest", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box }
+[hidden] { display: none !important }
+body { background: var(--asphalt); color: var(--ink); font: 15px/1.45 var(--font-body); }
+button { font: inherit; color: inherit; }
+button:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px }
+
+/* ---------- demo shell ---------- */
+.shell { max-width: 1080px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 48px; display: grid; gap: 24px; }
+.intro .tag { display: inline-block; font: 600 11px/1 var(--font-body); letter-spacing: .1em; text-transform: uppercase;
+  background: var(--yellow); color: var(--yellow-ink); padding: 6px 8px; border-radius: 4px; margin-bottom: 12px; }
+.intro h1 { font: 700 clamp(20px, 3.2vw, 30px)/1.15 var(--font-display); margin: 0 0 8px; text-wrap: balance; }
+.intro p { margin: 0; color: var(--muted); max-width: 64ch; }
+.stage { display: grid; grid-template-columns: 400px minmax(0, 1fr); gap: 32px; align-items: start; }
+@media (max-width: 820px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+.phone { width: 100%; max-width: 400px; margin-inline: auto; border-radius: 36px; padding: 10px; background: #000;
+  border: 1px solid var(--line); box-shadow: 0 30px 60px rgba(0,0,0,.45), 0 0 0 6px #1f2227; }
+.screen { position: relative; height: 760px; border-radius: 28px; overflow: hidden; background: var(--asphalt); display: flex; flex-direction: column; }
+@media (max-width: 820px) { .screen { height: 82vh; min-height: 560px } }
+.tgbar { flex: none; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--panel); border-bottom: 1px solid var(--line); font-size: 14px; }
+.tgbar b { font-weight: 600 } .tgbar span { color: var(--muted) }
+
+/* inside Telegram: no frame */
+body.tg .intro, body.tg .side, body.tg .tgbar { display: none }
+body.tg .shell { padding: 0; max-width: none }
+body.tg .stage { display: block }
+body.tg .phone { padding: 0; border: 0; border-radius: 0; box-shadow: none; max-width: none; background: none }
+body.tg .screen { height: 100vh; height: var(--tg-viewport-stable-height, 100vh); border-radius: 0 }
+
+/* ---------- app ---------- */
+.app { flex: 1; overflow-y: auto; padding: 0 16px 120px; scroll-behavior: smooth; }
+.hero { display: flex; gap: 14px; align-items: center; padding: 18px 0 8px; }
+.hero svg { width: 64px; height: 64px; flex: none; animation: roll 1.4s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes roll { from { transform: translateX(-40px) rotate(-240deg); opacity: 0 } to { transform: none; opacity: 1 } }
+.hero h2 { font: 700 18px/1.15 var(--font-display); margin: 0 0 4px; }
+.hero p { margin: 0; color: var(--muted); font-size: 13px; }
+.promise { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 4px; }
+.promise span { font-size: 12px; padding: 4px 8px; border-radius: 999px; background: var(--panel-2); color: var(--muted); }
+.promise span b { color: var(--yellow); font-weight: 600 }
+
+.step { margin-top: 22px; transition: opacity .25s; }
+.step.locked { opacity: .35; pointer-events: none }
+.step h3 { display: flex; align-items: baseline; gap: 8px; font: 600 13px/1.2 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+.step h3 i { font: 700 11px/1 var(--font-mono); font-style: normal; color: var(--yellow-ink); background: var(--yellow); border-radius: 4px; padding: 3px 5px; }
+
+.cars { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.opt { background: var(--panel); border: 1.5px solid var(--line); border-radius: 14px; padding: 10px; cursor: pointer; text-align: left; transition: border-color .15s, background .15s, transform .1s; }
+.opt:active { transform: scale(.97) }
+.opt[aria-pressed="true"] { border-color: var(--yellow); background: color-mix(in srgb, var(--yellow) 9%, var(--panel)); }
+.cars .opt { display: grid; gap: 6px; justify-items: center; text-align: center; font-size: 13px; padding: 12px 6px; }
+.cars svg { width: 100%; max-width: 86px; height: 34px; }
+
+.radius { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 14px; align-items: center; }
+.tire { width: 120px; height: 120px; }
+.tire .rim { transition: r .35s cubic-bezier(.2,.8,.2,1); }
+.tire .spin { transform-origin: 60px 60px; transition: transform .5s cubic-bezier(.2,.8,.2,1); }
+.tirelabel { font: 700 22px/1 var(--font-mono); }
+.tirelabel small { display: block; font: 500 12px/1.3 var(--font-body); color: var(--muted); margin-top: 6px }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.chip { font: 500 14px/1 var(--font-mono); padding: 10px 11px; border-radius: 10px; }
+
+.services { display: grid; gap: 8px; }
+.services .opt { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; padding: 12px 14px; }
+.services .opt b { font-weight: 600 }
+.services .opt small { color: var(--muted); grid-column: 1; }
+.services .opt .p { grid-row: 1 / span 2; grid-column: 2; font: 700 15px/1 var(--font-mono); }
+
+.extras { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.extras .opt { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; padding: 10px 12px; }
+.extras .opt span:last-child { font-family: var(--font-mono); color: var(--muted) }
+.perks { display: grid; gap: 8px; margin-top: 8px; }
+.perk { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 11px 14px; }
+.perk b { font-weight: 600; display: block } .perk small { color: var(--muted); font-size: 12px }
+.perk .box { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--line); display: grid; place-items: center; }
+.perk[aria-pressed="true"] .box { background: var(--yellow); border-color: var(--yellow); }
+.perk[aria-pressed="true"] .box::after { content: ""; width: 9px; height: 5px; border: solid var(--yellow-ink); border-width: 0 0 2.5px 2.5px; transform: translateY(-1px) rotate(-45deg); }
+.perk .p { font: 700 14px/1 var(--font-mono); color: var(--yellow) }
+.season { display: flex; gap: 10px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 14px; }
+
+.days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.days .opt { display: grid; justify-items: center; gap: 2px; padding: 8px 0; }
+.days .opt small { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em }
+.days .opt b { font: 700 17px/1 var(--font-mono); }
+.times { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 10px; }
+.times .opt { text-align: center; font: 500 14px/1 var(--font-mono); padding: 11px 0; }
+.times .opt:disabled { opacity: .3; text-decoration: line-through; cursor: not-allowed; }
+.hint { color: var(--muted); font-size: 12px; margin: 8px 0 0 }
+
+.bar { position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(to top, var(--asphalt) 70%, transparent);
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+.sum small { display: block; color: var(--muted); font-size: 12px; }
+.sum b { font: 700 24px/1.1 var(--font-mono); font-variant-numeric: tabular-nums; }
+.go { background: var(--yellow); color: var(--yellow-ink); border: 0; border-radius: 14px; padding: 15px 18px; font-weight: 700; cursor: pointer; transition: opacity .2s, transform .1s; }
+.go:active { transform: scale(.97) }
+.go:disabled { opacity: .4; cursor: default }
+body.tg .go { display: none }
+
+/* success ticket */
+.done { position: absolute; inset: 0; background: var(--asphalt); padding: 24px 16px; overflow-y: auto; display: grid; align-content: start; gap: 16px; animation: up .45s cubic-bezier(.2,.8,.2,1); }
+@keyframes up { from { transform: translateY(30px); opacity: 0 } to { transform: none; opacity: 1 } }
+.check { width: 56px; height: 56px; border-radius: 50%; background: var(--ok); display: grid; place-items: center; margin: 8px auto 0; }
+.done h2 { text-align: center; font: 700 20px/1.2 var(--font-display); margin: 0 }
+.ticket { background: var(--panel); border-radius: 16px; position: relative; }
+.ticket .top, .ticket .bottom { padding: 16px 18px; }
+.ticket .top { border-bottom: 2px dashed var(--line); }
+.ticket::before, .ticket::after { content: ""; position: absolute; width: 22px; height: 22px; border-radius: 50%; background: var(--asphalt); top: var(--cut, 120px); transform: translateY(-50%); }
+.ticket::before { left: -11px } .ticket::after { right: -11px }
+.ticket .no { font: 500 12px/1 var(--font-mono); color: var(--muted); letter-spacing: .08em }
+.ticket .when { font: 700 22px/1.2 var(--font-display); margin: 8px 0 2px }
+.ticket dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; margin: 0; font-size: 14px }
+.ticket dt { color: var(--muted) } .ticket dd { margin: 0; }
+.ticket .total { display: flex; justify-content: space-between; align-items: baseline; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.ticket .total b { font: 700 22px/1 var(--font-mono); color: var(--yellow) }
+.fixed { font-size: 12px; color: var(--ok); margin-top: 6px }
+.again { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 12px; cursor: pointer; }
+
+/* ---------- owner side ---------- */
+.side { display: grid; gap: 18px; min-width: 0; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; }
+.card h2 { font: 600 15px/1.3 var(--font-display); margin: 0 0 12px; }
+.ownerchat { background: var(--asphalt); border-radius: 12px; padding: 12px; min-height: 160px; display: grid; align-content: end; gap: 8px; }
+.ownerchat .empty { color: var(--muted); font-size: 14px; text-align: center; align-self: center; }
+.bubble { background: var(--panel-2); border-radius: 14px 14px 14px 4px; padding: 10px 12px; max-width: 100%; animation: up .4s cubic-bezier(.2,.8,.2,1); white-space: pre-line; overflow-wrap: anywhere; font-size: 14px; }
+.bubble b { font-weight: 700 }
+.bubble .money { font-family: var(--font-mono); color: var(--yellow); }
+.ikb { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.ikb span { text-align: center; font-size: 13px; padding: 8px; border-radius: 10px; background: var(--panel-2); color: #8cc0ff; }
+.feat { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+.feat li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; }
+.feat li span:first-child { width: 28px; height: 28px; border-radius: 8px; background: var(--panel-2); display: grid; place-items: center; font-size: 14px; }
+.feat b { display: block; font-weight: 600 } .feat small { color: var(--muted); font-size: 13px }
+.note { color: var(--muted); font-size: 12px; margin: 10px 0 0 }
+
+/* ---------- pages + tab bar ---------- */
+.view { animation: fade .25s ease both; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+.app { padding-bottom: 170px; }
+.app.notbook { padding-bottom: 90px; }
+.tabs { position: absolute; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: var(--panel); border-top: 1px solid var(--line); padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)); z-index: 2; }
+.tabs button { background: none; border: 0; display: grid; justify-items: center; gap: 3px; padding: 6px 0; font-size: 11px; color: var(--muted); cursor: pointer; position: relative; }
+.tabs button svg { width: 22px; height: 22px; }
+.tabs button[aria-selected="true"] { color: var(--yellow); }
+.tabs .badge { position: absolute; top: 2px; left: calc(50% + 6px); min-width: 16px; height: 16px; border-radius: 8px; background: var(--yellow); color: var(--yellow-ink); font: 700 10px/16px var(--font-mono); padding: 0 4px; }
+.bar { bottom: 62px; }
+body.tg .bar { bottom: 62px; }
+.pagehead { padding: 20px 0 6px; }
+.pagehead h2 { font: 700 20px/1.15 var(--font-display); margin: 0 0 4px; }
+.pagehead p { margin: 0; color: var(--muted); font-size: 13px; }
+.seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; background: var(--panel); border-radius: 12px; padding: 4px; margin: 14px 0 12px; }
+.seg button { background: none; border: 0; border-radius: 9px; padding: 9px 4px; font-size: 13px; cursor: pointer; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--panel-2); color: var(--ink); font-weight: 600; }
+.ptable { width: 100%; border-collapse: collapse; font-size: 14px; }
+.ptable th { text-align: right; font: 500 11px/1.2 var(--font-body); color: var(--muted); text-transform: uppercase; letter-spacing: .05em; padding: 0 6px 8px; }
+.ptable th:first-child { text-align: left }
+.ptable td { padding: 0; border-top: 1px solid var(--line); }
+.ptable td.n { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; padding: 11px 6px; }
+.ptable td.r { font: 700 15px/1 var(--font-mono); padding: 11px 6px; }
+.ptable td.a { width: 40px; text-align: right; }
+.ptable td.a button { background: var(--yellow); color: var(--yellow-ink); border: 0; border-radius: 8px; width: 32px; height: 28px; font-weight: 700; cursor: pointer; }
+.list { display: grid; gap: 1px; background: var(--line); border-radius: 14px; overflow: hidden; margin-top: 10px; }
+.list > div { background: var(--panel); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 12px 14px; align-items: center; }
+.list b { font-weight: 600 } .list small { color: var(--muted); grid-column: 1; font-size: 12px }
+.list .p { grid-row: 1 / span 2; grid-column: 2; font: 700 14px/1 var(--font-mono); }
+.sub { font: 600 13px/1.2 var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 22px 0 0; }
+.howto { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; background: var(--panel); border-radius: 14px; padding: 14px; margin-top: 10px; }
+.howto .size { font: 700 24px/1 var(--font-mono); letter-spacing: .02em; }
+.howto .size span { color: var(--yellow); }
+.howto p { margin: 0; color: var(--muted); font-size: 13px; }
+.empty-state { text-align: center; padding: 40px 10px; color: var(--muted); display: grid; gap: 14px; justify-items: center; }
+.empty-state svg { width: 64px; height: 64px; opacity: .5 }
+.mine { display: grid; gap: 14px; margin-top: 14px; }
+.mine .ticket .acts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.mine .ticket .acts a, .mine .ticket .acts button { text-align: center; text-decoration: none; background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 10px; font-size: 13px; color: var(--ink); cursor: pointer; }
+.mine .ticket.cancelled { opacity: .45 }
+.mine .ticket .status { font-size: 12px; color: var(--ok); }
+.contact { display: grid; gap: 10px; margin-top: 14px; }
+.contact .row { background: var(--panel); border-radius: 14px; padding: 14px; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; align-items: center; }
+.contact .row > span { width: 36px; height: 36px; border-radius: 10px; background: var(--panel-2); display: grid; place-items: center; }
+.contact .row b { display: block; font-weight: 600 } .contact .row small { color: var(--muted) }
+.contact .row .copy { user-select: all; font-family: var(--font-mono); }
+.hours { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin-top: 8px; }
+.hours div { text-align: center; background: var(--panel-2); border-radius: 8px; padding: 6px 0; font-size: 11px; color: var(--muted); }
+.hours div.today { background: var(--yellow); color: var(--yellow-ink); font-weight: 700; }
+.cta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.cta a { text-align: center; text-decoration: none; border-radius: 12px; padding: 13px; font-weight: 600; }
+.cta a.y { background: var(--yellow); color: var(--yellow-ink) }
+.cta a.g { background: var(--panel-2); color: var(--ink); border: 1px solid var(--line) }
+details { background: var(--panel); border-radius: 12px; padding: 0 14px; }
+details + details { margin-top: 6px }
+summary { cursor: pointer; padding: 13px 0; font-weight: 500; list-style: none; display: flex; justify-content: space-between; gap: 10px; }
+summary::-webkit-details-marker { display: none }
+summary::after { content: "+"; color: var(--yellow); font: 700 18px/1 var(--font-mono); }
+details[open] summary::after { content: "−"; }
+details p { margin: 0 0 14px; color: var(--muted); font-size: 14px; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important } }
+</style>
+</head><body>
+<noscript><div style="max-width:560px;margin:40px auto;padding:24px;border-radius:16px;background:#fff;color:#222;font:16px/1.5 system-ui,sans-serif;text-align:center"><b>Демо интерактивное и не работает в предпросмотре файла.</b><br>Откройте этот файл в браузере (Safari или Chrome) на компьютере. На телефоне удобнее посмотреть видео или скриншоты.</div></noscript>
+
+<div class="shell">
+  <header class="intro">
+    <span class="tag">Демо · Telegram Mini App</span>
+    <h1>Запись на переобувку: Автоботы Шиномонтаж 24, Волхонское ш., 127</h1>
+    <p>Так выглядит запись внутри Telegram. Клиент выбирает машину и радиус, сразу видит цену, отмечает «я подписчик ВК» и получает скидку. А через полгода бот сам напомнит ему, что пора переобуваться, и позовёт обратно к вам. Попробуйте записаться: справа появится сообщение, которое получит мастер.</p>
+  </header>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="screen" id="screen">
+        <div class="tgbar"><b>Автоботы 24</b><span>мини-приложение</span></div>
+        <main class="app" id="app">
+          <div class="view" id="v-book">
+          <section class="hero">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <circle cx="32" cy="32" r="28" fill="#22262c" stroke="#3a3f47" stroke-width="2"/>
+              <g stroke="#2e333a" stroke-width="3">
+                <path d="M32 4v8M32 52v8M4 32h8M52 32h8M12 12l6 6M46 46l6 6M12 52l6-6M46 18l6-6"/>
+              </g>
+              <circle cx="32" cy="32" r="15" fill="#ffc21a"/>
+              <circle cx="32" cy="32" r="5" fill="#121417"/>
+              <g fill="#121417"><circle cx="32" cy="22" r="2"/><circle cx="41.5" cy="29" r="2"/><circle cx="38" cy="40" r="2"/><circle cx="26" cy="40" r="2"/><circle cx="22.5" cy="29" r="2"/></g>
+            </svg>
+            <div>
+              <h2>Автоботы Шиномонтаж 24</h2>
+              <p>Волхонское ш., 127 · 9:00–21:00</p>
+            </div>
+          </section>
+          <div class="promise"><span>Цена <b>фиксируется</b></span><span>Подписчикам ВК <b>−10%</b></span><span>Весной <b>напомним</b></span></div>
+
+          <section class="step" id="s-car">
+            <h3><i>1</i>Машина</h3>
+            <div class="cars" id="cars"></div>
+          </section>
+
+          <section class="step" id="s-radius">
+            <h3><i>2</i>Радиус дисков</h3>
+            <div class="radius">
+              <svg class="tire" viewBox="0 0 120 120" aria-hidden="true">
+                <g class="spin" id="spin">
+                  <circle cx="60" cy="60" r="56" fill="#22262c"/>
+                  <circle cx="60" cy="60" r="56" fill="none" stroke="#2e333a" stroke-width="6" stroke-dasharray="4 5"/>
+                  <circle class="rim" id="rim" cx="60" cy="60" r="34" fill="#3a3f47" stroke="#ffc21a" stroke-width="2.5"/>
+                  <g fill="#121417"><circle cx="60" cy="48" r="3"/><circle cx="71" cy="56" r="3"/><circle cx="67" cy="70" r="3"/><circle cx="53" cy="70" r="3"/><circle cx="49" cy="56" r="3"/></g>
+                  <circle cx="60" cy="60" r="7" fill="#ffc21a"/>
+                </g>
+              </svg>
+              <div class="tirelabel" id="tirelabel">R16<small>например, 205/55 R16. Радиус написан на боку шины</small></div>
+            </div>
+            <div class="chips" id="radii"></div>
+          </section>
+
+          <section class="step" id="s-service">
+            <h3><i>3</i>Услуга</h3>
+            <div class="services" id="services"></div>
+            <div class="extras" id="extras"></div>
+            <div class="perks" id="perks"></div>
+          </section>
+
+          <section class="step locked" id="s-time">
+            <h3><i>4</i>День и время</h3>
+            <div class="days" id="days"></div>
+            <div class="times" id="times"></div>
+            <p class="hint">Зачёркнутое время уже занято.</p>
+          </section>
+          </div>
+
+          <div class="view" id="v-prices" hidden>
+            <div class="pagehead"><h2>Цены</h2><p>За 4 колеса. Нажмите «→», чтобы записаться с этим радиусом.</p></div>
+            <div class="seg" id="ptype"></div>
+            <table class="ptable"><thead><tr><th>Радиус</th><th>Переобувка</th><th>Колёса</th><th>Баланс.</th><th></th></tr></thead><tbody id="prows"></tbody></table>
+            <h3 class="sub">Другие услуги</h3>
+            <div class="list">
+              <div><b>Ремонт прокола</b><small>жгут или латка, 1 колесо</small><span class="p">от 500 ₽</span></div>
+              <div><b>Хранение шин</b><small>сезон, 4 шины, мойка перед хранением</small><span class="p">от 3 000 ₽</span></div>
+              <div><b>Новые вентили</b><small>4 шт., ставим при переобувке</small><span class="p">400 ₽</span></div>
+              <div><b>Пакеты для шин</b><small>4 шт.</small><span class="p">200 ₽</span></div>
+            </div>
+            <h3 class="sub">Как узнать свой радиус</h3>
+            <div class="howto">
+              <div class="size">205/55 <span>R16</span> 91V</div>
+              <p>Найдите такую надпись на боку шины. Нужна часть с буквой R: это диаметр диска в дюймах. Здесь это R16.</p>
+            </div>
+            <p class="note">Цены примерные, для демонстрации.</p>
+          </div>
+
+          <div class="view" id="v-my" hidden>
+            <div class="pagehead"><h2>Мои записи</h2><p>Отменить или построить маршрут можно отсюда.</p></div>
+            <div class="mine" id="mine"></div>
+          </div>
+
+          <div class="view" id="v-info" hidden>
+            <div class="pagehead"><h2>Контакты</h2><p>Автоботы Шиномонтаж 24</p></div>
+            <div class="contact">
+              <div class="row"><span>📍</span><div><b>Волхонское ш., 127</b><small>Санкт-Петербург</small></div></div>
+              <div class="row"><span>📞</span><div><b class="copy">+7 963 326-46-90</b><small>звонки и WhatsApp</small></div></div>
+              <div class="row"><span>🕘</span><div><b>Ежедневно 9:00–21:00</b><div class="hours" id="hours"></div></div></div>
+              <div class="cta">
+                <a class="y" href="https://yandex.ru/maps/?text=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3%2C%20%D0%92%D0%BE%D0%BB%D1%85%D0%BE%D0%BD%D1%81%D0%BA%D0%BE%D0%B5%20%D1%88%D0%BE%D1%81%D1%81%D0%B5%2C%20127" target="_blank" rel="noopener">Маршрут</a>
+                <a class="g" href="https://wa.me/79633264690" target="_blank" rel="noopener">WhatsApp</a>
+              </div>
+            </div>
+            <h3 class="sub">Частые вопросы</h3>
+            <div style="margin-top:10px">
+              <details><summary>Сколько длится переобувка?</summary><p>Около 40 минут на легковую машину, у внедорожника чуть дольше. По записи ждать очередь не нужно.</p></details>
+              <details><summary>Цена точно не изменится на месте?</summary><p>Да. Цена считается по радиусу и типу машины и фиксируется в записи. Если мастер заметит, что нужно что-то ещё, например ремонт прокола, он сначала спросит вас.</p></details>
+              <details><summary>Как получить скидку подписчика ВК?</summary><p>Подпишитесь на нашу группу ВКонтакте и отметьте «Я подписчик ВК» при записи. Мастер на месте попросит показать подписку на телефоне.</p></details>
+              <details><summary>Вы напомните, когда менять резину?</summary><p>Да, если оставить галочку «Напомнить о переобувке». Осенью запишетесь на зимнюю, а в начале апреля бот сам напишет, что пора на летнюю. Отписаться можно одной кнопкой.</p></details>
+              <details><summary>Можно приехать без записи?</summary><p>Можно, но в сезон очередь бывает до пары часов. С записью приезжаете ко времени.</p></details>
+              <details><summary>Не знаю свой радиус</summary><p>Он написан на боку шины, например 205/55 R16. Посмотрите подсказку на странице «Цены».</p></details>
+            </div>
+          </div>
+        </main>
+
+        <div class="bar">
+          <div class="sum"><small id="sumlabel">Итого, 4 колеса</small><b id="sum">0 ₽</b></div>
+          <button class="go" id="go" type="button" disabled>Выберите время</button>
+        </div>
+        <nav class="tabs" role="tablist" id="tabs">
+          <button type="button" role="tab" data-v="book" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/></svg>Запись</button>
+          <button type="button" role="tab" data-v="prices" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Цены</button>
+          <button type="button" role="tab" data-v="my" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Мои записи<span class="badge" id="badge" hidden>0</span></button>
+          <button type="button" role="tab" data-v="info" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Контакты</button>
+        </nav>
+        <div class="done" id="done" hidden></div>
+      </div>
+    </div>
+
+    <aside class="side">
+      <section class="card">
+        <h2>Telegram мастера</h2>
+        <div class="ownerchat" id="owner" aria-live="polite"><p class="empty">Здесь появится новая запись.<br>Запишитесь в приложении слева.</p></div>
+      </section>
+      <section class="card">
+        <h2>Что ещё делает бот</h2>
+        <ul class="feat">
+          <li><span>⏰</span><div><b>Напоминает за 2 часа</b><small>Меньше клиентов, которые записались и не приехали</small></div></li>
+          <li><span>↺</span><div><b>Отмена и перенос в один клик</b><small>Окно сразу снова свободно для других</small></div></li>
+          <li><span>📋</span><div><b>Расписание на день</b><small>Мастер пишет /today и видит, кто и во сколько приедет</small></div></li>
+          <li><span>🌱</span><div><b>Сам зовёт клиентов обратно</b><small>Записался осенью на зимнюю — 1 апреля бот напишет «пора на летнюю». И наоборот, 1 октября</small></div></li>
+          <li><span>🎁</span><div><b>Скидка подписчикам ВК</b><small>Вы видите в заявке, что клиент подписчик, и проверяете на месте</small></div></li>
+        </ul>
+        <p class="note">Цены в демо примерные. В вашей версии будет ваш прайс.</p>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<script>
+const PRICES = {
+  car:   { R13: 1800, R14: 1900, R15: 2100, R16: 2400, R17: 2700, R18: 3100, R19: 3500, R20: 3900 },
+  cross: { R15: 2500, R16: 2800, R17: 3100, R18: 3500, R19: 3900, R20: 4400, R21: 4900 },
+  suv:   { R16: 3200, R17: 3600, R18: 4000, R19: 4500, R20: 5000, R21: 5600, R22: 6200 }
+};
+const TYPES = { car: "Легковой", cross: "Кроссовер", suv: "Внедорожник" };
+const SIZES = { R13: "175/70", R14: "185/65", R15: "195/65", R16: "205/55", R17: "225/45", R18: "235/45", R19: "245/40", R20: "255/40", R21: "265/40", R22: "285/35" };
+const SERVICES = {
+  full:   { name: "Сезонная переобувка", sub: "снятие, монтаж, балансировка · ~40 мин", k: 1 },
+  wheels: { name: "Перестановка колёс", sub: "шины уже на дисках · ~20 мин", k: 0.45 },
+  bal:    { name: "Балансировка 4 колёс", sub: "~25 мин", k: 0.4 }
+};
+const EXTRAS = { valves: { name: "Новые вентили", p: 400 }, bags: { name: "Пакеты для шин", p: 200 } };
+const HOURS = [10,11,12,13,14,15,16,17,18,19,20];
+const CAR_SVG = {
+  car:   '<path d="M6 26h76v-6l-10-3-12-9H30l-12 9H8z" fill="currentColor"/>',
+  cross: '<path d="M6 26h76v-9l-9-3-9-9H26l-10 9-10 3z" fill="currentColor"/>',
+  suv:   '<path d="M6 26h76V12l-6-2-4-7H14l-6 7H6z" fill="currentColor"/>'
+};
+
+const tg = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData !== undefined && window.Telegram.WebApp.platform !== "unknown" ? window.Telegram.WebApp : null;
+if (tg) { document.body.classList.add("tg"); tg.ready(); tg.expand(); try { tg.setHeaderColor("#121417"); tg.setBackgroundColor("#121417"); } catch (e) {} }
+const haptic = () => { try { tg && tg.HapticFeedback.selectionChanged(); } catch (e) {} };
+
+// busy slots: the bot passes ?busy=2026-10-03_11:00,... ; in demo mode we fake a realistic pattern
+const busy = new Set();
+const q = new URLSearchParams(location.search).get("busy");
+if (q) q.split(",").forEach(s => busy.add(s));
+const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+if (!q) for (let i = 0; i < 7; i++) {
+  const d = new Date(); d.setDate(d.getDate() + i);
+  HOURS.forEach((h, j) => { if ((j * 7 + i * 3) % 5 < 2) busy.add(`${iso(d)}_${String(h).padStart(2, "0")}:00`); });
+}
+
+const st = { type: "car", radius: "R16", service: "full", extras: [], vk: false, remind: true, day: null, time: null };
+const VK_DISCOUNT = 0.1; // скидка подписчикам ВК на услугу (без допов)
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString("ru-RU") + " ₽";
+const round50 = n => Math.round(n / 50) * 50;
+const svcPrice = (s) => round50(PRICES[st.type][st.radius] * SERVICES[s].k);
+const vkOff = (s = st.service) => st.vk ? round50(svcPrice(s) * VK_DISCOUNT) : 0;
+const total = () => svcPrice(st.service) - vkOff() + st.extras.reduce((a, e) => a + EXTRAS[e].p, 0);
+// следующий сезон: переобулись осенью → напомним 1 апреля, весной → 1 октября
+function nextSeason(dayIso) {
+  const d = new Date(dayIso + "T12:00"), m = d.getMonth(), y = d.getFullYear();
+  if (m >= 2 && m <= 7) return { date: new Date(y, 9, 1), what: "зимнюю" };
+  return { date: new Date(m >= 8 ? y + 1 : y, 3, 1), what: "летнюю" };
+}
+
+function btn(cls, html, pressed, onClick) {
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "opt " + cls; b.innerHTML = html;
+  b.setAttribute("aria-pressed", pressed ? "true" : "false");
+  b.onclick = () => { haptic(); onClick(); render(); };
+  return b;
+}
+
+function render() {
+  $("cars").replaceChildren(...Object.keys(TYPES).map(t => btn("", `<svg viewBox="0 0 88 32" aria-hidden="true" style="color:${st.type === t ? "var(--yellow)" : "var(--muted)"}">${CAR_SVG[t]}<circle cx="24" cy="26" r="6" fill="#121417" stroke="currentColor" stroke-width="2"/><circle cx="66" cy="26" r="6" fill="#121417" stroke="currentColor" stroke-width="2"/></svg>${TYPES[t]}`,
+    st.type === t, () => { st.type = t; if (!PRICES[t][st.radius]) st.radius = Object.keys(PRICES[t])[1]; })));
+
+  $("radii").replaceChildren(...Object.keys(PRICES[st.type]).map(r => btn("chip", r, st.radius === r, () => { st.radius = r; })));
+  const n = parseInt(st.radius.slice(1), 10);
+  $("rim").setAttribute("r", 22 + (n - 13) * 3);
+  $("spin").style.transform = `rotate(${(n - 13) * 40}deg)`;
+  $("tirelabel").innerHTML = `${st.radius}<small>например, ${SIZES[st.radius]} ${st.radius}. Радиус написан на боку шины</small>`;
+
+  $("services").replaceChildren(...Object.entries(SERVICES).map(([k, s]) => btn("", `<b>${s.name}</b><small>${s.sub}</small><span class="p">${fmt(svcPrice(k))}</span>`, st.service === k, () => { st.service = k; })));
+  $("extras").replaceChildren(...Object.entries(EXTRAS).map(([k, e]) => btn("", `<span>${e.name}</span><span>+${e.p}</span>`, st.extras.includes(k),
+    () => { st.extras = st.extras.includes(k) ? st.extras.filter(x => x !== k) : [...st.extras, k]; })));
+  $("perks").replaceChildren(
+    btn("perk", `<span class="box"></span><span><b>Я подписчик ВК</b><small>−10% на услугу, покажите подписку мастеру</small></span><span class="p">${st.vk ? "−" + fmt(vkOff()) : "−10%"}</span>`, st.vk, () => { st.vk = !st.vk; }),
+    btn("perk", `<span class="box"></span><span><b>Напомнить о переобувке</b><small>бот напишет, когда пора менять резину</small></span><span class="p">🌱</span>`, st.remind, () => { st.remind = !st.remind; }));
+
+  $("s-time").classList.remove("locked");
+  const days = [];
+  for (let i = 0; i < 7; i++) { const d = new Date(); d.setDate(d.getDate() + i); days.push(d); }
+  if (!st.day) st.day = iso(days[0]);
+  $("days").replaceChildren(...days.map((d, i) => btn("", `<small>${i === 0 ? "сег" : i === 1 ? "зав" : d.toLocaleDateString("ru-RU", { weekday: "short" })}</small><b>${d.getDate()}</b>`,
+    st.day === iso(d), () => { st.day = iso(d); st.time = null; })));
+  const now = new Date();
+  $("times").replaceChildren(...HOURS.map(h => {
+    const t = `${String(h).padStart(2, "0")}:00`;
+    const b = btn("", t, st.time === t, () => { st.time = t; });
+    if (busy.has(`${st.day}_${t}`) || (st.day === iso(now) && h <= now.getHours())) b.disabled = true;
+    return b;
+  }));
+
+  animateSum(total());
+  const ready = !!st.time;
+  const label = ready ? `Записаться · ${fmt(total())}` : "Выберите время";
+  $("go").disabled = !ready; $("go").textContent = ready ? "Записаться" : "Выберите время";
+  $("sumlabel").textContent = ready ? `${dayLabel()} в ${st.time}` : "Итого, цена фиксируется";
+  if (tg) { tg.MainButton.setParams({ text: label, color: "#ffc21a", text_color: "#15130a", is_active: ready, is_visible: view === "book" }); }
+}
+
+let shown = 0, raf;
+function animateSum(to) {
+  cancelAnimationFrame(raf);
+  const from = shown, t0 = performance.now();
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const step = t => {
+    const k = reduce ? 1 : Math.min(1, (t - t0) / 350);
+    shown = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)));
+    $("sum").textContent = fmt(shown);
+    if (k < 1) raf = requestAnimationFrame(step);
+  };
+  raf = requestAnimationFrame(step);
+}
+const dayLabel = () => new Date(st.day + "T12:00").toLocaleDateString("ru-RU", { day: "numeric", month: "long", weekday: "short" });
+
+function submit() {
+  if (!st.time) return;
+  const payload = { type: st.type, radius: st.radius, service: st.service, extras: st.extras, vk: st.vk, remind: st.remind, day: st.day, time: st.time, total: total() };
+  if (tg) { try { tg.HapticFeedback.notificationOccurred("success"); } catch (e) {} tg.sendData(JSON.stringify(payload)); return; }
+  showDone(payload);
+}
+
+function showDone(p) {
+  const no = String(nextNo++).padStart(4, "0");
+  mine.push({ no, ...p, status: "new" });
+  busy.add(`${p.day}_${p.time}`);
+  updateBadge();
+  const extras = p.extras.map(e => EXTRAS[e].name.toLowerCase()).join(", ");
+  const season = nextSeason(p.day);
+  $("done").innerHTML = `
+    <div class="check"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#121417" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <h2>Вы записаны</h2>
+    <div class="ticket">
+      <div class="top"><div class="no">ЗАПИСЬ № ${no}</div><div class="when">${dayLabel()}, ${p.time}</div><div style="color:var(--muted);font-size:14px">Волхонское ш., 127</div></div>
+      <div class="bottom">
+        <dl><dt>Машина</dt><dd>${TYPES[p.type]}, ${p.radius}</dd><dt>Услуга</dt><dd>${SERVICES[p.service].name}</dd>${extras ? `<dt>Доп.</dt><dd>${extras}</dd>` : ""}${p.vk ? `<dt>Скидка</dt><dd>подписчик ВК, −10%</dd>` : ""}</dl>
+        <div class="total"><span>К оплате</span><b>${fmt(p.total)}</b></div>
+        <div class="fixed">✓ Цена зафиксирована и на месте не изменится</div>
+      </div>
+    </div>
+    ${p.remind ? `<div class="season">🌱 <span><b>${season.date.toLocaleDateString("ru-RU", { day: "numeric", month: "long" })}</b> бот напомнит, что пора на ${season.what} резину</span></div>` : ""}
+    <p class="hint" style="text-align:center">В настоящем боте дальше: кнопка «Отправить номер», напоминание за 2 часа, отмена в один клик.</p>
+    <div class="cta"><button class="again" id="again" type="button">Записать ещё машину</button><button class="again" id="tomine" type="button">Мои записи</button></div>`;
+  $("done").hidden = false;
+  requestAnimationFrame(() => $("done").querySelector(".ticket").style.setProperty("--cut", $("done").querySelector(".top").offsetHeight + "px"));
+  $("again").onclick = () => { $("done").hidden = true; st.time = null; render(); $("app").scrollTop = 0; };
+  $("tomine").onclick = () => { $("done").hidden = true; st.time = null; render(); show("my"); };
+
+  const o = $("owner");
+  o.querySelector(".empty")?.remove();
+  const b = document.createElement("div");
+  b.innerHTML = `<div class="bubble">🛞 <b>Новая запись № ${no}</b>
+<b>${dayLabel()}, ${p.time}</b>
+${TYPES[p.type]}, ${p.radius} · ${SERVICES[p.service].name}${extras ? "\n+ " + extras : ""}
+Цена: <span class="money">${fmt(p.total)}</span> (клиент видел и согласен)${p.vk ? "\n🎁 Подписчик ВК, скидка учтена. Проверьте подписку" : ""}${p.remind ? "\n🌱 Напомнить о переобувке: " + season.date.toLocaleDateString("ru-RU", { day: "numeric", month: "long" }) : ""}
+📞 +7 921 ••• 45 67</div>
+<div class="ikb" style="margin-top:6px"><span>✔ Подтвердить</span><span>✖ Отказать</span></div>`;
+  o.appendChild(b);
+}
+
+function ownerSay(html) {
+  const o = $("owner");
+  o.querySelector(".empty")?.remove();
+  const b = document.createElement("div");
+  b.className = "bubble"; b.innerHTML = html;
+  o.appendChild(b);
+}
+
+/* ---------- pages ---------- */
+let view = "book";
+function show(v) {
+  view = v;
+  ["book", "prices", "my", "info"].forEach(k => { $("v-" + k).hidden = k !== v; });
+  document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.v === v ? "true" : "false"));
+  document.querySelector(".bar").hidden = v !== "book";
+  $("app").classList.toggle("notbook", v !== "book");
+  $("app").scrollTop = 0;
+  if (v === "prices") renderPrices();
+  if (v === "my") renderMine();
+  if (tg) render();
+  haptic();
+}
+document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => show(b.dataset.v));
+
+let ptype = "car";
+function renderPrices() {
+  $("ptype").replaceChildren(...Object.keys(TYPES).map(t => {
+    const b = document.createElement("button");
+    b.type = "button"; b.textContent = TYPES[t]; b.setAttribute("aria-pressed", ptype === t ? "true" : "false");
+    b.onclick = () => { ptype = t; haptic(); renderPrices(); };
+    return b;
+  }));
+  $("prows").innerHTML = Object.entries(PRICES[ptype]).map(([r, base]) =>
+    `<tr><td class="r">${r}</td>${["full", "wheels", "bal"].map(k => `<td class="n">${round50(base * SERVICES[k].k).toLocaleString("ru-RU")}</td>`).join("")}<td class="a"><button type="button" data-r="${r}" aria-label="Записаться, ${r}">→</button></td></tr>`).join("");
+  $("prows").querySelectorAll("button").forEach(b => b.onclick = () => { st.type = ptype; st.radius = b.dataset.r; show("book"); render(); });
+}
+
+// my bookings: in Telegram the bot passes ?my=0012~2026-10-03~10:00~full~R16~car~2400,...
+const mine = [];
+let nextNo = 140 + Math.floor(Math.random() * 60);
+const qm = new URLSearchParams(location.search).get("my");
+if (qm) qm.split(",").forEach(x => { const [no, day, time, service, radius, type, total] = x.split("~"); if (SERVICES[service] && TYPES[type]) mine.push({ no, day, time, service, radius, type, total: +total, extras: [], status: "new" }); });
+function updateBadge() {
+  const n = mine.filter(m => m.status !== "cancelled").length;
+  $("badge").textContent = n; $("badge").hidden = n === 0;
+}
+function renderMine() {
+  const box = $("mine");
+  if (!mine.length) {
+    box.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><div>Записей пока нет</div><button class="go" type="button" id="emptygo">Записаться</button></div>`;
+    $("emptygo").onclick = () => show("book");
+    return;
+  }
+  box.replaceChildren(...mine.slice().reverse().map(m => {
+    const d = document.createElement("div");
+    d.className = "ticket" + (m.status === "cancelled" ? " cancelled" : "");
+    const when = new Date(m.day + "T12:00").toLocaleDateString("ru-RU", { day: "numeric", month: "long", weekday: "short" });
+    d.innerHTML = `<div class="top"><div class="no">ЗАПИСЬ № ${m.no}</div><div class="when">${when}, ${m.time}</div></div>
+      <div class="bottom"><dl><dt>Машина</dt><dd>${TYPES[m.type]}, ${m.radius}</dd><dt>Услуга</dt><dd>${SERVICES[m.service].name}</dd></dl>
+      <div class="total"><span>К оплате</span><b>${fmt(m.total)}</b></div>
+      ${m.status === "cancelled" ? `<div class="status" style="color:var(--muted)">Запись отменена</div>` :
+        `<div class="acts"><a href="https://yandex.ru/maps/?text=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3%2C%20%D0%92%D0%BE%D0%BB%D1%85%D0%BE%D0%BD%D1%81%D0%BA%D0%BE%D0%B5%20%D1%88%D0%BE%D1%81%D1%81%D0%B5%2C%20127" target="_blank" rel="noopener">📍 Маршрут</a><button type="button">Отменить</button></div>`}</div>`;
+    const c = d.querySelector(".acts button");
+    if (c) c.onclick = () => cancelBooking(m, c);
+    return d;
+  }));
+  requestAnimationFrame(() => box.querySelectorAll(".ticket").forEach(t => t.style.setProperty("--cut", t.querySelector(".top").offsetHeight + "px")));
+}
+function cancelBooking(m, btnEl) {
+  if (btnEl.dataset.armed !== "1") { btnEl.dataset.armed = "1"; btnEl.textContent = "Точно отменить?"; return; }
+  if (tg) { tg.sendData(JSON.stringify({ action: "cancel", no: m.no })); return; }
+  m.status = "cancelled";
+  busy.delete(`${m.day}_${m.time}`);
+  updateBadge(); renderMine(); render();
+  ownerSay(`❌ Клиент отменил запись № ${m.no} (${m.time}), окно снова свободно.`);
+}
+
+// opening hours strip
+(() => {
+  const names = ["пн", "вт", "ср", "чт", "пт", "сб", "вс"], t = (new Date().getDay() + 6) % 7;
+  $("hours").innerHTML = names.map((n, i) => `<div class="${i === t ? "today" : ""}">${n}</div>`).join("");
+})();
+updateBadge();
+
+$("go").onclick = submit;
+if (tg) tg.MainButton.onClick(submit);
+render();
+</script>
+</body></html>
