@@ -113,3 +113,33 @@ test("симулятор: нет горизонтальной прокрутки
   assert.ok((await p.evaluate(() => document.documentElement.scrollWidth)) <= 375);
   await p.close();
 });
+
+test("симулятор: переключение на груминг — другие услуги, комментарий с 🐾, понедельник выходной", async () => {
+  const p = await setup(); // CLOCK — понедельник
+  await p.click('[data-niche="grooming"]');
+  assert.equal(await p.textContent("h1 .biz-name"), "Груминг «Пушистый хвост»");
+  await p.menu("Записаться");
+  const services = await p.kb().allTextContents();
+  assert.ok(services.some((s) => s.startsWith("Комплекс: мелкие породы")));
+  await p.kb().nth(1).click();
+  const days = await p.kb().allTextContents();
+  assert.ok(days.every((d) => !d.includes("(пн)")), "в понедельник салон не работает");
+  await p.kb().first().click();
+  await p.kb().first().click();
+  await p.say("Анна");
+  await p.locator("#c-rkb button", { hasText: "Поделиться" }).click();
+  assert.match(await p.lastC(), /породу и кличку/);
+  await p.say("шпиц Боня");
+  assert.match(await p.lastC(), /🐾 шпиц Боня[\s\S]*Анна/);
+  await p.kb().filter({ hasText: "Записаться" }).click();
+  assert.match(await p.lastO(), /Комплекс: мелкие породы — 2800 ₽/);
+  assert.deepEqual(p.errors, []);
+  await p.close();
+});
+
+test("симулятор: ссылка #grooming сразу открывает груминг", async () => {
+  const p = await open(browser, "demo/bot.html", { hash: "#grooming", clock: CLOCK });
+  assert.equal(await p.getAttribute('[data-niche="grooming"]', "aria-pressed"), "true");
+  assert.match(await p.$$eval("#c-feed .msg", (m) => m[1].innerText), /Пушистый хвост/);
+  await p.close();
+});

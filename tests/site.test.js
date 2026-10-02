@@ -105,7 +105,7 @@ test("калькулятор: для кроссовера R13/R14 недосту
 test("таблица цен совпадает с конфигом", async () => {
   const p = await open(browser, "services.html");
   const rows = await p.$$eval(".table-wrap:first-of-type tbody tr", (trs) => trs.length);
-  const cfg = await p.evaluate(() => SITE.prices.length);
+  const cfg = await p.evaluate(() => SITE.calc.rows.length);
   assert.equal(rows, cfg);
   await p.close();
 });
@@ -172,6 +172,53 @@ test("demo/site.html: страницы переключаются по #якор
   assert.equal(await p.getAttribute(".nav a.active", "data-nav"), "contacts");
   assert.equal(await p.isVisible(".mapcard"), true); // в одном файле вместо iframe-карты — ссылка
   await p.close();
+});
+
+// ---------- вторая ниша: тот же движок, другой конфиг ----------
+
+test("груминг (demo/grooming.html): другие тексты, светлая тема, без ошибок", async () => {
+  const p = await open(browser, "demo/grooming.html", { clock: "2030-01-15T09:00:00Z" }); // вторник 12:00
+  assert.deepEqual(p.errors, []);
+  assert.match(await p.textContent(".logo"), /Пушистый хвост/);
+  assert.match(await p.textContent("main[data-page=home] h1"), /Красота для питомца/);
+  assert.match(await p.textContent(".hdr .btn"), /Записать питомца/);
+  const bg = await p.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  assert.equal(bg, "rgb(242, 246, 245)"); // светлая тема из config.theme
+  const html = await p.content();
+  assert.ok(!/(?<![а-яё])шин|переобув|\bR1[3-9]\b/i.test(await p.innerText("body")), "на сайте груминга не должно быть «шинных» слов");
+  assert.ok(html.length > 0);
+  await p.close();
+});
+
+test("груминг: калькулятор по размеру питомца, без умножения на 4", async () => {
+  const p = await open(browser, "demo/grooming.html", { hash: "#services" });
+  assert.equal(await p.textContent("#calc-sum"), "1 500 ₽"); // гигиена, до 5 кг
+  await p.click("label:has(#car-full)");
+  await p.click('label:has([id="r-15–30 кг"])');
+  await p.click("label:has(#x-teeth)");
+  assert.equal(await p.textContent("#calc-sum"), "5 000 ₽"); // 4500 + 500
+  assert.match(await p.textContent("#calc-time"), /150 минут у мастера/);
+  await p.click("label:has(#car-hygiene)");
+  assert.equal(await p.isDisabled('[id="r-30+ кг"]'), true);
+  await p.close();
+});
+
+test("груминг: в понедельник выходной", async () => {
+  const p = await open(browser, "demo/grooming.html", { hash: "#contacts", clock: "2030-01-14T09:00:00Z" });
+  assert.match(await p.textContent("main[data-page=contacts] .status"), /откроемся завтра в 10:00/);
+  assert.match(await p.textContent(".ftr"), /Пн выходной/);
+  await p.close();
+});
+
+test("demo/grooming.html собран из актуальных исходников", async () => {
+  const { execFileSync } = require("node:child_process");
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const os = require("node:os");
+  const tmp = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "site-")), "g.html");
+  execFileSync("python3", [path.join(__dirname, "..", "tools", "build_demo.py"), "--config", "examples/grooming.config.js", tmp]);
+  assert.ok(fs.readFileSync(tmp, "utf8") === fs.readFileSync(path.join(__dirname, "..", "demo", "grooming.html"), "utf8"),
+    "запустите python tools/build_demo.py --config examples/grooming.config.js demo/grooming.html");
 });
 
 test("demo/site.html собран из актуальных исходников", async () => {

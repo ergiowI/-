@@ -55,6 +55,9 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 .compose { display: flex; gap: 8px; padding: 8px 10px 10px; background: var(--panel); }
 .compose input { flex: 1; min-width: 0; font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 20px; background: var(--page); color: var(--fg); }
 .compose button { border: 0; border-radius: 50%; width: 42px; height: 42px; background: var(--accent); color: var(--accent-fg); font-size: 18px; cursor: pointer; flex: none; }
+.niche { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); margin-bottom: 14px; }
+.niche button { font: inherit; font-weight: 500; border: 0; border-radius: 999px; padding: 8px 14px; background: transparent; color: var(--muted); cursor: pointer; }
+.niche button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); }
 .tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .tools button { font: inherit; font-size: 13px; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); cursor: pointer; }
 .tools span { color: var(--muted); font-size: 13px; }
@@ -66,19 +69,23 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 
 <div class="wrap">
   <header>
-    <h1>Бот записи «Шиномонтаж на Ветеранов»</h1>
-    <p>Интерактивная демо-копия Telegram-бота. Слева вы клиент: запишитесь, перенесите запись, оцените визит. Справа владелец: подтверждает записи и смотрит /today, /week, /stats. Логика слотов та же, что в коде бота: часы работы, длительность услуги, без двойных записей.</p>
+    <div class="niche" role="group" aria-label="Ниша">
+      <button type="button" data-niche="tire" aria-pressed="true">🛞 Шиномонтаж</button>
+      <button type="button" data-niche="grooming" aria-pressed="false">🐾 Груминг</button>
+    </div>
+    <h1>Бот записи «<span class="biz-name">Шиномонтаж на Ветеранов</span>»</h1>
+    <p>Интерактивная демо-копия Telegram-бота. Слева вы клиент: запишитесь, перенесите запись, оцените визит. Справа владелец: подтверждает записи и смотрит /today, /week, /stats. Логика слотов та же, что в коде бота: часы работы, длительность услуги, без двойных записей. Переключите нишу: код тот же, меняется только конфиг.</p>
   </header>
 
   <div class="phones">
     <section class="chat" aria-label="Чат клиента">
-      <div class="chat-head"><div class="ava">Ш</div><div><b>Шиномонтаж на Ветеранов</b><small>бот</small></div><span class="role">Клиент</span></div>
+      <div class="chat-head"><div class="ava" id="ava">Ш</div><div><b class="biz-name">Шиномонтаж на Ветеранов</b><small>бот</small></div><span class="role">Клиент</span></div>
       <div class="feed" id="c-feed"></div>
       <div class="rkb" id="c-rkb"></div>
       <form class="compose" id="c-form"><input id="c-input" placeholder="Сообщение" autocomplete="off"><button aria-label="Отправить">➤</button></form>
     </section>
     <section class="chat" aria-label="Чат владельца">
-      <div class="chat-head"><div class="ava owner">В</div><div><b>Шиномонтаж на Ветеранов</b><small>бот · OWNER_CHAT_ID</small></div><span class="role">Владелец</span></div>
+      <div class="chat-head"><div class="ava owner">В</div><div><b class="biz-name">Шиномонтаж на Ветеранов</b><small>бот · OWNER_CHAT_ID</small></div><span class="role">Владелец</span></div>
       <div class="feed" id="o-feed"></div>
       <div class="rkb" id="o-rkb"></div>
     </section>
@@ -95,17 +102,40 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 
 <script>
 // ===== config.yaml (то же, что в боте) =====
-const CFG = {
-  name: "Шиномонтаж на Ветеранов", address: "Санкт-Петербург, пр. Ветеранов, 101", phone: "+7 (812) 000-00-00",
-  hours: { 0: ["09:00","20:00"], 1: ["09:00","20:00"], 2: ["09:00","20:00"], 3: ["09:00","20:00"], 4: ["09:00","20:00"], 5: ["10:00","18:00"], 6: ["10:00","18:00"] },
-  step: 30, daysAhead: 7,
-  services: [
-    { id: "r16", name: "Переобувка R13–R16", dur: 60, price: 2400 },
-    { id: "r19", name: "Переобувка R17–R19", dur: 90, price: 3200 },
-    { id: "bal", name: "Балансировка", dur: 30, price: 200 },
-    { id: "sto", name: "Хранение шин", dur: 30, price: 1500 },
-  ],
+// Две ниши — один движок. В настоящем боте это config.yaml и examples/grooming.yaml
+const NICHES = {
+  tire: {
+    tab: "Шиномонтаж", ava: "Ш",
+    name: "Шиномонтаж на Ветеранов", address: "Санкт-Петербург, пр. Ветеранов, 101", phone: "+7 (812) 000-00-00",
+    hours: { 0: ["09:00","20:00"], 1: ["09:00","20:00"], 2: ["09:00","20:00"], 3: ["09:00","20:00"], 4: ["09:00","20:00"], 5: ["10:00","18:00"], 6: ["10:00","18:00"] },
+    step: 30, daysAhead: 7,
+    services: [
+      { id: "r16", name: "Переобувка R13–R16", dur: 60, price: 2400 },
+      { id: "r19", name: "Переобувка R17–R19", dur: 90, price: 3200 },
+      { id: "bal", name: "Балансировка", dur: 30, price: 200 },
+      { id: "sto", name: "Хранение шин", dur: 30, price: 1500 },
+    ],
+    commentPrompt: "Напишите марку авто и размер шин (например: Kia Rio, 185/65 R15). Это поможет подготовиться.",
+    commentIcon: "🚗",
+    seed: [[1, "r19", "11:00", "Сергей", "+7 921 555-12-34", "confirmed", "VW Tiguan 235/55 R18"], [1, "r16", "14:00", "Ольга", "+7 911 222-33-44", "confirmed", ""], [2, "bal", "10:00", "Дмитрий", "+7 905 777-00-11", "pending", ""]],
+  },
+  grooming: {
+    tab: "Груминг", ava: "🐾",
+    name: "Груминг «Пушистый хвост»", address: "Санкт-Петербург, ул. Типанова, 12", phone: "+7 (812) 000-00-01",
+    hours: { 1: ["10:00","20:00"], 2: ["10:00","20:00"], 3: ["10:00","20:00"], 4: ["10:00","20:00"], 5: ["10:00","18:00"], 6: ["11:00","17:00"] },
+    step: 30, daysAhead: 10,
+    services: [
+      { id: "hyg", name: "Гигиенический комплекс", dur: 60, price: 1500 },
+      { id: "small", name: "Комплекс: мелкие породы", dur: 120, price: 2800 },
+      { id: "large", name: "Комплекс: крупные породы", dur: 180, price: 4500 },
+      { id: "claws", name: "Стрижка когтей", dur: 30, price: 500 },
+    ],
+    commentPrompt: "Напишите породу и кличку питомца (например: шпиц Боня, 3 кг). Мастер подготовит инструменты.",
+    commentIcon: "🐾",
+    seed: [[1, "small", "11:00", "Мария", "+7 921 100-20-30", "confirmed", "шпиц Боня"], [2, "large", "12:00", "Андрей", "+7 911 300-40-50", "pending", "хаски Граф"]],
+  },
 };
+let CFG = NICHES.tire;
 const WD = ["пн","вт","ср","чт","пт","сб","вс"];
 const STATUS = { pending: "⏳ ожидает подтверждения", confirmed: "✅ подтверждена", cancelled: "❌ отменена" };
 const svc = id => CFG.services.find(s => s.id === id);
@@ -147,12 +177,15 @@ function createBooking(b) { // повторная проверка перед в
 }
 function seed() { // пара чужих записей, чтобы было видно занятые слоты
   bookings = []; nextId = 1; knownClient = null;
-  const d1 = addDays(moscowNow().day, 1), d2 = addDays(moscowNow().day, 2);
-  [[d1, "r19", "11:00", "Сергей", "+7 921 555-12-34", "confirmed"], [d1, "r16", "14:00", "Ольга", "+7 911 222-33-44", "confirmed"], [d2, "bal", "10:00", "Дмитрий", "+7 905 777-00-11", "pending"]]
-    .forEach(([day, id, t, name, phone, st]) => { const r = createBooking({ day, svc: id, start: toMin(t), end: toMin(t) + svc(id).dur, name, phone, own: false }); if (r) r.status = st; });
+  CFG.seed.forEach(([off, id, tm, name, phone, st, comment]) => {
+    const day = addDays(moscowNow().day, off);
+    if (!CFG.hours[weekday(day)]) return;
+    const r = createBooking({ day, svc: id, start: toMin(tm), end: toMin(tm) + svc(id).dur, name, phone, comment, own: false });
+    if (r) r.status = st;
+  });
 }
 
-const card = (b, client) => [`🔧 ${svc(b.svc).name} — ${svc(b.svc).price} ₽`, `🕒 ${fmtDay(b.day)} ${hhmm(b.start)} (${svc(b.svc).dur} мин)`, ...(b.comment ? [`🚗 ${b.comment}`] : []), ...(client ? [`👤 ${b.name}`, `📞 ${b.phone}`] : []), `Статус: ${STATUS[b.status]}`].join("\n");
+const card = (b, client) => [`🔧 ${svc(b.svc).name} — ${svc(b.svc).price} ₽`, `🕒 ${fmtDay(b.day)} ${hhmm(b.start)} (${svc(b.svc).dur} мин)`, ...(b.comment ? [`${CFG.commentIcon} ${b.comment}`] : []), ...(client ? [`👤 ${b.name}`, `📞 ${b.phone}`] : []), `Статус: ${STATUS[b.status]}`].join("\n");
 
 // ===== мини-движок чата =====
 function Chat(prefix) {
@@ -190,7 +223,7 @@ function userText(text) { // как в Telegram: после ответа тек�
 }
 function handle(text) {
   if (text === "/start") { stage = "idle"; mainMenu(); return C.say(`👋 Добро пожаловать в «${CFG.name}»!\nЗапишитесь онлайн за минуту.`); }
-  if (text === "📍 Контакты") return C.say(`📍 ${CFG.address}\n📞 ${CFG.phone}\n\n🕒 Пн–Пт 09:00–20:00\nСб–Вс 10:00–18:00`);
+  if (text === "📍 Контакты") return C.say(`📍 ${CFG.address}\n📞 ${CFG.phone}\n\n🕒 Часы работы:\n` + ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].map((d, i) => `${d}: ${CFG.hours[i] ? CFG.hours[i].join("–") : "выходной"}`).join("\n"));
   if (text === "📋 Мои записи") {
     const mine = bookings.filter(b => b.own && b.status !== "cancelled");
     if (!mine.length) return C.say("У вас нет будущих записей.");
@@ -246,7 +279,7 @@ function pickTime(s) {
 }
 function askComment() {
   stage = "comment";
-  C.say("Напишите марку авто и размер шин (например: Kia Rio, 185/65 R15). Это поможет подготовиться.", [[["Пропустить ➡️", a => { a.kill(); if (stage !== "comment") return; st.comment = ""; summary(); }]]]);
+  C.say(CFG.commentPrompt, [[["Пропустить ➡️", a => { a.kill(); if (stage !== "comment") return; st.comment = ""; summary(); }]]]);
 }
 function gotPhone(p) {
   st.phone = p; mainMenu(); askComment();
@@ -254,7 +287,7 @@ function gotPhone(p) {
 function summary() {
   stage = "confirm";
   const s = svc(st.svc);
-  C.say(`Проверьте запись:\n\n🔧 ${s.name} — ${s.price} ₽\n🕒 ${fmtDay(st.day)} ${hhmm(st.start)} (${s.dur} мин)\n${st.comment ? `🚗 ${st.comment}\n` : ""}👤 ${st.name}\n📞 ${st.phone}\n📍 ${CFG.address}`,
+  C.say(`Проверьте запись:\n\n🔧 ${s.name} — ${s.price} ₽\n🕒 ${fmtDay(st.day)} ${hhmm(st.start)} (${s.dur} мин)\n${st.comment ? `${CFG.commentIcon} ${st.comment}\n` : ""}👤 ${st.name}\n📞 ${st.phone}\n📍 ${CFG.address}`,
     [[["✅ Записаться", a => { a.kill(); confirm(); }], ["✖️ Отмена", a => { a.kill(); stage = "idle"; C.say("Запись отменена. Начать заново: «📅 Записаться»"); }]]]);
 }
 function confirm() {
@@ -343,13 +376,21 @@ document.getElementById("c-form").addEventListener("submit", e => {
   e.preventDefault(); const i = document.getElementById("c-input"); const v = i.value.trim(); if (!v) return; i.value = ""; userText(v);
 });
 document.getElementById("other").onclick = () => { // имитация: кто-то параллельно занимает выбранное время
-  const day = st.day || addDays(moscowNow().day, 1), id = st.svc || "r16";
-  const slot = st.start ?? freeSlots(day, svc(id).dur)[0];
+  const id = st.svc || CFG.services[0].id, day = st.day || bookableDays(id)[0];
+  const slot = st.start ?? (day && freeSlots(day, svc(id).dur)[0]);
   if (slot == null) return O.say("Свободного времени для имитации нет.");
   const b = createBooking({ day, svc: id, start: slot, end: slot + svc(id).dur, name: "Анна", phone: "+7 931 111-22-33", own: false });
   if (b) notifyOwner(b); else O.say("Это время уже занято.");
 };
 document.getElementById("reset").onclick = start;
+function setNiche(key) {
+  CFG = NICHES[key] || NICHES.tire;
+  document.querySelectorAll("[data-niche]").forEach(b => b.setAttribute("aria-pressed", b.dataset.niche === key));
+  document.querySelectorAll(".biz-name").forEach(el => el.textContent = CFG.name);
+  document.getElementById("ava").textContent = CFG.ava;
+  start();
+}
+document.querySelectorAll("[data-niche]").forEach(b => b.onclick = () => { history.replaceState(null, "", "#" + b.dataset.niche); setNiche(b.dataset.niche); });
 document.getElementById("visit").onclick = askRating;
 
 function start() {
@@ -358,5 +399,5 @@ function start() {
   O.say("Здесь появляются новые записи и переносы с кнопками «Подтвердить» / «Отменить». Команды /today, /week и /stats внизу.");
   C.say("/start", null, true); handle("/start");
 }
-start();
+setNiche(location.hash.slice(1) === "grooming" ? "grooming" : "tire");
 </script>
