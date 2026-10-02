@@ -6,6 +6,7 @@
 | Файл | Исходник |
 |---|---|
 | `Beverly-Hills.html` | `beverly-site/index.html` (сайт, открывается и в предпросмотре телефона) |
+| `Strizhka-sobak-i-koshek.html` | `grooming-site/index.html` (сайт, открывается и в предпросмотре телефона) |
 | `Garmoniya-yoga.html` | `yoga-bot/demo.html` |
 | `Avtoboty-Shinomontazh-24.html` | `avtoboty-bot/demo.html` |
 | `Nikola-shinomontazh-evakuaciya.html` | `nikola-bot/demo.html` |
