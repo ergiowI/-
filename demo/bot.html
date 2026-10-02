@@ -74,7 +74,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
       <button type="button" data-niche="grooming" aria-pressed="false">🐾 Груминг</button>
     </div>
     <h1>Бот записи «<span class="biz-name">Шиномонтаж на Ветеранов</span>»</h1>
-    <p>Интерактивная демо-копия Telegram-бота. Слева вы клиент: запишитесь, перенесите запись, оцените визит. Справа владелец: подтверждает записи и смотрит /today, /week, /stats. Логика слотов та же, что в коде бота: часы работы, длительность услуги, без двойных записей. Переключите нишу: код тот же, меняется только конфиг.</p>
+    <p>Интерактивная демо-копия Telegram-бота. Слева вы клиент: запишитесь, перенесите запись, оцените визит. Справа владелец: подтверждает записи, смотрит /today, /week, /stats, делает рассылку /broadcast и выгрузку /export. Логика слотов та же, что в коде бота: часы работы, длительность услуги, без двойных записей. Переключите нишу: код тот же, меняется только конфиг.</p>
   </header>
 
   <div class="phones">
@@ -117,6 +117,7 @@ const NICHES = {
     ],
     commentPrompt: "Напишите марку авто и размер шин (например: Kia Rio, 185/65 R15). Это поможет подготовиться.",
     commentIcon: "🚗",
+    broadcast: "❄️ Скоро снег! Есть свободные окна на переобувку во вторник и среду. Запишитесь в боте, пока они есть.",
     seed: [[1, "r19", "11:00", "Сергей", "+7 921 555-12-34", "confirmed", "VW Tiguan 235/55 R18"], [1, "r16", "14:00", "Ольга", "+7 911 222-33-44", "confirmed", ""], [2, "bal", "10:00", "Дмитрий", "+7 905 777-00-11", "pending", ""]],
   },
   grooming: {
@@ -132,6 +133,7 @@ const NICHES = {
     ],
     commentPrompt: "Напишите породу и кличку питомца (например: шпиц Боня, 3 кг). Мастер подготовит инструменты.",
     commentIcon: "🐾",
+    broadcast: "🌸 Весенняя линька: экспресс-вычёсывание со скидкой 15% до конца месяца. Запишитесь в боте!",
     seed: [[1, "small", "11:00", "Мария", "+7 921 100-20-30", "confirmed", "шпиц Боня"], [2, "large", "12:00", "Андрей", "+7 911 300-40-50", "pending", "хаски Граф"]],
   },
 };
@@ -170,13 +172,14 @@ function freeSlots(day, dur) {
 const bookableDays = id => Array.from({ length: CFG.daysAhead }, (_, i) => addDays(moscowNow().day, i)).filter(d => freeSlots(d, svc(id).dur).length);
 
 // ===== db.py =====
-let bookings = [], nextId = 1, knownClient = null;
+let bookings = [], nextId = 1, knownClient = null, subscribed = true;
+const MAX_ACTIVE = 2;
 function createBooking(b) { // повторная проверка перед вставкой — защита от двойной записи
   if (bookings.some(x => x.day === b.day && x.status !== "cancelled" && overlaps(b.start, b.end, x.start, x.end))) return null;
   const rec = { ...b, id: nextId++, status: "pending" }; bookings.push(rec); return rec;
 }
 function seed() { // пара чужих записей, чтобы было видно занятые слоты
-  bookings = []; nextId = 1; knownClient = null;
+  bookings = []; nextId = 1; knownClient = null; subscribed = true;
   CFG.seed.forEach(([off, id, tm, name, phone, st, comment]) => {
     const day = addDays(moscowNow().day, off);
     if (!CFG.hours[weekday(day)]) return;
@@ -229,7 +232,11 @@ function handle(text) {
     if (!mine.length) return C.say("У вас нет будущих записей.");
     return mine.forEach(b => C.say(card(b), [[["🔁 Перенести", a => { a.kill(); moveStart(b); }], ["❌ Отменить", a => clientCancel(b, a)]]]));
   }
-  if (text === "📅 Записаться") { stage = "service"; st = {}; return askService(); }
+  if (text === "📅 Записаться") {
+    if (bookings.filter(b => b.own && b.status !== "cancelled").length >= MAX_ACTIVE)
+      return C.say(`У вас уже ${MAX_ACTIVE} активные записи — это максимум. Перенесите или отмените одну из них в «📋 Мои записи», чтобы записаться снова.`);
+    stage = "service"; st = {}; return askService();
+  }
   if (stage === "name") {
     if (text.trim().length < 2) return C.say("Введите имя (минимум 2 символа)");
     st.name = text.trim().slice(0, 60); stage = "phone";
@@ -351,6 +358,25 @@ function stats() {
   O.say(`📊 Статистика (демо)\n\nЗаписей на неделю: ${act.length}\nПодтверждено: ${conf.length} · ждут: ${act.length - conf.length}\nОтмен: ${bookings.length - act.length}\nСумма по прайсу: ${act.reduce((s, b) => s + svc(b.svc).price, 0).toLocaleString("ru-RU")} ₽\n` +
     (rated.length ? `Средняя оценка: ${(rated.reduce((s, b) => s + b.rating, 0) / rated.length).toFixed(1)} ⭐` : "Оценок пока нет") + (top ? `\nПопулярная услуга: ${svc(top).name}` : ""));
 }
+function broadcast() {
+  O.say("/broadcast " + CFG.broadcast, null, true);
+  const n = knownClient && subscribed ? 1 : 0;
+  const base = bookings.filter(b => !b.own).map(b => b.phone);
+  const total = new Set(base).size + n;
+  O.say("Предпросмотр рассылки:\n\n" + CFG.broadcast, [[[`📤 Отправить ${total} клиентам`, a => {
+    a.kill();
+    if (n) C.say(CFG.broadcast, [[["🔕 Не присылать рассылки", k => { k.kill(); subscribed = false; C.say("Вы отписались от рассылок. Напоминания о записях будут приходить как обычно."); }]]]);
+    O.say(`✅ Рассылка отправлена: ${total}` + (n ? "" : "\n(Демо: запишитесь слева, чтобы получить рассылку в чат клиента)"));
+  }], ["✖️ Отмена", a => { a.kill(); O.say("Рассылка отменена."); }]]]);
+}
+function exportCsv() {
+  O.say("/export", null, true);
+  const rows = bookings.slice().sort((x, y) => (x.day + hhmm(x.start)).localeCompare(y.day + hhmm(y.start)));
+  if (!rows.length) return O.say("Записей пока нет — выгружать нечего.");
+  const st = { pending: "ожидает", confirmed: "подтверждена", cancelled: "отменена" };
+  O.say(`📄 zapisi.csv · записей: ${rows.length}\nОткрывается в Excel и Google Таблицах. Первые строки:\n\n` +
+    rows.slice(0, 5).map(b => `${fmtDay(b.day)} ${hhmm(b.start)}; ${svc(b.svc).name}; ${svc(b.svc).price}; ${b.name}; ${b.phone}; ${st[b.status]}`).join("\n"));
+}
 function notifyOwner(b, title = "🆕 Новая запись!") {
   O.say(title + "\n\n" + card(b, true), [[["✅ Подтвердить", a => decide(b, "ok", a)], ["❌ Отменить", a => decide(b, "no", a)]]]);
 }
@@ -395,7 +421,7 @@ document.getElementById("visit").onclick = askRating;
 
 function start() {
   C.clear(); O.clear(); seed(); st = {}; stage = "idle";
-  O.reply([[["/today", () => schedule(1, "Записи на сегодня")], ["/week", () => schedule(7, "Записи на неделю")], ["/stats", stats]]]);
+  O.reply([[["/today", () => schedule(1, "Записи на сегодня")], ["/week", () => schedule(7, "Записи на неделю")], ["/stats", stats]], [["/broadcast", broadcast], ["/export", exportCsv]]]);
   O.say("Здесь появляются новые записи и переносы с кнопками «Подтвердить» / «Отменить». Команды /today, /week и /stats внизу.");
   C.say("/start", null, true); handle("/start");
 }

@@ -143,3 +143,26 @@ test("симулятор: ссылка #grooming сразу открывает �
   assert.match(await p.$$eval("#c-feed .msg", (m) => m[1].innerText), /Пушистый хвост/);
   await p.close();
 });
+
+test("симулятор: рассылка доходит до клиента с кнопкой отписки, /export показывает строки", async () => {
+  const p = await setup();
+  await book(p);
+  await p.locator("#o-rkb button", { hasText: "/broadcast" }).click();
+  assert.match(await p.lastO(), /Предпросмотр рассылки/);
+  await p.owner("Отправить");
+  assert.match(await p.lastC(), /Скоро снег/);
+  await p.kb().filter({ hasText: "Не присылать" }).click();
+  assert.match(await p.lastC(), /отписались/);
+  await p.locator("#o-rkb button", { hasText: "/export" }).click();
+  assert.match(await p.lastO(), /zapisi\.csv · записей: \d+[\s\S]*Иван/);
+  await p.close();
+});
+
+test("симулятор: не больше 2 активных записей на клиента", async () => {
+  const p = await setup();
+  await book(p, { time: "10:00" });
+  await book(p, { service: 2, time: "15:00", known: true });
+  await p.menu("Записаться");
+  assert.match(await p.lastC(), /это максимум/);
+  await p.close();
+});
