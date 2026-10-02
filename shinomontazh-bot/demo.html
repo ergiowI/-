@@ -1,0 +1,261 @@
+<title>Шиномонтаж на Таллинском</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: phone with the client's chat on the left, owner's incoming request on the right; stacks on phones */
+:root {
+  --bg: #eceef0;
+  --surface: #ffffff;
+  --ink: #1d2126;
+  --muted: #5f6873;
+  --line: #d5d9de;
+  --accent: #f2b705;      /* tire-shop yellow */
+  --accent-ink: #1d2126;
+  --chat-bg: #dfe3e7;
+  --bubble-in: #ffffff;
+  --bubble-out: #fff1bf;
+  --btn: #f6f7f8;
+  --btn-ink: #1d4f86;
+  --ok: #1f8a4c;
+  --font-display: "Unbounded", "Arial Black", sans-serif;
+  --font-body: "Onest", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #15181c; --surface: #1f2329; --ink: #e8ebee; --muted: #9aa3ad; --line: #333941;
+  --accent: #f2b705; --accent-ink: #15181c; --chat-bg: #0f1215; --bubble-in: #252a31; --bubble-out: #3a3214;
+  --btn: #2a3038; --btn-ink: #8cc0ff; --ok: #4cc27f; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #15181c; --surface: #1f2329; --ink: #e8ebee; --muted: #9aa3ad; --line: #333941;
+  --accent: #f2b705; --accent-ink: #15181c; --chat-bg: #0f1215; --bubble-in: #252a31; --bubble-out: #3a3214;
+  --btn: #2a3038; --btn-ink: #8cc0ff; --ok: #4cc27f; color-scheme: dark }
+
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font-body); }
+.wrap { max-width: 1040px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 48px; display: grid; gap: 24px; }
+header h1 { font: 700 clamp(20px, 3.4vw, 30px)/1.15 var(--font-display); margin: 0 0 8px; text-wrap: balance; }
+header p { margin: 0; color: var(--muted); max-width: 62ch; }
+.tag { display: inline-block; font: 600 11px/1 var(--font-body); letter-spacing: .08em; text-transform: uppercase;
+  background: var(--accent); color: var(--accent-ink); padding: 6px 8px; border-radius: 4px; margin-bottom: 12px; }
+
+.stage { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 28px; align-items: start; }
+@media (max-width: 760px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+
+.phone { background: var(--surface); border: 1px solid var(--line); border-radius: 28px; padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,.12); }
+.bar { display: flex; align-items: center; gap: 10px; padding: 8px 10px 12px; }
+.ava { width: 38px; height: 38px; border-radius: 50%; background: var(--ink); display: grid; place-items: center; flex: none; }
+.ava svg { width: 26px; height: 26px }
+.bar b { display: block; font-weight: 600; }
+.bar small { color: var(--muted); }
+.chat { background: var(--chat-bg); border-radius: 18px; height: 560px; overflow-y: auto; padding: 14px 10px; display: flex; flex-direction: column; gap: 8px; scroll-behavior: smooth; }
+@media (max-width: 760px) { .chat { height: 70vh; min-height: 440px } }
+.msg { max-width: 86%; padding: 9px 12px; border-radius: 14px; white-space: pre-line; overflow-wrap: anywhere; }
+.msg.in { background: var(--bubble-in); align-self: flex-start; border-bottom-left-radius: 4px; }
+.msg.out { background: var(--bubble-out); align-self: flex-end; border-bottom-right-radius: 4px; }
+.price { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.total { display: block; margin-top: 6px; font: 700 18px/1.2 var(--font-mono); }
+.kb { display: grid; grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr)); gap: 6px; align-self: stretch; }
+.kb button { font: 500 14px/1.2 var(--font-body); color: var(--btn-ink); background: var(--btn); border: 1px solid var(--line);
+  border-radius: 10px; padding: 10px 6px; cursor: pointer; }
+.kb button:hover { border-color: var(--btn-ink) }
+.kb button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.kb.used button { opacity: .45; pointer-events: none }
+.restart { margin: 10px auto 2px; display: block; font: 500 13px var(--font-body); color: var(--muted); background: none; border: 0; cursor: pointer; text-decoration: underline; }
+
+.side { display: grid; gap: 20px; min-width: 0; }
+.side h2 { font: 600 15px/1.3 var(--font-display); margin: 0 0 10px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+.owner .empty { color: var(--muted); }
+.owner .req { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 14px; }
+.owner .req dt { color: var(--muted) }
+.owner .req dd { margin: 0; font-weight: 500 }
+.owner .head { display: flex; align-items: center; gap: 8px; font-weight: 600; margin-bottom: 10px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+.owner .acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.owner .acts span { font-size: 13px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--line); }
+ul.points { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tbl { overflow-x: auto }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+td.n, th.n { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.note { color: var(--muted); font-size: 13px; margin: 8px 0 0; }
+@media (prefers-reduced-motion: reduce) { .chat { scroll-behavior: auto } }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="tag">Демо · пример</span>
+    <h1>Бот записи для шиномонтажа на Таллинском, 25А</h1>
+    <p>Клиент сам выбирает машину, радиус и время, и ещё до приезда видит итоговую цену. Вам в Telegram приходит готовая заявка. Нажимайте кнопки в чате, это работает как настоящий бот.</p>
+  </header>
+
+  <div class="stage">
+    <div class="phone" aria-label="Чат клиента с ботом">
+      <div class="bar">
+        <div class="ava" aria-hidden="true">
+          <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="none" stroke="#f2b705" stroke-width="4"/><circle cx="16" cy="16" r="5" fill="#f2b705"/></svg>
+        </div>
+        <div><b>Шиномонтаж · Таллинское 25А</b><small>бот записи</small></div>
+      </div>
+      <div class="chat" id="chat" role="log" aria-live="polite"></div>
+      <button class="restart" id="restart" type="button">Начать заново</button>
+    </div>
+
+    <div class="side">
+      <section class="card owner" aria-live="polite">
+        <h2>Что приходит владельцу</h2>
+        <div id="owner"><p class="empty">Пока заявок нет. Пройдите запись в чате слева, и здесь появится сообщение, которое получит мастер.</p></div>
+      </section>
+
+      <section class="card">
+        <h2>Почему это решает спор о цене</h2>
+        <ul class="points">
+          <li>Цена считается по радиусу и типу машины и фиксируется в заявке. На месте не бывает «а мы думали дешевле».</li>
+          <li>Записываются ночью и когда вы под машиной и не берёте трубку.</li>
+          <li>За 2 часа до визита бот напоминает клиенту, и пустых окон становится меньше.</li>
+          <li>Весной бот сам пишет клиентам, которые переобувались осенью.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Прайс в боте (комплекс, 4 колеса)</h2>
+        <div class="tbl">
+          <table>
+            <thead><tr><th>Радиус</th><th class="n">Легковой</th><th class="n">Кроссовер</th><th class="n">Внедорожник</th></tr></thead>
+            <tbody id="ptable"></tbody>
+          </table>
+        </div>
+        <p class="note">Цены примерные, для демонстрации. В вашей версии будет ваш прайс, и меняется он одной строкой.</p>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+const PRICES = { // комплекс: снятие/установка + монтаж + балансировка, 4 колеса
+  car: { R13: 1800, R14: 1900, R15: 2100, R16: 2400, R17: 2700, R18: 3100, R19: 3500, R20: 3900 },
+  cross: { R15: 2500, R16: 2800, R17: 3100, R18: 3500, R19: 3900, R20: 4400, R21: 4900 },
+  suv: { R16: 3200, R17: 3600, R18: 4000, R19: 4500, R20: 5000, R21: 5600, R22: 6200 }
+};
+const TYPES = { car: "Легковой", cross: "Кроссовер", suv: "Внедорожник / минивэн" };
+const SERVICES = {
+  full: { name: "Сезонная переобувка (комплекс)", k: 1 },
+  wheels: { name: "Перестановка колёс в сборе", k: 0.45 },
+  bal: { name: "Только балансировка", k: 0.4 }
+};
+const EXTRAS = { valves: { name: "Новые вентили, 4 шт", p: 400 }, bags: { name: "Пакеты для шин, 4 шт", p: 200 } };
+const fmt = n => n.toLocaleString("ru-RU") + " ₽";
+const round50 = n => Math.round(n / 50) * 50;
+
+// price table
+const radii = ["R13","R14","R15","R16","R17","R18","R19","R20","R21","R22"];
+document.getElementById("ptable").innerHTML = radii.map(r =>
+  `<tr><td>${r}</td>${["car","cross","suv"].map(t => `<td class="n">${PRICES[t][r] ? PRICES[t][r].toLocaleString("ru-RU") : "—"}</td>`).join("")}</tr>`).join("");
+
+const chat = document.getElementById("chat");
+const owner = document.getElementById("owner");
+let st = {};
+
+function say(html, who = "in") {
+  const d = document.createElement("div");
+  d.className = "msg " + who;
+  d.innerHTML = html;
+  chat.appendChild(d);
+  chat.scrollTop = chat.scrollHeight;
+}
+function keys(list, cols, onPick) {
+  const k = document.createElement("div");
+  k.className = "kb"; k.style.setProperty("--cols", cols);
+  list.forEach(([label, val]) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.textContent = label;
+    b.onclick = () => { k.classList.add("used"); say(label, "out"); setTimeout(() => onPick(val, label), 350); };
+    k.appendChild(b);
+  });
+  chat.appendChild(k);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function calc() {
+  const base = PRICES[st.type][st.radius];
+  const svc = round50(base * SERVICES[st.service].k);
+  const ex = (st.extras || []).reduce((s, e) => s + EXTRAS[e].p, 0);
+  return { svc, ex, total: svc + ex };
+}
+
+function start() {
+  chat.innerHTML = ""; st = {};
+  owner.innerHTML = '<p class="empty">Пока заявок нет. Пройдите запись в чате слева, и здесь появится сообщение, которое получит мастер.</p>';
+  say("Здравствуйте! Это шиномонтаж на Таллинском шоссе, 25А, рядом с «О’кей».\nЗапишу вас за минуту и сразу покажу точную цену.");
+  keys([["🛞 Записаться", "book"], ["💰 Узнать цену", "price"], ["📍 Как доехать", "where"]], 1, v => {
+    if (v === "where") { say("Таллинское ш., 25А, заезд со стороны «О’кей».\nРаботаем ежедневно 9:00–21:00."); return askType(); }
+    st.onlyPrice = v === "price"; askType();
+  });
+}
+function askType() {
+  say("Какая у вас машина?");
+  keys(Object.entries(TYPES).map(([k, v]) => [v, k]), 1, v => { st.type = v; askRadius(); });
+}
+function askRadius() {
+  say("Какой радиус дисков? Он написан на шине, например 205/55 <b>R16</b>.");
+  keys(Object.keys(PRICES[st.type]).map(r => [r, r]), 4, v => { st.radius = v; askService(); });
+}
+function askService() {
+  say("Что нужно сделать?");
+  keys(Object.entries(SERVICES).map(([k, v]) => [v.name, k]), 1, v => { st.service = v; askExtras(); });
+}
+function askExtras() {
+  say("Добавить что-нибудь?");
+  keys([["Вентили +400 ₽", ["valves"]], ["Пакеты +200 ₽", ["bags"]], ["Вентили и пакеты +600 ₽", ["valves", "bags"]], ["Ничего не нужно", []]], 2,
+    v => { st.extras = v; showPrice(); });
+}
+function showPrice() {
+  const p = calc();
+  const lines = [`${SERVICES[st.service].name}, ${TYPES[st.type].toLowerCase()} ${st.radius}: <span class="price">${fmt(p.svc)}</span>`]
+    .concat(st.extras.map(e => `${EXTRAS[e].name}: <span class="price">${fmt(EXTRAS[e].p)}</span>`));
+  say(lines.join("\n") + `<span class="total">Итого: ${fmt(p.total)}</span>Цена фиксируется при записи и на месте не меняется.`);
+  if (st.onlyPrice) {
+    keys([["Записаться по этой цене", "y"], ["Пока не нужно", "n"]], 1, v => v === "y" ? askDay() : say("Хорошо! Если что, напишите /start, и я посчитаю заново."));
+  } else askDay();
+}
+function askDay() {
+  const days = [];
+  const now = new Date();
+  for (let i = 0; i < 4; i++) {
+    const d = new Date(now); d.setDate(now.getDate() + i);
+    const label = (i === 0 ? "Сегодня, " : i === 1 ? "Завтра, " : "") + d.toLocaleDateString("ru-RU", { weekday: i > 1 ? "short" : undefined, day: "numeric", month: "short" });
+    days.push([label, label]);
+  }
+  say("Выберите день:");
+  keys(days, 2, (v) => { st.day = v; askTime(); });
+}
+function askTime() {
+  const all = ["10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00"];
+  const busy = new Set(["11:00","14:00","15:00","18:00"]); // занятые окна (пример)
+  say("Свободное время (занятые окна бот не показывает):");
+  keys(all.filter(t => !busy.has(t)).map(t => [t, t]), 4, v => { st.time = v; askPhone(); });
+}
+function askPhone() {
+  say("Оставьте номер, чтобы мастер мог связаться, если что-то изменится.");
+  keys([["📱 Отправить мой номер", "+7 921 ••• 45 67"]], 1, v => { st.phone = v; finish(); });
+}
+function finish() {
+  const p = calc();
+  say(`✅ <b>Вы записаны</b>\n${st.day}, ${st.time}\n${SERVICES[st.service].name}, ${st.radius}\nК оплате: <span class="price"><b>${fmt(p.total)}</b></span>\n\nТаллинское ш., 25А. За 2 часа напомню о визите.`);
+  keys([["Перенести", "m"], ["Отменить", "c"]], 2, v => say(v === "m" ? "В настоящем боте здесь откроется выбор другого времени." : "Запись отменена, окно снова свободно."));
+  owner.innerHTML = `
+    <div class="head"><span class="dot"></span>Новая запись</div>
+    <dl class="req">
+      <dt>Когда</dt><dd>${st.day}, ${st.time}</dd>
+      <dt>Машина</dt><dd>${TYPES[st.type]}, ${st.radius}</dd>
+      <dt>Услуга</dt><dd>${SERVICES[st.service].name}</dd>
+      ${st.extras.length ? `<dt>Доп.</dt><dd>${st.extras.map(e => EXTRAS[e].name).join(", ")}</dd>` : ""}
+      <dt>Цена</dt><dd class="price">${fmt(p.total)} (клиент видел и согласен)</dd>
+      <dt>Телефон</dt><dd>${st.phone}</dd>
+    </dl>
+    <div class="acts"><span>✔ Подтвердить</span><span>↻ Предложить другое время</span><span>✖ Отказать</span></div>
+    <p class="note">Так выглядит сообщение в Telegram мастера. Кнопки работают в настоящем боте.</p>`;
+}
+document.getElementById("restart").onclick = start;
+start();
+</script>
