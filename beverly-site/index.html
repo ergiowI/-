@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beverly Hills · салон красоты</title>
+<meta name="description" content="Салон красоты Beverly Hills на ул. Адмирала Трибуца, 5. Онлайн-запись, каждая пятая процедура бесплатно.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* One warm, light look: ivory paper, deep ink, blush and a quiet champagne accent. */
+:root {
+  --ivory: #faf6f1;
+  --paper: #fffdf9;
+  --blush: #f1dfd6;
+  --blush-2: #e7c9bc;
+  --ink: #1f1a17;
+  --muted: #7d726b;
+  --line: #eadfd6;
+  --gold: #b08d57;
+  --wine: #7e3446;
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Manrope", "Segoe UI", Roboto, Arial, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box }
+[hidden] { display: none !important }
+html { scroll-behavior: smooth }
+body { margin: 0; background: var(--ivory); color: var(--ink); font: 16px/1.6 var(--font-body); }
+a { color: inherit }
+button { font: inherit; color: inherit; cursor: pointer }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--wine); outline-offset: 2px }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px }
+@media (max-width: 600px) { .wrap { padding-inline: 16px } }
+.demo { background: var(--ink); color: #e9e1da; font-size: 13px; text-align: center; padding: 8px 16px }
+.demo b { color: #fff }
+
+/* nav */
+header.nav { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--ivory) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line) }
+header.nav .wrap { display: flex; align-items: center; gap: 28px; height: 68px }
+.logo { font: 600 22px/1 var(--font-display); text-decoration: none; letter-spacing: .01em }
+.logo small { display: block; font: 600 9px/1 var(--font-body); letter-spacing: .3em; text-transform: uppercase; color: var(--muted); margin-top: 4px }
+nav.links { display: flex; gap: 24px; margin-left: auto; font-size: 14px }
+nav.links a { text-decoration: none; color: var(--muted) }
+nav.links a:hover { color: var(--ink) }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 999px; padding: 13px 24px; font-weight: 600; text-decoration: none;
+  background: var(--ink); color: var(--paper); transition: transform .15s, background .2s }
+.btn:hover { background: #3a302b } .btn:active { transform: scale(.98) }
+.btn.light { background: transparent; color: var(--ink); border: 1px solid var(--ink) }
+.btn.light:hover { background: var(--ink); color: var(--paper) }
+.btn.sm { padding: 10px 18px; font-size: 14px }
+@media (max-width: 760px) { nav.links { display: none } header.nav .btn { margin-left: auto } }
+
+/* hero */
+.hero { padding: 72px 0 80px }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 56px; align-items: center }
+@media (max-width: 860px) { .hero { padding: 40px 0 56px } .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 36px } }
+.eyebrow { font: 600 12px/1 var(--font-body); letter-spacing: .24em; text-transform: uppercase; color: var(--gold) }
+.hero h1 { font: 500 clamp(40px, 6vw, 72px)/1.02 var(--font-display); margin: 18px 0 20px; letter-spacing: -.01em; text-wrap: balance }
+.hero h1 em { font-style: italic; color: var(--wine) }
+.hero p.lead { font-size: 18px; color: var(--muted); max-width: 46ch; margin: 0 0 30px }
+.hero .ctas { display: flex; flex-wrap: wrap; gap: 12px }
+.hero .meta { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 30px; font-size: 14px; color: var(--muted) }
+.hero .meta b { color: var(--ink); font-weight: 600 }
+.art { position: relative; aspect-ratio: 4 / 5; max-width: 440px; justify-self: center; width: 100% }
+.arch { position: absolute; inset: 0; border-radius: 999px 999px 28px 28px; background:
+  radial-gradient(120% 80% at 30% 20%, #f8ece6 0, transparent 60%), linear-gradient(160deg, var(--blush) 0%, var(--blush-2) 100%); overflow: hidden }
+.arch::before { content: ""; position: absolute; left: 50%; top: 18%; width: 62%; aspect-ratio: 1; transform: translateX(-50%); border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #fff8f3, #f0d6ca 70%); box-shadow: 0 30px 60px -30px rgba(126, 52, 70, .35) }
+.arch svg { position: absolute; left: 50%; bottom: 8%; transform: translateX(-50%); width: 72%; opacity: .9 }
+.stamp-float { position: absolute; left: -28px; bottom: 34px; background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 14px 16px;
+  box-shadow: 0 20px 40px -24px rgba(31, 26, 23, .35); width: 230px }
+.stamp-float small { color: var(--muted); font-size: 12px }
+.stamp-float .dots { display: flex; gap: 6px; margin-top: 8px }
+.stamp-float .dots i { width: 30px; height: 30px; border-radius: 50%; border: 1.5px dashed var(--blush-2); display: grid; place-items: center; font-style: normal; font-size: 13px }
+.stamp-float .dots i.on { background: var(--ink); border: 0; color: var(--paper) }
+.stamp-float .dots i.gift { border-color: var(--gold); color: var(--gold) }
+@media (max-width: 860px) { .stamp-float { left: 8px; bottom: 12px } }
+
+section { padding: 88px 0 }
+@media (max-width: 600px) { section { padding: 60px 0 } }
+.sec-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 36px; flex-wrap: wrap }
+.sec-head h2 { font: 500 clamp(32px, 4.4vw, 50px)/1.05 var(--font-display); margin: 12px 0 0; letter-spacing: -.01em }
+.sec-head p { margin: 0; color: var(--muted); max-width: 42ch }
+
+/* loyalty */
+.loyal { background: var(--ink); color: #f3ece6 }
+.loyal .eyebrow { color: #d9bf93 }
+.loyal .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: center }
+@media (max-width: 860px) { .loyal .grid { grid-template-columns: minmax(0, 1fr); gap: 36px } }
+.loyal h2 { font: 500 clamp(34px, 4.6vw, 54px)/1.05 var(--font-display); margin: 14px 0 18px }
+.loyal h2 em { color: #e8b9a6 }
+.loyal p { color: #bfb3aa; margin: 0 0 14px; max-width: 46ch }
+.steps { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 14px }
+.steps li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 14px; align-items: start; color: #d8cdc5 }
+.steps li span { width: 34px; height: 34px; border-radius: 50%; border: 1px solid #5a4d46; display: grid; place-items: center; font: 500 16px/1 var(--font-display); color: #e8b9a6 }
+.card { background: #2a2320; border: 1px solid #3e342f; border-radius: 28px; padding: 28px }
+.card h3 { font: 500 26px/1.2 var(--font-display); margin: 0 0 6px }
+.card .sub { color: #a99c93; font-size: 14px; margin: 0 0 20px }
+.check { display: flex; gap: 8px }
+.check input { flex: 1; min-width: 0; background: #1f1a17; border: 1px solid #4a3f39; color: #fff; border-radius: 999px; padding: 13px 18px; font: inherit }
+.check input::placeholder { color: #7f736b }
+.check .btn { background: #f3ece6; color: var(--ink) }
+.stamps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin: 24px 0 14px }
+.stamps i { aspect-ratio: 1; border-radius: 50%; border: 1.5px dashed #5a4d46; display: grid; place-items: center; font-style: normal; font-size: 18px; color: #6f625a; transition: background .4s, transform .4s }
+.stamps i.on { background: #e8b9a6; border: 0; color: var(--ink); transform: scale(1.04) }
+.stamps i.gift { border-color: #d9bf93; color: #d9bf93 }
+.stamps i.gift.on { background: #d9bf93; color: var(--ink) }
+.result { min-height: 48px; font-size: 15px; color: #d8cdc5 }
+.result b { color: #fff }
+
+/* services */
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px }
+.tabs button { border: 1px solid var(--line); background: var(--paper); border-radius: 999px; padding: 10px 18px; font-size: 14px; color: var(--muted) }
+.tabs button[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper) }
+.price { background: var(--paper); border: 1px solid var(--line); border-radius: 24px; overflow: hidden }
+.price .row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 18px; align-items: center; padding: 18px 24px; border-top: 1px solid var(--line) }
+.price .row:first-child { border-top: 0 }
+.price .row b { font-weight: 600; display: block } .price .row small { color: var(--muted); font-size: 13px }
+.price .row .p { font: 500 20px/1 var(--font-display); white-space: nowrap }
+.price .row button { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 8px 14px; font-size: 13px }
+.price .row button:hover { background: var(--ink); color: var(--paper); border-color: var(--ink) }
+@media (max-width: 600px) { .price .row { grid-template-columns: minmax(0, 1fr) auto; padding: 16px 18px } .price .row button { grid-column: 1 / -1; justify-self: start } }
+
+/* masters */
+.masters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px }
+@media (max-width: 900px) { .masters { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+.master { background: var(--paper); border: 1px solid var(--line); border-radius: 24px; padding: 14px 14px 20px; text-align: center }
+.master .ph { aspect-ratio: 1; border-radius: 18px; margin-bottom: 14px; display: grid; place-items: center; font: 500 54px/1 var(--font-display); color: rgba(255, 255, 255, .92) }
+.master b { display: block; font: 500 22px/1.2 var(--font-display) }
+.master small { color: var(--muted); font-size: 13px }
+.master button { margin-top: 12px; border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 8px 16px; font-size: 13px }
+.master button:hover { background: var(--ink); color: var(--paper); border-color: var(--ink) }
+
+/* booking */
+.booking { background: var(--blush) }
+.bk { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 24px; align-items: start }
+@media (max-width: 900px) { .bk { grid-template-columns: minmax(0, 1fr) } }
+.form { background: var(--paper); border-radius: 28px; padding: 28px }
+@media (max-width: 600px) { .form { padding: 20px } }
+.field { margin-bottom: 22px }
+.field > label, .field > .lbl { display: block; font: 600 12px/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px }
+select, .form input { width: 100%; background: var(--ivory); border: 1px solid var(--line); border-radius: 14px; padding: 13px 14px; font: inherit; color: var(--ink) }
+.chips { display: flex; flex-wrap: wrap; gap: 8px }
+.chips button { border: 1px solid var(--line); background: var(--ivory); border-radius: 12px; padding: 9px 13px; font-size: 14px; min-width: 64px }
+.chips button small { display: block; font-size: 11px; color: var(--muted) }
+.chips button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink) }
+.chips button[aria-pressed="true"] small { color: #cbbfb6 }
+.chips button:disabled { opacity: .35; text-decoration: line-through; cursor: default }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px }
+@media (max-width: 600px) { .two { grid-template-columns: minmax(0, 1fr) } }
+.summary { position: sticky; top: 88px; background: var(--ink); color: #efe7e0; border-radius: 28px; padding: 26px }
+.summary h3 { font: 500 26px/1.2 var(--font-display); margin: 0 0 16px }
+.summary dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 16px; margin: 0 0 18px; font-size: 15px }
+.summary dt { color: #a99c93 } .summary dd { margin: 0 }
+.summary .total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid #3e342f; padding-top: 16px; margin-bottom: 18px }
+.summary .total b { font: 500 30px/1 var(--font-display) }
+.summary .btn { width: 100%; background: #f3ece6; color: var(--ink) }
+.summary .btn:disabled { opacity: .45; cursor: default }
+.summary .tg { display: block; text-align: center; margin-top: 12px; font-size: 13px; color: #a99c93 }
+.done { text-align: center; padding: 18px 0 }
+.done .ok { width: 64px; height: 64px; border-radius: 50%; background: #e8b9a6; display: grid; place-items: center; margin: 0 auto 14px; color: var(--ink); font-size: 28px }
+.done h3 { margin-bottom: 6px }
+.done p { color: #bfb3aa; margin: 0 0 14px; font-size: 15px }
+.admin { margin-top: 18px; background: #2a2320; border: 1px solid #3e342f; border-radius: 18px; padding: 14px; text-align: left; font-size: 13px; color: #d8cdc5; white-space: pre-line }
+.admin small { display: block; color: #8f8279; margin-bottom: 6px; letter-spacing: .1em; text-transform: uppercase; font-size: 10px }
+
+/* contacts */
+.contacts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px }
+@media (max-width: 860px) { .contacts { grid-template-columns: minmax(0, 1fr) } }
+.contacts > div { background: var(--paper); border: 1px solid var(--line); border-radius: 24px; padding: 24px }
+.contacts small { font: 600 12px/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase; color: var(--muted) }
+.contacts b { display: block; font: 500 24px/1.25 var(--font-display); margin: 12px 0 6px }
+.contacts p { margin: 0 0 16px; color: var(--muted); font-size: 14px }
+footer { padding: 36px 0 48px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line) }
+footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap }
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease }
+.reveal.in { opacity: 1; transform: none }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto } .reveal { opacity: 1; transform: none; transition: none } *, *::before, *::after { animation: none !important; transition: none !important } }
+</style>
+</head>
+<body>
+<div class="demo"><b>Демо-версия сайта</b> для салона Beverly Hills. Цены, мастера и часы работы примерные.</div>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top">Beverly Hills<small>салон красоты</small></a>
+    <nav class="links"><a href="#services">Услуги</a><a href="#masters">Мастера</a><a href="#loyalty">Акция</a><a href="#contacts">Контакты</a></nav>
+    <a class="btn sm" href="#booking">Записаться</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">ул. Адмирала Трибуца, 5</span>
+        <h1>Красота, к которой <em>хочется возвращаться</em></h1>
+        <p class="lead">Стрижки и окрашивание, маникюр, уход за лицом, брови и ресницы. Записывайтесь онлайн за минуту, а каждая пятая процедура у нас бесплатно.</p>
+        <div class="ctas"><a class="btn" href="#booking">Записаться онлайн</a><a class="btn light" href="#loyalty">Как работает акция</a></div>
+        <div class="meta"><span><b>Ежедневно</b> 10:00–21:00</span><span><b>+7 911 942-88-66</b></span></div>
+      </div>
+      <div class="art" aria-hidden="true">
+        <div class="arch">
+          <svg viewBox="0 0 200 120"><g fill="none" stroke="#7e3446" stroke-width="1.6" opacity=".55"><path d="M10 110 C 60 40, 140 40, 190 110"/><path d="M30 110 C 70 60, 130 60, 170 110"/><path d="M50 110 C 80 78, 120 78, 150 110"/></g></svg>
+        </div>
+        <div class="stamp-float"><small>Ваша карта гостя</small><div class="dots"><i class="on">✓</i><i class="on">✓</i><i class="on">✓</i><i>4</i><i class="gift">🎁</i></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="loyal" id="loyalty">
+    <div class="wrap grid">
+      <div class="reveal">
+        <span class="eyebrow">Акция салона</span>
+        <h2>Каждая пятая процедура — <em>бесплатно</em></h2>
+        <p>Никаких бумажных карточек, которые теряются в сумке. Каждый визит засчитывается сам, по номеру телефона.</p>
+        <ul class="steps">
+          <li><span>1</span><div>Записываетесь на сайте или в Telegram-боте салона</div></li>
+          <li><span>2</span><div>После визита в карту гостя добавляется отметка</div></li>
+          <li><span>3</span><div>Пятая процедура бесплатно, бот заранее напомнит о подарке</div></li>
+        </ul>
+      </div>
+      <div class="card reveal">
+        <h3>Сколько осталось до подарка?</h3>
+        <p class="sub">Введите номер телефона, с которым записывались</p>
+        <form class="check" id="checkForm"><input id="checkPhone" type="tel" inputmode="tel" placeholder="+7 900 000-00-00" autocomplete="tel" aria-label="Номер телефона"><button class="btn" type="submit">Проверить</button></form>
+        <div class="stamps" id="stamps"><i>1</i><i>2</i><i>3</i><i>4</i><i class="gift">🎁</i></div>
+        <div class="result" id="result" aria-live="polite">В демо можно ввести любой номер.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="wrap">
+      <div class="sec-head reveal"><div><span class="eyebrow">Услуги и цены</span><h2>Что мы делаем</h2></div><p>Точная стоимость зависит от длины волос и объёма работы, мастер назовёт её до начала процедуры.</p></div>
+      <div class="tabs" role="tablist" id="svcTabs"></div>
+      <div class="price reveal" id="priceList"></div>
+    </div>
+  </section>
+
+  <section id="masters" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head reveal"><div><span class="eyebrow">Команда</span><h2>Наши мастера</h2></div><p>Можно выбрать конкретного мастера или записаться к любому свободному.</p></div>
+      <div class="masters" id="masterList"></div>
+    </div>
+  </section>
+
+  <section class="booking" id="booking">
+    <div class="wrap">
+      <div class="sec-head reveal"><div><span class="eyebrow">Онлайн-запись</span><h2>Запишитесь за минуту</h2></div><p>Администратор получит заявку сразу и подтвердит её. Звонить не нужно.</p></div>
+      <div class="bk">
+        <form class="form" id="bookForm" novalidate>
+          <div class="field"><label for="fService">Услуга</label><select id="fService"></select></div>
+          <div class="field"><span class="lbl">Мастер</span><div class="chips" id="fMaster"></div></div>
+          <div class="field"><span class="lbl">День</span><div class="chips" id="fDay"></div></div>
+          <div class="field"><span class="lbl">Время</span><div class="chips" id="fTime"></div></div>
+          <div class="two">
+            <div class="field"><label for="fName">Имя</label><input id="fName" autocomplete="given-name" placeholder="Как к вам обращаться"></div>
+            <div class="field"><label for="fPhone">Телефон</label><input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00"></div>
+          </div>
+        </form>
+        <aside class="summary" id="summary" aria-live="polite"></aside>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacts">
+    <div class="wrap">
+      <div class="sec-head reveal"><div><span class="eyebrow">Контакты</span><h2>Ждём вас в гости</h2></div></div>
+      <div class="contacts">
+        <div><small>Адрес</small><b>ул. Адмирала Трибуца, 5</b><p>Санкт-Петербург</p><a class="btn light sm" href="https://yandex.ru/maps/?text=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%90%D0%B4%D0%BC%D0%B8%D1%80%D0%B0%D0%BB%D0%B0%20%D0%A2%D1%80%D0%B8%D0%B1%D1%83%D1%86%D0%B0%2C%205" target="_blank" rel="noopener">Построить маршрут</a></div>
+        <div><small>Телефон</small><b>+7 911 942-88-66</b><p>Звонки и WhatsApp</p><a class="btn light sm" href="https://wa.me/79119428866" target="_blank" rel="noopener">Написать в WhatsApp</a></div>
+        <div><small>Часы работы</small><b>Ежедневно 10:00–21:00</b><p>Без перерывов и выходных</p><a class="btn sm" href="#booking">Записаться онлайн</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap"><span>© Beverly Hills, салон красоты · ул. Адмирала Трибуца, 5</span><span>Демо-версия сайта. Цены и мастера примерные.</span></div></footer>
+
+<script>
+const SERVICES = {
+  hair:  { name: "Волосы", items: [
+    ["cut", "Женская стрижка", "с мытьём и укладкой", 1800, 60],
+    ["color", "Окрашивание в один тон", "короткие и средние волосы", 3500, 120],
+    ["balayage", "Сложное окрашивание", "балаяж, шатуш, airtouch", 6500, 210],
+    ["style", "Укладка", "на любую длину", 1500, 45] ] },
+  nails: { name: "Ногти", items: [
+    ["mani", "Маникюр с покрытием", "гель-лак, снятие включено", 2000, 90],
+    ["pedi", "Педикюр с покрытием", "гель-лак, снятие включено", 2600, 100],
+    ["mani0", "Маникюр без покрытия", "гигиенический", 1200, 50] ] },
+  face:  { name: "Лицо", items: [
+    ["clean", "Чистка лица", "комбинированная", 3000, 75],
+    ["care", "Уходовая процедура", "по типу кожи", 2500, 60] ] },
+  brows: { name: "Брови и ресницы", items: [
+    ["brows", "Коррекция и окрашивание бровей", "", 1200, 40],
+    ["lami", "Ламинирование ресниц", "с окрашиванием", 2200, 60] ] }
+};
+const MASTERS = [
+  { id: "nastya", name: "Анастасия", role: "парикмахер-стилист", cats: ["hair"], bg: "linear-gradient(150deg,#c99a8b,#7e3446)" },
+  { id: "vika", name: "Виктория", role: "мастер маникюра", cats: ["nails"], bg: "linear-gradient(150deg,#e3c3a4,#b08d57)" },
+  { id: "lena", name: "Елена", role: "косметолог", cats: ["face"], bg: "linear-gradient(150deg,#d7b2a6,#9b6a5c)" },
+  { id: "dasha", name: "Дарья", role: "бровист, лэшмейкер", cats: ["brows"], bg: "linear-gradient(150deg,#bfa79b,#5d4a43)" }
+];
+const HOURS = ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString("ru-RU") + " ₽";
+const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const svcById = Object.fromEntries(Object.entries(SERVICES).flatMap(([cat, g]) => g.items.map(([id, name, sub, p, min]) => [id, { id, cat, name, sub, p, min }])));
+
+/* ---------- loyalty ---------- */
+const digits = s => (s || "").replace(/\D/g, "");
+const visitsFor = phone => { const d = digits(phone); return d.length < 10 ? null : [...d].reduce((a, c) => a + +c, 0) % 4 + 1; }; // демо: 1–4 визита по номеру
+const extra = {}; // записи, сделанные в демо, по номеру
+function showStamps(n) {
+  [...$("stamps").children].forEach((el, i) => setTimeout(() => el.classList.toggle("on", i < n), i * 120));
+}
+$("checkForm").onsubmit = e => {
+  e.preventDefault();
+  const base = visitsFor($("checkPhone").value);
+  if (base === null) { $("result").textContent = "Введите номер полностью, 10–11 цифр."; showStamps(0); return; }
+  const n = Math.min(5, base + (extra[digits($("checkPhone").value).slice(-10)] || 0));
+  showStamps(n);
+  $("result").innerHTML = n >= 5 ? "<b>Следующая процедура бесплатно!</b> Подарок ждёт вас при записи." :
+    n === 4 ? `У вас <b>4 визита</b>. Следующая, пятая процедура будет <b>бесплатной</b> 🎁` :
+    `У вас <b>${n} ${n === 1 ? "визит" : "визита"}</b>. До бесплатной процедуры осталось <b>${4 - n}</b>.`;
+};
+
+/* ---------- services ---------- */
+let cat = "hair";
+function renderServices() {
+  $("svcTabs").replaceChildren(...Object.entries(SERVICES).map(([k, g]) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.role = "tab"; b.textContent = g.name; b.setAttribute("aria-selected", k === cat ? "true" : "false");
+    b.onclick = () => { cat = k; renderServices(); };
+    return b;
+  }));
+  $("priceList").innerHTML = SERVICES[cat].items.map(([id, name, sub, p, min]) =>
+    `<div class="row"><div><b>${name}</b><small>${[sub, `${min} мин`].filter(Boolean).join(" · ")}</small></div><span class="p">${id === "balayage" || id === "color" ? "от " : ""}${fmt(p)}</span><button type="button" data-svc="${id}">Записаться</button></div>`).join("");
+  $("priceList").querySelectorAll("button").forEach(b => b.onclick = () => { bk.svc = b.dataset.svc; bk.master = "any"; renderBooking(); go("booking"); });
+}
+function renderMasters() {
+  $("masterList").innerHTML = MASTERS.map(m => `<div class="master reveal"><div class="ph" style="background:${m.bg}">${m.name[0]}</div><b>${m.name}</b><small>${m.role}</small><br><button type="button" data-m="${m.id}">Записаться к ${m.name === "Елена" ? "Елене" : m.name === "Дарья" ? "Дарье" : m.name.slice(0, -1) + "и"}</button></div>`).join("");
+  $("masterList").querySelectorAll("button").forEach(b => b.onclick = () => {
+    const m = MASTERS.find(x => x.id === b.dataset.m);
+    if (svcById[bk.svc].cat !== m.cats[0]) bk.svc = SERVICES[m.cats[0]].items[0][0];
+    bk.master = m.id; renderBooking(); go("booking");
+  });
+}
+const go = id => document.getElementById(id).scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+
+/* ---------- booking ---------- */
+const bk = { svc: "cut", master: "any", day: null, time: null, sent: null };
+const busy = new Set();
+for (let i = 0; i < 14; i++) { const d = new Date(); d.setDate(d.getDate() + i); HOURS.forEach((h, j) => { if ((i * 5 + j * 3) % 7 < 3) busy.add(`${iso(d)}_${h}`); }); }
+
+function chip(html, pressed, onClick, disabled) {
+  const b = document.createElement("button");
+  b.type = "button"; b.innerHTML = html; b.setAttribute("aria-pressed", pressed ? "true" : "false"); b.disabled = !!disabled;
+  b.onclick = () => { onClick(); renderBooking(); };
+  return b;
+}
+function renderBooking() {
+  const sel = $("fService");
+  if (!sel.options.length) {
+    sel.innerHTML = Object.values(SERVICES).map(g => `<optgroup label="${g.name}">${g.items.map(([id, name, , p]) => `<option value="${id}">${name} · ${fmt(p)}</option>`).join("")}</optgroup>`).join("");
+    sel.onchange = () => { bk.svc = sel.value; bk.master = "any"; renderBooking(); };
+  }
+  sel.value = bk.svc;
+  const s = svcById[bk.svc];
+  const ms = MASTERS.filter(m => m.cats.includes(s.cat));
+  $("fMaster").replaceChildren(chip("Любой свободный", bk.master === "any", () => { bk.master = "any"; }),
+    ...ms.map(m => chip(`${m.name}<small>${m.role}</small>`, bk.master === m.id, () => { bk.master = m.id; })));
+
+  const days = [];
+  for (let i = 0; i < 10; i++) { const d = new Date(); d.setDate(d.getDate() + i); days.push(d); }
+  const now = new Date();
+  if (!bk.day) { bk.day = iso(days[0]); if (!HOURS.some(h => +h.slice(0, 2) > now.getHours())) bk.day = iso(days[1]); }
+  $("fDay").replaceChildren(...days.map((d, i) => chip(`${d.getDate()}<small>${i === 0 ? "сегодня" : i === 1 ? "завтра" : d.toLocaleDateString("ru-RU", { weekday: "short" })}</small>`,
+    bk.day === iso(d), () => { bk.day = iso(d); bk.time = null; }, i === 0 && !HOURS.some(h => +h.slice(0, 2) > now.getHours()))));
+  $("fTime").replaceChildren(...HOURS.map(h => chip(h, bk.time === h, () => { bk.time = h; },
+    busy.has(`${bk.day}_${h}`) || (bk.day === iso(now) && +h.slice(0, 2) <= now.getHours()))));
+  renderSummary();
+}
+function renderSummary() {
+  const s = svcById[bk.svc], m = MASTERS.find(x => x.id === bk.master);
+  const phoneOk = digits($("fPhone").value).length >= 10, nameOk = $("fName").value.trim().length > 1;
+  const ready = bk.time && phoneOk && nameOk;
+  if (bk.sent) return;
+  const dayTxt = bk.day ? new Date(bk.day + "T12:00").toLocaleDateString("ru-RU", { day: "numeric", month: "long", weekday: "short" }) : "—";
+  $("summary").innerHTML = `<h3>Ваша запись</h3>
+    <dl><dt>Услуга</dt><dd>${s.name}</dd><dt>Мастер</dt><dd>${m ? m.name : "любой свободный"}</dd><dt>Когда</dt><dd>${bk.time ? `${dayTxt}, ${bk.time}` : "выберите время"}</dd><dt>Длительность</dt><dd>${s.min} мин</dd></dl>
+    <div class="total"><span>${s.id === "color" || s.id === "balayage" ? "От" : "Стоимость"}</span><b>${fmt(s.p)}</b></div>
+    <button class="btn" type="button" id="send" ${ready ? "" : "disabled"}>${!bk.time ? "Выберите время" : !nameOk ? "Укажите имя" : !phoneOk ? "Укажите телефон" : "Записаться"}</button>
+    <span class="tg">или в Telegram-боте салона: там же счётчик визитов</span>`;
+  $("send").onclick = send;
+}
+["fName", "fPhone"].forEach(id => $(id).addEventListener("input", renderSummary));
+
+function send() {
+  const s = svcById[bk.svc], m = MASTERS.find(x => x.id === bk.master);
+  const ph = digits($("fPhone").value).slice(-10);
+  const visit = Math.min(5, (visitsFor($("fPhone").value) || 0) + (extra[ph] || 0) + 1);
+  extra[ph] = (extra[ph] || 0) + 1;
+  busy.add(`${bk.day}_${bk.time}`);
+  const dayTxt = new Date(bk.day + "T12:00").toLocaleDateString("ru-RU", { day: "numeric", month: "long", weekday: "short" });
+  bk.sent = true;
+  $("summary").innerHTML = `<div class="done"><div class="ok">✓</div><h3>Заявка отправлена</h3>
+    <p>${$("fName").value.trim()}, ждём вас ${dayTxt} в ${bk.time}. Администратор подтвердит запись в ближайшее время.</p>
+    <p>${visit >= 5 ? "🎁 Это ваш <b style='color:#fff'>пятый визит</b>, процедура бесплатно!" : `Это ваш <b style="color:#fff">${visit}-й визит</b>. До бесплатной процедуры: ${5 - visit}.`}</p>
+    <button class="btn" type="button" id="again">Записаться ещё</button>
+    <div class="admin"><small>Администратору в Telegram пришло</small>💅 Новая запись с сайта
+${s.name} · ${m ? m.name : "любой мастер"}
+${dayTxt}, ${bk.time} · ${fmt(s.p)}
+👤 ${$("fName").value.trim()} · визит ${visit} из 5${visit >= 5 ? " · БЕСПЛАТНО 🎁" : ""}
+📞 ${$("fPhone").value.trim()}</div></div>`;
+  $("again").onclick = () => { bk.sent = null; bk.time = null; renderBooking(); };
+}
+
+/* reveal on scroll */
+const io = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .12 }) : null;
+renderServices(); renderMasters(); renderBooking();
+document.querySelectorAll(".reveal").forEach(el => io ? io.observe(el) : el.classList.add("in"));
+</script>
+</body>
+</html>

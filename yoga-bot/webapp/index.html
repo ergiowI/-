@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<title>Студия йоги Гармония</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: the Telegram Mini App inside a phone frame (demo mode) beside the studio's chat; inside Telegram the app goes full screen.
+   One calm light look: warm sand, sage, a touch of terracotta. */
+:root {
+  --sand: #f5efe6;
+  --paper: #fffaf3;
+  --card: #fbf6ee;
+  --line: #e6dccd;
+  --ink: #2f2a24;
+  --muted: #8a8174;
+  --sage: #6f8f72;
+  --sage-soft: #e3ebe1;
+  --clay: #c47a5a;
+  --clay-soft: #f4e2d8;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Manrope", "Segoe UI", Roboto, Arial, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box }
+[hidden] { display: none !important }
+body { margin: 0; background: var(--sand); color: var(--ink); font: 15px/1.5 var(--font-body); }
+button { font: inherit; color: inherit; }
+button:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px }
+
+/* ---------- demo shell ---------- */
+.shell { max-width: 1080px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 48px; display: grid; gap: 24px; }
+.intro .tag { display: inline-block; font: 600 11px/1 var(--font-body); letter-spacing: .12em; text-transform: uppercase;
+  background: var(--sage); color: #fff; padding: 6px 9px; border-radius: 999px; margin-bottom: 12px; }
+.intro h1 { font: 600 clamp(28px, 4vw, 42px)/1.05 var(--font-display); margin: 0 0 10px; text-wrap: balance; }
+.intro p { margin: 0; color: var(--muted); max-width: 64ch; }
+.stage { display: grid; grid-template-columns: 400px minmax(0, 1fr); gap: 32px; align-items: start; }
+@media (max-width: 820px) { .stage { grid-template-columns: minmax(0, 1fr); } }
+.phone { background: #2b2722; border-radius: 44px; padding: 12px; box-shadow: 0 30px 60px -30px rgba(60, 45, 30, .45); max-width: 400px; width: 100%; margin-inline: auto; }
+.screen { position: relative; height: 780px; border-radius: 34px; overflow: hidden; background: var(--paper); display: flex; flex-direction: column; }
+.tgbar { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--line); font-size: 14px; background: var(--paper); }
+.tgbar span { color: var(--muted) }
+body.tg { background: var(--paper) }
+body.tg .intro, body.tg .side, body.tg .tgbar { display: none }
+body.tg .shell { padding: 0; max-width: none }
+body.tg .stage { display: block }
+body.tg .phone { padding: 0; border-radius: 0; box-shadow: none; max-width: none; background: none }
+body.tg .screen { height: 100vh; height: var(--tg-viewport-stable-height, 100vh); border-radius: 0 }
+
+.app { flex: 1; overflow-y: auto; padding: 0 16px 96px; }
+.view { animation: fade .3s ease both; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px) } }
+
+/* hero */
+.hero { position: relative; margin: 14px 0 6px; padding: 22px 18px 20px; border-radius: 22px; background: var(--sage-soft); overflow: hidden; }
+.hero svg { position: absolute; right: -18px; bottom: -22px; width: 150px; height: 150px; opacity: .9 }
+.hero small { font: 600 11px/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase; color: var(--sage) }
+.hero h2 { font: 600 30px/1 var(--font-display); margin: 8px 0 6px; max-width: 12ch }
+.hero p { margin: 0; color: var(--muted); font-size: 13px; max-width: 26ch }
+.trial { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; margin-top: 10px; padding: 12px 14px; border-radius: 16px; background: var(--clay-soft); }
+.trial b { display: block; font-weight: 600 } .trial small { color: #8b5a44; font-size: 12px }
+.trial span { font: 600 22px/1 var(--font-display); color: var(--clay) }
+
+h3.sec { font: 600 12px/1 var(--font-body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 22px 0 10px; }
+.days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.days button { border: 1px solid var(--line); background: var(--card); border-radius: 14px; padding: 8px 0; display: grid; gap: 2px; justify-items: center; cursor: pointer; }
+.days small { font-size: 11px; color: var(--muted); text-transform: lowercase }
+.days b { font: 600 20px/1 var(--font-display) }
+.days button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper) }
+.days button[aria-pressed="true"] small { color: #cfc6b8 }
+
+.classes { display: grid; gap: 10px; }
+.cls { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; gap: 12px; align-items: center; text-align: left; width: 100%;
+  background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 14px; cursor: pointer; transition: transform .1s, border-color .15s; }
+.cls:active { transform: scale(.98) }
+.cls .t { font: 600 22px/1 var(--font-display); }
+.cls .t small { display: block; font: 500 11px/1.4 var(--font-body); color: var(--muted); margin-top: 4px }
+.cls b { display: block; font-weight: 600 }
+.cls .meta { color: var(--muted); font-size: 12px }
+.cls .lvl { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--sage-soft); color: #4f6b52; margin-top: 6px }
+.cls .lvl.mid { background: var(--clay-soft); color: #8b5a44 }
+.spots { text-align: right; font-size: 12px; color: var(--muted); min-width: 64px }
+.spots .bar { height: 4px; border-radius: 4px; background: var(--line); margin-top: 6px; overflow: hidden }
+.spots .bar i { display: block; height: 100%; background: var(--sage) }
+.cls.full { opacity: .5; cursor: default }
+.cls.mine { border-color: var(--sage); background: color-mix(in srgb, var(--sage-soft) 55%, var(--card)) }
+.cls.past { opacity: .4; cursor: default }
+.empty-day { text-align: center; color: var(--muted); padding: 26px 0; font-size: 14px }
+
+/* sheet */
+.veil { position: absolute; inset: 0; background: rgba(47, 42, 36, .35); animation: fade .2s ease both; z-index: 5 }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--paper); border-radius: 26px 26px 0 0; padding: 10px 18px calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 6;
+  animation: up .35s cubic-bezier(.2,.8,.2,1) both; max-height: 88%; overflow-y: auto; }
+@keyframes up { from { transform: translateY(40px); opacity: 0 } }
+.sheet .grip { width: 40px; height: 4px; border-radius: 4px; background: var(--line); margin: 0 auto 14px }
+.sheet h2 { font: 600 30px/1.05 var(--font-display); margin: 0 0 4px }
+.sheet .when { color: var(--muted); margin: 0 0 14px }
+.sheet p.desc { margin: 0 0 14px; font-size: 14px }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px }
+.facts div { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; text-align: center; font-size: 12px; color: var(--muted) }
+.facts b { display: block; color: var(--ink); font: 600 18px/1.2 var(--font-display) }
+.toggle { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; width: 100%; text-align: left; cursor: pointer;
+  border: 1px solid var(--line); background: var(--card); border-radius: 16px; padding: 12px 14px; margin-bottom: 8px }
+.toggle .box { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--line); display: grid; place-items: center }
+.toggle[aria-pressed="true"] { border-color: var(--clay); background: var(--clay-soft) }
+.toggle[aria-pressed="true"] .box { background: var(--clay); border-color: var(--clay) }
+.toggle[aria-pressed="true"] .box::after { content: ""; width: 9px; height: 5px; border: solid #fff; border-width: 0 0 2.5px 2.5px; transform: translateY(-1px) rotate(-45deg) }
+.toggle b { display: block; font-weight: 600 } .toggle small { color: var(--muted); font-size: 12px }
+.toggle .p { font: 600 20px/1 var(--font-display) }
+.cta { display: grid; gap: 8px; margin-top: 12px }
+.btn { border: 0; border-radius: 16px; padding: 15px 18px; font-weight: 700; cursor: pointer; background: var(--ink); color: var(--paper); transition: transform .1s, opacity .2s }
+.btn:active { transform: scale(.98) }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line) }
+.btn.sage { background: var(--sage) }
+body.tg .sheet .btn.main { display: none }
+
+/* done */
+.done { position: absolute; inset: 0; background: var(--paper); z-index: 7; padding: 30px 18px; overflow-y: auto; display: grid; align-content: start; gap: 16px; animation: up .45s cubic-bezier(.2,.8,.2,1) both; }
+.done .lotus { width: 74px; height: 74px; margin: 0 auto }
+.done h2 { text-align: center; font: 600 32px/1.05 var(--font-display); margin: 0 }
+.done .sub { text-align: center; color: var(--muted); margin: -8px 0 0 }
+.ticket { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 18px }
+.ticket .no { font-size: 11px; letter-spacing: .12em; color: var(--muted) }
+.ticket .name { font: 600 26px/1.1 var(--font-display); margin: 6px 0 2px }
+.ticket dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; margin: 14px 0 0; font-size: 14px }
+.ticket dt { color: var(--muted) } .ticket dd { margin: 0 }
+.bring { background: var(--sage-soft); border-radius: 16px; padding: 12px 14px; font-size: 13px; color: #4f6b52 }
+
+/* tabs */
+.tabs { position: absolute; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: var(--paper); border-top: 1px solid var(--line);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)); z-index: 4 }
+.tabs button { background: none; border: 0; display: grid; justify-items: center; gap: 3px; padding: 6px 0; font-size: 11px; color: var(--muted); cursor: pointer; position: relative }
+.tabs svg { width: 22px; height: 22px }
+.tabs button[aria-selected="true"] { color: var(--ink); font-weight: 600 }
+.tabs .badge { position: absolute; top: 2px; left: calc(50% + 6px); min-width: 16px; height: 16px; border-radius: 8px; background: var(--clay); color: #fff; font: 700 10px/16px var(--font-body); padding: 0 4px }
+
+.pagehead { padding: 20px 0 4px }
+.pagehead h2 { font: 600 32px/1 var(--font-display); margin: 0 0 6px }
+.pagehead p { margin: 0; color: var(--muted); font-size: 13px }
+.plans { display: grid; gap: 10px; margin-top: 14px }
+.plan { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 14px 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center }
+.plan b { font-weight: 600 } .plan small { color: var(--muted); font-size: 12px; grid-column: 1 }
+.plan .p { grid-row: 1 / span 2; grid-column: 2; font: 600 24px/1 var(--font-display) }
+.plan.hit { background: var(--ink); color: var(--paper); border-color: var(--ink) }
+.plan.hit small { color: #cfc6b8 }
+.plan .tag { display: inline-block; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; background: var(--clay); color: #fff; border-radius: 999px; padding: 2px 7px; margin-left: 6px; vertical-align: 2px }
+.note { color: var(--muted); font-size: 12px; margin: 12px 0 0 }
+.teachers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 10px }
+.teacher { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 14px; text-align: center }
+.teacher .ava { width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 8px; display: grid; place-items: center; font: 600 24px/1 var(--font-display); color: #fff }
+.teacher b { display: block } .teacher small { color: var(--muted); font-size: 12px }
+
+.mine-list { display: grid; gap: 10px; margin-top: 14px }
+.mine-list .ticket .acts { display: flex; gap: 8px; margin-top: 14px }
+.mine-list .ticket .acts button { flex: 1; border-radius: 12px; padding: 10px; border: 1px solid var(--line); background: var(--paper); cursor: pointer; font-size: 13px }
+.mine-list .ticket.cancelled { opacity: .5 }
+.empty-state { text-align: center; padding: 40px 10px; color: var(--muted); display: grid; gap: 14px; justify-items: center }
+
+.contact { display: grid; gap: 10px; margin-top: 14px }
+.contact .row { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; align-items: center }
+.contact .row > span { width: 36px; height: 36px; border-radius: 12px; background: var(--sage-soft); display: grid; place-items: center }
+.contact b { display: block; font-weight: 600 } .contact small { color: var(--muted) }
+.links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px }
+.links a { text-align: center; text-decoration: none; border-radius: 14px; padding: 13px; font-weight: 600; background: var(--ink); color: var(--paper) }
+.links a.g { background: transparent; color: var(--ink); border: 1px solid var(--line) }
+details { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 0 14px }
+details + details { margin-top: 6px }
+summary { cursor: pointer; padding: 13px 0; font-weight: 500; list-style: none; display: flex; justify-content: space-between; gap: 10px }
+summary::-webkit-details-marker { display: none }
+summary::after { content: "+"; color: var(--sage); font-weight: 700 }
+details[open] summary::after { content: "−" }
+details p { margin: 0 0 14px; color: var(--muted); font-size: 14px }
+
+/* side */
+.side { display: grid; gap: 16px }
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 22px; padding: 18px }
+.card h2 { font: 600 24px/1.1 var(--font-display); margin: 0 0 12px }
+.chat { background: #efe8dc; border-radius: 16px; padding: 12px; min-height: 150px; display: grid; align-content: end; gap: 8px }
+.chat .empty { color: var(--muted); font-size: 14px; text-align: center; align-self: center }
+.bubble { background: #fff; border-radius: 16px 16px 16px 4px; padding: 10px 12px; white-space: pre-line; overflow-wrap: anywhere; font-size: 14px; animation: up .4s cubic-bezier(.2,.8,.2,1) both; box-shadow: 0 1px 0 rgba(0,0,0,.04) }
+.ikb { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px }
+.ikb span { text-align: center; font-size: 13px; padding: 8px; border-radius: 10px; background: #fff; color: #3b82c4 }
+.roster { display: grid; gap: 6px; font-size: 14px }
+.roster .head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--line); margin-bottom: 4px }
+.roster .head b { font: 600 20px/1.1 var(--font-display) }
+.roster .head span { color: var(--muted); font-size: 13px }
+.roster ol { margin: 0; padding-left: 22px; display: grid; gap: 4px }
+.roster li.new { color: var(--sage); font-weight: 600 }
+.feat { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px }
+.feat li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; align-items: start }
+.feat li > span { width: 34px; height: 34px; border-radius: 12px; background: var(--sage-soft); display: grid; place-items: center }
+.feat b { display: block; font-weight: 600 } .feat small { color: var(--muted); font-size: 13px }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important } }
+</style>
+</head><body>
+
+<div class="shell">
+  <header class="intro">
+    <span class="tag">Демо · Telegram Mini App</span>
+    <h1>Расписание и запись: студия йоги «Гармония»</h1>
+    <p>Так выглядит запись на занятия внутри Telegram. Клиент выбирает день, видит, сколько осталось мест, и записывается в пару касаний. Новичкам сразу предлагается пробное занятие. Попробуйте записаться: справа появится сообщение студии и обновится список на занятие.</p>
+  </header>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="screen" id="screen">
+        <div class="tgbar"><b>Гармония · йога</b><span>мини-приложение</span></div>
+        <main class="app" id="app">
+
+          <div class="view" id="v-sched">
+            <section class="hero">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <g fill="none" stroke="#6f8f72" stroke-width="2.2" stroke-linejoin="round">
+                  <path d="M60 30c10 12 12 30 0 48-12-18-10-36 0-48z" fill="#d3e0d1"/>
+                  <path d="M60 78C48 70 36 56 34 40c14 2 24 14 26 38z" fill="#e3ebe1"/>
+                  <path d="M60 78c12-8 24-22 26-38-14 2-24 14-26 38z" fill="#e3ebe1"/>
+                  <path d="M60 78c-14 2-30-4-40-16 16-4 30 2 40 16zM60 78c14 2 30-4 40-16-16-4-30 2-40 16z" fill="#f5efe6"/>
+                </g>
+              </svg>
+              <small>ул. Пчелинцева, 4</small>
+              <h2>Студия йоги «Гармония»</h2>
+              <p>Хатха, виньяса, йога для спины и нидра. Маленькие группы до 12 человек.</p>
+            </section>
+            <div class="trial"><div><b>Первый раз у нас?</b><small>Пробное занятие на любое направление</small></div><span>300 ₽</span></div>
+
+            <h3 class="sec">Расписание</h3>
+            <div class="days" id="days"></div>
+            <h3 class="sec" id="daytitle"></h3>
+            <div class="classes" id="classes"></div>
+          </div>
+
+          <div class="view" id="v-prices" hidden>
+            <div class="pagehead"><h2>Абонементы</h2><p>Действуют на все направления. Заморозка на 7 дней.</p></div>
+            <div class="plans">
+              <div class="plan"><b>Пробное занятие</b><small>один раз, любое направление</small><span class="p">300 ₽</span></div>
+              <div class="plan"><b>Разовое</b><small>одно занятие</small><span class="p">700 ₽</span></div>
+              <div class="plan"><b>4 занятия</b><small>месяц · 600 ₽ за занятие</small><span class="p">2 400 ₽</span></div>
+              <div class="plan hit"><b>8 занятий <span class="tag">выгодно</span></b><small>месяц · 550 ₽ за занятие</small><span class="p">4 400 ₽</span></div>
+              <div class="plan"><b>Безлимит</b><small>месяц, любые занятия</small><span class="p">6 000 ₽</span></div>
+            </div>
+            <h3 class="sec">Преподаватели</h3>
+            <div class="teachers">
+              <div class="teacher"><div class="ava" style="background:#6f8f72">А</div><b>Анна</b><small>хатха, йога для спины</small></div>
+              <div class="teacher"><div class="ava" style="background:#c47a5a">М</div><b>Мария</b><small>виньяса, нидра, растяжка</small></div>
+            </div>
+            <p class="note">Цены и имена преподавателей примерные, для демонстрации.</p>
+          </div>
+
+          <div class="view" id="v-my" hidden>
+            <div class="pagehead"><h2>Мои занятия</h2><p>Отменить можно до начала, место освободится для других.</p></div>
+            <div class="mine-list" id="mine"></div>
+          </div>
+
+          <div class="view" id="v-info" hidden>
+            <div class="pagehead"><h2>О студии</h2><p>Студия йоги «Гармония»</p></div>
+            <div class="contact">
+              <div class="row"><span>📍</span><div><b>ул. Владимира Пчелинцева, 4</b><small>Санкт-Петербург</small></div></div>
+              <div class="row"><span>📞</span><div><b>+7 950 035-80-88</b><small>звонки и WhatsApp</small></div></div>
+              <div class="links">
+                <a href="https://yandex.ru/maps/?text=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%92%D0%BB%D0%B0%D0%B4%D0%B8%D0%BC%D0%B8%D1%80%D0%B0%20%D0%9F%D1%87%D0%B5%D0%BB%D0%B8%D0%BD%D1%86%D0%B5%D0%B2%D0%B0%2C%204" target="_blank" rel="noopener">Как добраться</a>
+                <a class="g" href="https://wa.me/79500358088" target="_blank" rel="noopener">WhatsApp</a>
+              </div>
+            </div>
+            <h3 class="sec">Частые вопросы</h3>
+            <details><summary>Я никогда не занимался. Мне можно?</summary><p>Да. Начните с занятий «для начинающих» или «все уровни», преподаватель подскажет облегчённые варианты.</p></details>
+            <details><summary>Что взять с собой?</summary><p>Удобную одежду и воду. Коврики, блоки и пледы есть в студии.</p></details>
+            <details><summary>Когда приходить?</summary><p>За 10 минут до начала, чтобы спокойно переодеться. Не ешьте плотно за 2 часа до занятия.</p></details>
+            <details><summary>Как отменить запись?</summary><p>Во вкладке «Мои занятия» или кнопкой в напоминании. Место сразу освободится для других.</p></details>
+          </div>
+        </main>
+
+        <nav class="tabs" role="tablist" id="tabs">
+          <button type="button" role="tab" data-v="sched" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Расписание</button>
+          <button type="button" role="tab" data-v="prices" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 4c3 3.5 3.5 8 0 13-3.5-5-3-9.5 0-13z"/><path d="M12 17c-4-1-7-4-8-8 4 0 7 3 8 8zM12 17c4-1 7-4 8-8-4 0-7 3-8 8z"/></svg>Абонементы</button>
+          <button type="button" role="tab" data-v="my" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Мои занятия<span class="badge" id="badge" hidden>0</span></button>
+          <button type="button" role="tab" data-v="info" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>О студии</button>
+        </nav>
+        <div id="sheetwrap"></div>
+        <div class="done" id="done" hidden></div>
+      </div>
+    </div>
+
+    <aside class="side">
+      <section class="card">
+        <h2>Telegram студии</h2>
+        <div class="chat" id="owner" aria-live="polite"><p class="empty">Здесь появится новая запись.<br>Запишитесь на занятие слева.</p></div>
+      </section>
+      <section class="card">
+        <h2>Список на занятие</h2>
+        <div class="roster" id="roster"></div>
+      </section>
+      <section class="card">
+        <h2>Что ещё делает бот</h2>
+        <ul class="feat">
+          <li><span>⏰</span><div><b>Напоминает за 2 часа</b><small>Меньше тех, кто «хотел прийти, но забыл»</small></div></li>
+          <li><span>🪷</span><div><b>Не даёт переполнить зал</b><small>Мест 12: когда группа набрана, запись закрывается сама</small></div></li>
+          <li><span>📋</span><div><b>Список на каждое занятие</b><small>Преподаватель пишет /today и видит, кто придёт и кто новичок</small></div></li>
+          <li><span>💌</span><div><b>Новости студии</b><small>Одной командой: новое направление, мастер-класс, замена преподавателя</small></div></li>
+        </ul>
+        <p class="note">Расписание и цены в демо примерные. В вашей версии будут ваши.</p>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<script>
+// Недельное расписание: день недели (0 = пн) → занятия. Тот же шаблон, что SCHEDULE в bot.py
+const SCHEDULE = {
+  0: [["08:00", "hatha_am"], ["19:00", "hatha"], ["20:30", "nidra"]],
+  1: [["10:00", "back"], ["19:00", "vinyasa"]],
+  2: [["08:00", "hatha_am"], ["19:00", "hatha"], ["20:30", "stretch"]],
+  3: [["10:00", "back"], ["19:00", "vinyasa"]],
+  4: [["19:00", "hatha"], ["20:30", "nidra"]],
+  5: [["11:00", "begin"], ["12:30", "stretch"]],
+  6: [["11:00", "soft"], ["18:00", "nidra"]]
+};
+const CLASSES = {
+  hatha_am: { name: "Утренняя хатха", teacher: "Анна", min: 60, lvl: "все уровни", desc: "Мягкое пробуждение тела: суставная разминка, базовые асаны и дыхание. Хорошо заряжает на день." },
+  hatha:    { name: "Хатха-йога", teacher: "Анна", min: 75, lvl: "все уровни", desc: "Классическая практика в спокойном темпе: асаны с удержанием, дыхание и расслабление в конце." },
+  vinyasa:  { name: "Виньяса флоу", teacher: "Мария", min: 75, lvl: "средний", desc: "Динамичная практика: асаны связываются в плавный поток в ритме дыхания. Хорошо прогревает." },
+  back:     { name: "Йога для спины", teacher: "Анна", min: 60, lvl: "все уровни", desc: "Для тех, кто много сидит: вытяжение, мягкие скрутки, укрепление мышц спины и пресса." },
+  nidra:    { name: "Йога-нидра", teacher: "Мария", min: 45, lvl: "все уровни", desc: "Глубокое расслабление лёжа под голос преподавателя. Снимает напряжение и помогает лучше спать." },
+  stretch:  { name: "Растяжка", teacher: "Мария", min: 60, lvl: "все уровни", desc: "Мягкая работа над гибкостью: бёдра, спина, плечи. Без резких движений." },
+  begin:    { name: "Йога для начинающих", teacher: "Анна", min: 75, lvl: "для новичков", desc: "Разбираем основы: как правильно стоять, дышать и выполнять базовые асаны. Идеально для первого раза." },
+  soft:     { name: "Мягкая йога", teacher: "Анна", min: 60, lvl: "все уровни", desc: "Спокойная практика выходного дня с акцентом на дыхание и расслабление." }
+};
+const CAPACITY = 12, TRIAL = 300, SINGLE = 700;
+const NAMES = ["Ольга К.", "Ирина", "Светлана М.", "Дмитрий", "Екатерина", "Анна П.", "Юлия", "Марина С.", "Алексей", "Наталья", "Ксения"];
+
+const tg = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData !== undefined && window.Telegram.WebApp.platform !== "unknown" ? window.Telegram.WebApp : null;
+if (tg) { document.body.classList.add("tg"); tg.ready(); tg.expand(); try { tg.setHeaderColor("#fffaf3"); tg.setBackgroundColor("#fffaf3"); } catch (e) {} }
+const haptic = () => { try { tg && tg.HapticFeedback.selectionChanged(); } catch (e) {} };
+const $ = id => document.getElementById(id);
+const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const wd = d => (d.getDay() + 6) % 7;
+const fmt = n => n.toLocaleString("ru-RU") + " ₽";
+const longDay = day => new Date(day + "T12:00").toLocaleDateString("ru-RU", { weekday: "long", day: "numeric", month: "long" });
+
+// занятость: бот передаёт ?taken=2026-10-03_19:00:7,... ; в демо придумываем правдоподобную
+const params = new URLSearchParams(location.search);
+const taken = {};
+if (params.get("taken")) params.get("taken").split(",").forEach(x => { const i = x.lastIndexOf(":"); taken[x.slice(0, i)] = +x.slice(i + 1); });
+else for (let i = 0; i < 7; i++) {
+  const d = new Date(); d.setDate(d.getDate() + i);
+  (SCHEDULE[wd(d)] || []).forEach(([t], j) => { taken[`${iso(d)}_${t}`] = [7, 10, 4, 12, 9, 5, 11, 8][(i * 3 + j * 5) % 8]; });
+}
+const trialUsed = params.get("trial_used") === "1";
+
+// мои записи: бот передаёт ?my=0012~2026-10-03~19:00~hatha~trial,...
+const mine = [];
+let nextNo = 40 + Math.floor(Math.random() * 40);
+if (params.get("my")) params.get("my").split(",").forEach(x => { const [no, day, time, cls, kind] = x.split("~"); if (CLASSES[cls]) mine.push({ no, day, time, cls, trial: kind === "trial", status: "new" }); });
+
+const st = { day: iso(new Date()), sheet: null, trial: !trialUsed && !mine.length };
+const isMine = (day, time) => mine.some(m => m.day === day && m.time === time && m.status !== "cancelled");
+
+function renderDays() {
+  const out = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() + i);
+    const b = document.createElement("button");
+    b.type = "button"; b.setAttribute("aria-pressed", st.day === iso(d) ? "true" : "false");
+    b.innerHTML = `<small>${i === 0 ? "сег" : d.toLocaleDateString("ru-RU", { weekday: "short" })}</small><b>${d.getDate()}</b>`;
+    b.onclick = () => { st.day = iso(d); haptic(); render(); };
+    out.push(b);
+  }
+  $("days").replaceChildren(...out);
+}
+
+function render() {
+  renderDays();
+  $("daytitle").textContent = longDay(st.day);
+  const list = SCHEDULE[wd(new Date(st.day + "T12:00"))] || [];
+  const now = new Date();
+  if (!list.length) { $("classes").innerHTML = `<p class="empty-day">В этот день занятий нет</p>`; return; }
+  $("classes").replaceChildren(...list.map(([t, k]) => {
+    const c = CLASSES[k], key = `${st.day}_${t}`, n = taken[key] || 0, left = CAPACITY - n;
+    const past = new Date(`${st.day}T${t}`) <= now, me = isMine(st.day, t);
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "cls" + (me ? " mine" : left <= 0 ? " full" : "") + (past ? " past" : "");
+    b.innerHTML = `<div class="t">${t}<small>${c.min} мин</small></div>
+      <div><b>${c.name}</b><div class="meta">${c.teacher}</div><span class="lvl${c.lvl === "средний" ? " mid" : ""}">${c.lvl}</span></div>
+      <div class="spots">${me ? "✓ вы записаны" : past ? "прошло" : left <= 0 ? "мест нет" : `${left} ${plural(left, "место", "места", "мест")}`}<div class="bar"><i style="width:${Math.min(100, n / CAPACITY * 100)}%"></i></div></div>`;
+    if (!past && !me && left > 0) b.onclick = () => { haptic(); openSheet(st.day, t, k); };
+    else if (me) b.onclick = () => show("my");
+    return b;
+  }));
+}
+const plural = (n, a, b, c) => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 10 || h >= 20) ? b : c; };
+
+function openSheet(day, time, k) {
+  st.sheet = { day, time, k };
+  const c = CLASSES[k], left = CAPACITY - (taken[`${day}_${time}`] || 0);
+  $("sheetwrap").innerHTML = `<div class="veil" id="veil"></div>
+    <div class="sheet" role="dialog" aria-label="${c.name}">
+      <div class="grip"></div>
+      <h2>${c.name}</h2>
+      <p class="when">${longDay(day)}, ${time} · ${c.teacher}</p>
+      <p class="desc">${c.desc}</p>
+      <div class="facts"><div><b>${c.min}</b>минут</div><div><b>${left}</b>${plural(left, "место", "места", "места")} из ${CAPACITY}</div><div><b>${c.lvl === "для новичков" ? "0+" : c.lvl === "средний" ? "★★" : "★"}</b>${c.lvl}</div></div>
+      ${trialUsed || mine.length ? "" : `<button type="button" class="toggle" id="trial" aria-pressed="${st.trial}"><span class="box"></span><span><b>Это моё первое занятие</b><small>пробное по специальной цене</small></span><span class="p">${fmt(TRIAL)}</span></button>`}
+      <div class="cta"><button type="button" class="btn main" id="book">Записаться · ${fmt(st.trial && !trialUsed && !mine.length ? TRIAL : SINGLE)}</button><button type="button" class="btn ghost" id="close">Назад</button></div>
+    </div>`;
+  $("veil").onclick = closeSheet; $("close").onclick = closeSheet;
+  if ($("trial")) $("trial").onclick = () => { st.trial = !st.trial; haptic(); openSheet(day, time, k); };
+  $("book").onclick = submit;
+  syncMain();
+}
+function closeSheet() { st.sheet = null; $("sheetwrap").innerHTML = ""; syncMain(); }
+const price = () => st.trial && !trialUsed && !mine.length ? TRIAL : SINGLE;
+function syncMain() {
+  if (!tg) return;
+  if (st.sheet) tg.MainButton.setParams({ text: `Записаться · ${fmt(price())}`, color: "#2f2a24", text_color: "#fffaf3", is_active: true, is_visible: true });
+  else tg.MainButton.hide();
+}
+
+function submit() {
+  if (!st.sheet) return;
+  const { day, time, k } = st.sheet, trial = price() === TRIAL;
+  if (tg) { try { tg.HapticFeedback.notificationOccurred("success"); } catch (e) {} tg.sendData(JSON.stringify({ action: "book", day, time, cls: k, trial })); return; }
+  closeSheet();
+  const no = String(nextNo++).padStart(4, "0"), c = CLASSES[k];
+  mine.push({ no, day, time, cls: k, trial, status: "new" });
+  taken[`${day}_${time}`] = (taken[`${day}_${time}`] || 0) + 1;
+  updateBadge(); render();
+  $("done").innerHTML = `
+    <svg class="lotus" viewBox="0 0 120 120" aria-hidden="true"><g fill="none" stroke="#6f8f72" stroke-width="2.4" stroke-linejoin="round"><path d="M60 26c11 13 13 32 0 52-13-20-11-39 0-52z" fill="#d3e0d1"/><path d="M60 78C47 70 34 55 32 38c15 2 26 15 28 40z" fill="#e3ebe1"/><path d="M60 78c13-8 26-23 28-40-15 2-26 15-28 40z" fill="#e3ebe1"/><path d="M60 78c-15 2-32-4-42-17 17-4 32 2 42 17zM60 78c15 2 32-4 42-17-17-4-32 2-42 17z" fill="#f5efe6"/></g></svg>
+    <h2>Ждём вас на коврике</h2>
+    <p class="sub">Запись подтверждена</p>
+    <div class="ticket">
+      <div class="no">ЗАПИСЬ № ${no}</div>
+      <div class="name">${c.name}</div>
+      <div style="color:var(--muted)">${longDay(day)}, ${time}</div>
+      <dl><dt>Преподаватель</dt><dd>${c.teacher}</dd><dt>Длительность</dt><dd>${c.min} минут</dd><dt>Оплата</dt><dd>${trial ? `пробное, ${fmt(TRIAL)}` : `${fmt(SINGLE)} или абонемент`}, на месте</dd><dt>Адрес</dt><dd>ул. Пчелинцева, 4</dd></dl>
+    </div>
+    <div class="bring">🧘 Возьмите удобную одежду и воду, коврики есть в студии. Приходите за 10 минут. За 2 часа бот напомнит о занятии.</div>
+    <div class="cta"><button class="btn sage" id="tomine" type="button">Мои занятия</button><button class="btn ghost" id="again" type="button">К расписанию</button></div>`;
+  $("done").hidden = false;
+  $("again").onclick = () => { $("done").hidden = true; };
+  $("tomine").onclick = () => { $("done").hidden = true; show("my"); };
+
+  ownerSay(`🧘 <b>Новая запись № ${no}</b>
+<b>${c.name}</b> · ${longDay(day)}, ${time}
+👤 Елена${trial ? " · <b>новичок, пробное</b>" : ""}
+Мест занято: ${taken[`${day}_${time}`]} из ${CAPACITY}
+📞 +7 921 ••• 45 67`, true);
+  renderRoster(day, time, k, true);
+}
+
+function ownerSay(html, kb) {
+  const o = $("owner");
+  o.querySelector(".empty")?.remove();
+  const b = document.createElement("div");
+  b.innerHTML = `<div class="bubble">${html}</div>${kb ? `<div class="ikb" style="margin-top:6px"><span>📋 Список группы</span><span>✉ Написать</span></div>` : ""}`;
+  o.appendChild(b);
+}
+
+function renderRoster(day, time, k, withNew) {
+  const n = taken[`${day}_${time}`] || 0, c = CLASSES[k];
+  const names = NAMES.slice(0, Math.min(NAMES.length, n - (withNew ? 1 : 0)));
+  $("roster").innerHTML = `<div class="head"><b>${c.name}</b><span>${new Date(day + "T12:00").toLocaleDateString("ru-RU", { weekday: "short", day: "numeric", month: "short" })}, ${time} · ${n}/${CAPACITY}</span></div>
+    <ol>${names.map(x => `<li>${x}</li>`).join("")}${withNew ? `<li class="new">Елена · новичок 🌱</li>` : ""}</ol>`;
+}
+
+/* ---------- pages ---------- */
+let view = "sched";
+function show(v) {
+  view = v; closeSheet();
+  ["sched", "prices", "my", "info"].forEach(k => { $("v-" + k).hidden = k !== v; });
+  document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.v === v ? "true" : "false"));
+  $("app").scrollTop = 0;
+  if (v === "my") renderMine();
+  if (v === "sched") render();
+  haptic();
+}
+document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => show(b.dataset.v));
+
+function updateBadge() { const n = mine.filter(m => m.status !== "cancelled").length; $("badge").textContent = n; $("badge").hidden = n === 0; }
+function renderMine() {
+  const box = $("mine");
+  if (!mine.length) {
+    box.innerHTML = `<div class="empty-state"><div>Вы пока никуда не записаны</div><button class="btn" type="button" id="emptygo">Открыть расписание</button></div>`;
+    $("emptygo").onclick = () => show("sched");
+    return;
+  }
+  box.replaceChildren(...mine.slice().reverse().map(m => {
+    const c = CLASSES[m.cls], d = document.createElement("div");
+    d.className = "ticket" + (m.status === "cancelled" ? " cancelled" : "");
+    d.innerHTML = `<div class="no">ЗАПИСЬ № ${m.no}${m.trial ? " · ПРОБНОЕ" : ""}</div><div class="name">${c.name}</div><div style="color:var(--muted)">${longDay(m.day)}, ${m.time} · ${c.teacher}</div>
+      ${m.status === "cancelled" ? `<p class="note">Запись отменена</p>` : `<div class="acts"><button type="button" data-a="cal">В календарь</button><button type="button" data-a="cancel">Отменить</button></div>`}`;
+    d.querySelector('[data-a="cancel"]')?.addEventListener("click", e => cancelBooking(m, e.currentTarget));
+    d.querySelector('[data-a="cal"]')?.addEventListener("click", e => { e.currentTarget.textContent = "Добавлено ✓"; });
+    return d;
+  }));
+}
+function cancelBooking(m, el) {
+  if (el.dataset.armed !== "1") { el.dataset.armed = "1"; el.textContent = "Точно отменить?"; return; }
+  if (tg) { tg.sendData(JSON.stringify({ action: "cancel", no: m.no })); return; }
+  m.status = "cancelled";
+  taken[`${m.day}_${m.time}`] = Math.max(0, (taken[`${m.day}_${m.time}`] || 1) - 1);
+  updateBadge(); renderMine();
+  ownerSay(`↩ Отмена записи № ${m.no}: ${CLASSES[m.cls].name}, ${m.time}. Место снова свободно.`);
+}
+
+// стартовый список: ближайшее занятие сегодня или завтра
+(() => {
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() + i);
+    const next = (SCHEDULE[wd(d)] || []).find(([t]) => new Date(`${iso(d)}T${t}`) > new Date());
+    if (next) { renderRoster(iso(d), next[0], next[1], false); return; }
+  }
+})();
+if (tg) tg.MainButton.onClick(submit);
+updateBadge();
+render();
+</script>
+</body></html>
