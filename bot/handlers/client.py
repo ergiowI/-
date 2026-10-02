@@ -133,18 +133,18 @@ async def pick_time(cb: CallbackQuery, state: FSMContext, db: Database):
 
 
 @router.callback_query(Booking.known, F.data.startswith("me:"))
-async def known_client(cb: CallbackQuery, state: FSMContext):
+async def known_client(cb: CallbackQuery, state: FSMContext, settings: Settings):
     if cb.data == "me:yes":
-        await ask_comment(cb.message, state, edit=True)
+        await ask_comment(cb.message, state, settings, edit=True)
     else:
         await state.set_state(Booking.name)
         await cb.message.edit_text("Как вас зовут?")
     await cb.answer()
 
 
-async def ask_comment(message: Message, state: FSMContext, edit: bool = False):
+async def ask_comment(message: Message, state: FSMContext, settings: Settings, edit: bool = False):
     await state.set_state(Booking.comment)
-    text = "Напишите марку авто и размер шин (например: Kia Rio, 185/65 R15). Это поможет подготовиться."
+    text = settings.comment_prompt
     if edit:
         await message.edit_text(text, reply_markup=kb.skip_kb())
     else:
@@ -168,7 +168,7 @@ def _summary(data: dict, s: Settings) -> tuple[str, datetime, datetime]:
     text = (
         "Проверьте запись:\n\n"
         f"🔧 {service.name} — {service.price} ₽\n🕒 {fmt_dt(start)} ({service.duration_minutes} мин)\n"
-        + (f"🚗 {data['comment']}\n" if data.get("comment") else "")
+        + (f"{s.comment_icon} {data['comment']}\n" if data.get("comment") else "")
         + f"👤 {data['name']}\n📞 {data['phone']}\n📍 {s.address}"
     )
     return text, start, end
@@ -184,7 +184,7 @@ async def get_phone(message: Message, state: FSMContext, settings: Settings):
         phone = "+" + digits  # Telegram иногда отдаёт номер без «+»
     await state.update_data(phone=phone)
     await message.answer("Спасибо!", reply_markup=kb.main_menu())
-    await ask_comment(message, state)
+    await ask_comment(message, state, settings)
 
 
 async def show_summary(message: Message, state: FSMContext, settings: Settings, edit: bool = False):

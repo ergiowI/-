@@ -33,6 +33,8 @@ class Settings:
     review_hours_after: int
     booking_days_ahead: int
     services: dict[str, Service]
+    comment_prompt: str
+    comment_icon: str
     db_path: Path
 
 
@@ -48,7 +50,12 @@ def load_settings(config_path: Path | None = None) -> Settings:
     if not token or not owner:
         raise RuntimeError("Заполните BOT_TOKEN и OWNER_CHAT_ID в файле .env")
 
-    raw = yaml.safe_load((config_path or ROOT / "config.yaml").read_text(encoding="utf-8"))
+    # CONFIG_PATH позволяет запустить того же бота для другой ниши: CONFIG_PATH=examples/grooming.yaml
+    path = config_path or Path(os.getenv("CONFIG_PATH") or ROOT / "config.yaml")
+    if not path.is_absolute():
+        path = ROOT / path
+    raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+    texts = raw.get("texts", {})
     business = raw["business"]
     services = {
         s["id"]: Service(s["id"], s["name"], int(s["duration_minutes"]), int(s["price"]))
@@ -71,5 +78,7 @@ def load_settings(config_path: Path | None = None) -> Settings:
         review_hours_after=int(raw.get("review_hours_after", 1)),
         booking_days_ahead=int(raw.get("booking_days_ahead", 7)),
         services=services,
+        comment_prompt=texts.get("comment_prompt", "Добавьте комментарий к записи или нажмите «Пропустить»."),
+        comment_icon=texts.get("comment_icon", "📝"),
         db_path=ROOT / "bookings.db",
     )

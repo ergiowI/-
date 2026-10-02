@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS bookings (
     end_ts INTEGER NOT NULL,
     status TEXT NOT NULL DEFAULT 'pending',   -- pending | confirmed | cancelled
     reminded INTEGER NOT NULL DEFAULT 0,
-    comment TEXT NOT NULL DEFAULT '',          -- марка авто / размер шин
+    comment TEXT NOT NULL DEFAULT '',          -- комментарий клиента (марка авто, порода питомца...)
     review_asked INTEGER NOT NULL DEFAULT 0,
     rating INTEGER                             -- оценка 1..5 после визита
 );

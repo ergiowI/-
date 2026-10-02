@@ -114,6 +114,17 @@ class Harness:
 
 @pytest.fixture
 def bot(tmp_path, monkeypatch):
+    yield from _make_bot(tmp_path, monkeypatch)
+
+
+@pytest.fixture
+def grooming_bot(tmp_path, monkeypatch):
+    """Тот же бот с конфигом другой ниши — проверяем, что ниша меняется без правки кода."""
+    monkeypatch.setenv("CONFIG_PATH", "examples/grooming.yaml")
+    yield from _make_bot(tmp_path, monkeypatch)
+
+
+def _make_bot(tmp_path, monkeypatch):
     monkeypatch.setenv("BOT_TOKEN", "123:TEST")
     monkeypatch.setenv("OWNER_CHAT_ID", str(OWNER))
     settings = replace(load_settings(), db_path=tmp_path / "test.db")

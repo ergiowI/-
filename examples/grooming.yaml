@@ -1,0 +1,44 @@
+# Та же программа, другая ниша: груминг-салон.
+# Запуск: CONFIG_PATH=examples/grooming.yaml python -m bot
+business:
+  name: "Груминг «Пушистый хвост»"
+  address: "Санкт-Петербург, ул. Типанова, 12"
+  phone: "+7 (812) 000-00-01"
+
+timezone: "Europe/Moscow"
+
+working_hours:
+  1: ["10:00", "20:00"]
+  2: ["10:00", "20:00"]
+  3: ["10:00", "20:00"]
+  4: ["10:00", "20:00"]
+  5: ["10:00", "18:00"]
+  6: ["11:00", "17:00"]
+  # понедельник — выходной
+
+slot_step_minutes: 30
+reminder_hours_before: 3
+review_hours_after: 2
+booking_days_ahead: 10
+
+services:
+  - id: hygiene
+    name: "Гигиенический комплекс"
+    duration_minutes: 60
+    price: 1500
+  - id: full_small
+    name: "Комплекс: мелкие породы"
+    duration_minutes: 120
+    price: 2800
+  - id: full_large
+    name: "Комплекс: крупные породы"
+    duration_minutes: 180
+    price: 4500
+  - id: claws
+    name: "Стрижка когтей"
+    duration_minutes: 30
+    price: 500
+
+texts:
+  comment_prompt: "Напишите породу и кличку питомца (например: шпиц Боня, 3 кг). Мастер подготовит инструменты."
+  comment_icon: "🐾"

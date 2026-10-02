@@ -42,7 +42,7 @@ python -m bot
 ```bash
 pytest -v
 ```
-43 теста, запускаются за пару секунд и без интернета:
+44 теста, запускаются за пару секунд и без интернета:
 - `tests/test_slots.py` — расчёт слотов: пересечения, конец рабочего дня, прошедшее время сегодня, шаг сетки;
 - `tests/test_db.py` — защита от двойной записи, перенос, клиенты, напоминания, оценки, миграция старой базы;
 - `tests/test_handlers.py` — сценарии целиком через настоящие обработчики aiogram (Telegram подменён в `tests/conftest.py`):
@@ -56,7 +56,12 @@ pytest -v
 - `services` — список услуг: `id` (латиницей, уникальный), `name`, `duration_minutes`, `price`;
 - `slot_step_minutes`, `booking_days_ahead`, `reminder_hours_before`, `review_hours_after` — шаг сетки, горизонт записи, напоминание, запрос оценки.
 
-Пример для груминга: замените блок `services` на «Стрижка — 90 мин — 2500 ₽», «Гигиенический — 60 мин — 1500 ₽» и поменяйте `business`.
+- `texts.comment_prompt` / `texts.comment_icon` — подсказка к комментарию и его значок (🚗 марка авто, 🐾 порода питомца).
+
+**Готовый пример другой ниши** — груминг-салон в `examples/grooming.yaml`. Запуск без правки кода:
+```bash
+CONFIG_PATH=examples/grooming.yaml python -m bot
+```
 Токен и chat id хранятся только в `.env` (он в `.gitignore`).
 
 ## Структура

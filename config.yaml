@@ -41,3 +41,8 @@ services:
     name: "Хранение шин"
     duration_minutes: 30
     price: 1500
+
+# Тексты, которые зависят от ниши
+texts:
+  comment_prompt: "Напишите марку авто и размер шин (например: Kia Rio, 185/65 R15). Это поможет подготовиться."
+  comment_icon: "🚗"

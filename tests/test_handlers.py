@@ -227,3 +227,27 @@ def test_rating_only_after_visit_and_once(bot):
     assert "Управляющий свяжется" in bot.last(CLIENT)  # низкая оценка — обещаем перезвонить
     bot.press(CLIENT, "rate:1:5")
     assert bot.db.get(1).rating == 2
+
+
+# ---------- другая ниша из examples/ ----------
+
+def test_grooming_config_full_flow(grooming_bot):
+    b = grooming_bot
+    b.send(CLIENT, "/start")
+    assert "Пушистый хвост" in b.last(CLIENT)
+    b.send(CLIENT, "📅 Записаться")
+    assert "svc:full_small" in b.buttons(CLIENT)
+    b.press(CLIENT, "svc:full_small")
+    days = [x.split(":", 1)[1] for x in b.buttons(CLIENT) if x.startswith("day:")]
+    assert days and all(dt.date.fromisoformat(d).weekday() != 0 for d in days)  # понедельник — выходной
+    b.press(CLIENT, f"day:{days[0]}")
+    b.press(CLIENT, b.buttons(CLIENT)[0])
+    b.send(CLIENT, "Анна")
+    b.send(CLIENT, "+7 999 555-44-33")
+    assert "породу и кличку" in b.last(CLIENT)
+    b.send(CLIENT, "шпиц Боня")
+    assert "🐾 шпиц Боня" in b.last(CLIENT)
+    b.press(CLIENT, "confirm:yes")
+    booking = b.db.get(1)
+    assert booking.service_id == "full_small" and (booking.end - booking.start) == dt.timedelta(minutes=120)
+    assert "2800 ₽" in b.last(OWNER)
