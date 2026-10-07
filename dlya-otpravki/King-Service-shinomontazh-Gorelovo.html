@@ -3,33 +3,33 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Студия красоты «Нероли» · пр. Ветеранов, 143</title>
-<meta name="description" content="Студия красоты «Нероли» на проспекте Ветеранов, 143: маникюр, стрижки и окрашивание, брови и ресницы, уход за лицом. Онлайн-запись к мастеру.">
+<title>King Service · шиномонтаж, Горелово, ул. Сименса, 8</title>
+<meta name="description" content="Шиномонтаж King Service в Горелово, ул. Сименса, 8. Переобувка с ценой по радиусу, онлайн-запись и напоминание о смене сезона.">
 <script>document.documentElement.classList.add("js")</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Manrope:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
 :root {
-  --bg: #fbf7f1;
-  --panel: #ffffff;
-  --panel-2: #f3ece2;
-  --line: #ebe2d6;
-  --ink: #2b2622;
-  --muted: #857a6f;
-  --accent: #e07b33;
-  --accent-ink: #ffffff;
-  --accent-text: #bf5f1b;
-  --tag-bg: #fbe6d4;
-  --tag-ink: #9a4a12;
-  --font-display: "Prata", Georgia, serif;
+  --bg: #10122a;
+  --panel: #171a38;
+  --panel-2: #20244a;
+  --line: #2c3160;
+  --ink: #eef0ff;
+  --muted: #9399c4;
+  --accent: #ffd23f;
+  --accent-ink: #1a1500;
+  --accent-text: #ffdc66;
+  --tag-bg: #ffd23f;
+  --tag-ink: #1a1500;
+  --font-display: "Unbounded", "Arial Black", sans-serif;
   --font-body: "Manrope", "Segoe UI", Roboto, Arial, sans-serif;
-  --font-num: "Manrope", "Segoe UI", Arial, sans-serif;
-  --h1-weight: 400;
+  --font-num: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --h1-weight: 700;
   --em-style: normal;
   --r-btn: 14px;
-  --r-card: 22px;
-  --shadow: 0 24px 48px -32px rgba(120,70,30,.35);
-  color-scheme: light;
+  --r-card: 20px;
+  --shadow: 0 24px 48px -28px #000;
+  color-scheme: dark;
   --ok: #2fbf71;
 }
 * { box-sizing: border-box }
@@ -168,77 +168,68 @@ details p { margin: 0 0 16px; color: var(--muted) }
 footer { border-top: 1px solid var(--line); padding: 26px 0 40px; color: var(--muted); font-size: 14px }
 footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap }
 
-.ne-hero { max-width: 400px; margin-inline: auto; padding: 26px }
-.ne-hero .cap { display: block; color: var(--muted); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; margin-bottom: 12px }
-.ne-hero .slot { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 14px; align-items: center; padding: 12px 0; border-top: 1px dashed var(--line) }
-.ne-hero time { font: 700 20px/1 var(--font-num); color: var(--accent-text) }
-.ne-hero .slot span { color: var(--muted); font-size: 14px } .ne-hero .slot b { display: block; color: var(--ink); font-size: 15.5px }
-.team { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px }
-@media (max-width: 900px) { .team { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
-.team .card { text-align: center; padding: 22px 14px }
-.team i { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 12px; display: grid; place-items: center; font: 400 30px/1 var(--font-display); font-style: normal; background: var(--tag-bg); color: var(--tag-ink) }
-.team b { display: block; font: 400 20px/1.2 var(--font-display) }
-.team small { display: block; color: var(--muted); margin-bottom: 14px }
+.ks-hero { max-width: 400px; margin-inline: auto; position: relative; overflow: hidden; padding: 28px }
+.ks-hero .crown { position: absolute; right: 14px; top: -6px; font-size: 92px; color: var(--accent); opacity: .12; line-height: 1 }
+.ks-hero small { color: var(--muted) }
+.ks-hero .slots { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 20px }
+.ks-hero .slots span { border: 1.5px solid var(--accent); color: var(--accent-text); border-radius: 10px; padding: 7px 12px; font: 600 15px/1.2 var(--font-num) }
+.ks-hero .pr { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border-top: 1px dashed var(--line); padding-top: 14px }
+.ks-hero .pr b { font: 700 28px/1 var(--font-num); color: var(--accent-text); white-space: nowrap }
 
 </style>
 </head>
 <body>
-<div class="demo"><b>Демо-версия сайта</b> для Студия красоты «Нероли». Цены, мастера и часы примерные.</div>
+<div class="demo"><b>Демо-версия сайта</b> для «King Service». Цены и часы примерные.</div>
 <header class="nav"><div class="wrap">
-  <a class="logo" href="#top"><span class="mark">Н</span><span><b>Студия красоты «Нероли»</b><small>пр. Ветеранов, 143</small></span></a>
-  <nav class="links"><a href="#prices">Услуги</a><a href="#masters">Мастера</a><a href="#booking">Запись</a><a href="#contacts">Контакты</a></nav>
+  <a class="logo" href="#top"><span class="mark">K</span><span><b>King Service</b><small>Шиномонтаж · Горелово, ул. Сименса, 8</small></span></a>
+  <nav class="links"><a href="#prices">Цены</a><a href="#season">Напоминание</a><a href="#booking">Запись</a><a href="#contacts">Контакты</a></nav>
   <a class="btn sm" href="#booking">Записаться</a>
 </div></header>
 <main id="top">
   <section class="hero"><div class="wrap">
     <div>
-      <span class="tag">Студия красоты на Ветеранов</span>
-      <h1>Запишитесь к своему мастеру <em>за минуту</em></h1>
-      <p class="lead">Маникюр, стрижки и окрашивание, брови и уход за лицом на проспекте Ветеранов, 143. Свободные окна видно сразу — не нужно звонить и ждать ответа.</p>
-      <div class="ctas"><a class="btn" href="#booking">Записаться онлайн</a><a class="btn ghost" href="https://wa.me/79819629049" target="_blank" rel="noopener">Написать в WhatsApp</a></div>
-      <div class="chips-row"><span>пр. Ветеранов, 143</span><span><b>Ежедневно</b> 10:00–21:00</span><span>Запись онлайн 24/7</span></div>
+      <span class="tag">Шиномонтаж в Горелово</span>
+      <h1>Королевский сервис <em>для ваших колёс</em></h1>
+      <p class="lead">Переобувка, балансировка и ремонт шин на Сименса, 8. Выберите радиус и время онлайн — цена фиксируется сразу, в сезон без очереди.</p>
+      <div class="ctas"><a class="btn" href="#booking">Записаться на переобувку</a><a class="btn ghost" href="https://wa.me/79531635300" target="_blank" rel="noopener">Написать в WhatsApp</a></div>
+      <div class="chips-row"><span>Горелово, ул. Сименса, 8</span><span><b>5★</b> по отзывам</span><span>Запись онлайн 24/7</span></div>
     </div>
-    <div><div class="card ne-hero">
-      <small class="cap">Свободно сегодня</small>
-      <div class="slot"><time>14:00</time><span><b>Маникюр с покрытием</b>Анна</span></div>
-      <div class="slot"><time>16:30</time><span><b>Женская стрижка</b>Виктория</span></div>
-      <div class="slot"><time>18:00</time><span><b>Брови: коррекция и окрашивание</b>Ксения</span></div>
-      <a class="btn" href="#booking" style="width:100%;margin-top:6px">Выбрать время</a>
+    <div><div class="card ks-hero">
+      <div class="crown">♛</div>
+      <small>Ближайшее свободное время</small>
+      <div class="slots"><span>сегодня 17:00</span><span>сегодня 18:30</span><span>завтра 10:00</span></div>
+      <div class="pr"><span>Переобувка R16, легковой</span><b>2 200 ₽</b></div>
     </div></div>
   </div></section>
-  <section id="perks" style="padding-top:0"><div class="wrap"><div class="perks"><div class="perk"><div class="ico">🗓</div><b>Видно свободное время</b><p>Выбираете мастера и окно сами, в любое время суток — даже когда студия закрыта.</p></div><div class="perk"><div class="ico">💬</div><b>Напоминание накануне</b><p>Бот пришлёт напоминание и кнопку «Перенести», если планы поменялись.</p></div><div class="perk"><div class="ico">🌸</div><b>Свой мастер</b><p>Записывайтесь к любимому мастеру повторно в два нажатия.</p></div></div></div></section>
+  <section id="perks" style="padding-top:0"><div class="wrap"><div class="perks"><div class="perk"><div class="ico">👑</div><b>Без очереди</b><p>Записались на время — приезжаете и сразу заезжаете в бокс.</p></div><div class="perk"><div class="ico">🧾</div><b>Цена заранее</b><p>Тип машины и радиус — и вы видите итог. На месте сумма не меняется.</p></div><div class="perk"><div class="ico">🔔</div><b>Напомним о сезоне</b><p>Весной и осенью бот сам напомнит, что пора переобуваться, и предложит время.</p></div></div></div></section>
   <section class="alt" id="prices"><div class="wrap">
-    <div class="sec-head"><div><span class="tag">Цены</span><h2>Услуги и цены</h2></div><p>Цена может зависеть от длины волос и сложности работы — мастер скажет заранее.</p></div>
-    <div class="plist"><div class="card"><h3>Ногти</h3><div class="prow"><span>Маникюр с покрытием гель-лак<small>90 мин</small></span><b>2 200 ₽</b></div><div class="prow"><span>Педикюр с покрытием<small>120 мин</small></span><b>2 800 ₽</b></div><div class="prow"><span>Наращивание ногтей<small>150 мин</small></span><b>3 200 ₽</b></div></div><div class="card"><h3>Волосы</h3><div class="prow"><span>Женская стрижка<small>60 мин</small></span><b>1 800 ₽</b></div><div class="prow"><span>Окрашивание в один тон<small>от 2 часов</small></span><b>от 3 500 ₽</b></div><div class="prow"><span>Укладка<small>45 мин</small></span><b>1 500 ₽</b></div></div><div class="card"><h3>Брови и ресницы</h3><div class="prow"><span>Коррекция и окрашивание бровей<small>45 мин</small></span><b>1 200 ₽</b></div><div class="prow"><span>Ламинирование ресниц<small>60 мин</small></span><b>2 300 ₽</b></div></div><div class="card"><h3>Лицо</h3><div class="prow"><span>Чистка лица<small>75 мин</small></span><b>2 900 ₽</b></div><div class="prow"><span>Уходовая процедура<small>60 мин</small></span><b>2 500 ₽</b></div></div></div>
+    <div class="sec-head"><div><span class="tag">Цены</span><h2>Сезонная переобувка</h2></div><p>Комплекс на 4 колеса: снятие, монтаж, балансировка, установка.</p></div>
+    <div class="ptable-wrap"><table class="pt"><thead><tr><th>Радиус</th><th>Легковой</th><th>Кроссовер</th><th>Внедорожник</th></tr></thead><tbody><tr><td>R13–R14</td><td class="r">1 700 ₽</td><td>2 050 ₽</td><td>2 400 ₽</td></tr><tr><td>R15</td><td class="r">1 900 ₽</td><td>2 300 ₽</td><td>2 650 ₽</td></tr><tr><td>R16</td><td class="r">2 200 ₽</td><td>2 650 ₽</td><td>3 100 ₽</td></tr><tr><td>R17</td><td class="r">2 500 ₽</td><td>3 000 ₽</td><td>3 500 ₽</td></tr><tr><td>R18</td><td class="r">2 800 ₽</td><td>3 350 ₽</td><td>3 900 ₽</td></tr><tr><td>R19–R20</td><td class="r">3 400 ₽</td><td>4 100 ₽</td><td>4 750 ₽</td></tr></tbody></table></div>
+    <div class="plist" style="margin-top:16px">
+      <div class="card"><h3>Отдельные работы</h3><div class="prow"><span>Перестановка колёс<small>на дисках</small></span><b>900 ₽</b></div><div class="prow"><span>Балансировка 4 колёс</span><b>1 000 ₽</b></div></div>
+      <div class="card"><h3>Ремонт</h3><div class="prow"><span>Ремонт прокола</span><b>от 500 ₽</b></div><div class="prow"><span>Ремонт бокового пореза</span><b>от 1 200 ₽</b></div></div>
+    </div>
   </div></section>
-  <section id="masters"><div class="wrap">
-      <div class="sec-head"><div><span class="tag">Мастера</span><h2>Наша команда</h2></div><p>Фото мастеров добавим после настройки сайта.</p></div>
-      <div class="team">
-        <div class="card"><i>А</i><b>Анна</b><small>мастер маникюра</small><a href="#booking" class="btn ghost sm">Записаться</a></div>
-        <div class="card"><i>О</i><b>Ольга</b><small>маникюр и педикюр</small><a href="#booking" class="btn ghost sm">Записаться</a></div>
-        <div class="card"><i>В</i><b>Виктория</b><small>парикмахер-стилист</small><a href="#booking" class="btn ghost sm">Записаться</a></div>
-        <div class="card"><i>К</i><b>Ксения</b><small>брови и ресницы</small><a href="#booking" class="btn ghost sm">Записаться</a></div>
-        <div class="card"><i>М</i><b>Марина</b><small>косметолог</small><a href="#booking" class="btn ghost sm">Записаться</a></div>
-      </div></div></section><section><div class="wrap split"><div><span class="tag">Напоминания</span><h2>Клиенты приходят вовремя</h2><p>За день до визита бот присылает напоминание. Если планы поменялись, клиент переносит запись сам, и окно сразу освобождается для других.</p><p>Администратору не нужно обзванивать клиентов и отвечать на одни и те же вопросы.</p></div><div><div class="tg"><div class="who"><i>Н</i><div>Студия «Нероли»<small>бот записи</small></div></div><div class="msg">Добрый день, Елена! Напоминаем: завтра в 14:00<br>💅 Маникюр с покрытием · Анна<br>📍 пр. Ветеранов, 143<time>12:00</time></div><div class="kb"><span>✅ Приду</span><span>🔄 Перенести</span></div></div></div></div></section>
+  <section id="season"><div class="wrap split"><div><span class="tag">Напоминание</span><h2>Бот сам напомнит, когда менять резину</h2><p>После переобувки клиент получает в Telegram запись и чек. Через полгода бот присылает напоминание с кнопкой записи.</p><p>Клиенты возвращаются к вам, а не едут в первый попавшийся шиномонтаж.</p></div><div><div class="tg"><div class="who"><i>K</i><div>King Service<small>бот шиномонтажа</small></div></div><div class="msg">Добрый день, Сергей! 🍂 Пора на зимнюю резину.<br>В прошлый раз: R17, кроссовер — 3 000 ₽.<br>Записать вас на удобное время?<time>10:00</time></div><div class="kb"><span>📅 Выбрать время</span><span>Позже</span></div></div></div></div></section>
   <section class="alt" id="booking"><div class="wrap">
-    <div class="sec-head"><div><span class="tag">Онлайн-запись</span><h2>Онлайн-запись</h2></div><p>Сначала услуга, потом мастер и время. Занятые окна зачёркнуты.</p></div>
+    <div class="sec-head"><div><span class="tag">Онлайн-запись</span><h2>Запишитесь за минуту</h2></div><p>Занятое время зачёркнуто. Подтверждение придёт в Telegram или по СМС.</p></div>
     <div class="bk">
-      <form class="form" id="bookForm" onsubmit="return false"><div class="field"><span class="lbl">Услуга</span><div class="chips" id="fService"></div></div><div class="field"><span class="lbl">Мастер</span><div class="chips" id="fMaster"></div></div><div class="field"><span class="lbl">День</span><div class="chips mono" id="fDay"></div></div><div class="field"><span class="lbl">Время</span><div class="chips mono" id="fTime"></div></div><div class="field two"><div><label for="fName" class="lbl" style="display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">Имя</label><input id="fName" autocomplete="name" placeholder="Как к вам обращаться"></div><div><label for="fPhone" style="display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">Телефон</label><input id="fPhone" type="tel" autocomplete="tel" placeholder="+7 ___ ___-__-__"></div></div></form>
-      <aside class="summary" id="summary" aria-live="polite"><h3>Запись в студию</h3><p style="color:var(--muted);margin:0 0 18px">Напишите в WhatsApp услугу и удобное время — подберём мастера и подтвердим запись.</p><a class="btn" href="https://wa.me/79819629049" style="width:100%">Написать в WhatsApp</a><span class="hint">+7 981 962-90-49</span></aside>
+      <form class="form" id="bookForm" onsubmit="return false"><div class="field"><span class="lbl">Тип машины</span><div class="chips" id="fOpt"></div></div><div class="field"><span class="lbl">Услуга</span><div class="chips" id="fService"></div></div><div class="field"><span class="lbl">День</span><div class="chips mono" id="fDay"></div></div><div class="field"><span class="lbl">Время</span><div class="chips mono" id="fTime"></div></div><div class="field two"><div><label for="fName" class="lbl" style="display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">Имя</label><input id="fName" autocomplete="name" placeholder="Как к вам обращаться"></div><div><label for="fPhone" style="display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">Телефон</label><input id="fPhone" type="tel" autocomplete="tel" placeholder="+7 ___ ___-__-__"></div></div></form>
+      <aside class="summary" id="summary" aria-live="polite"><h3>Запись на шиномонтаж</h3><p style="color:var(--muted);margin:0 0 18px">Напишите в WhatsApp радиус и удобное время — подтвердим запись и назовём цену.</p><a class="btn" href="https://wa.me/79531635300" style="width:100%">Написать в WhatsApp</a><span class="hint">+7 953 163-53-00</span></aside>
     </div>
   </div></section>
   <section id="faq"><div class="wrap">
     <div class="sec-head"><div><span class="tag">Вопросы</span><h2>Частые вопросы</h2></div></div>
-    <details><summary>Можно ли выбрать конкретного мастера?</summary><p>Да. Или выберите «любой свободный» — так быстрее найдётся окно.</p></details><details><summary>Как перенести или отменить запись?</summary><p>Кнопкой в напоминании или в WhatsApp. Пожалуйста, не позднее чем за 3 часа.</p></details><details><summary>Как оплатить?</summary><p>Картой, наличными или переводом после процедуры.</p></details><details><summary>Цена может измениться?</summary><p>Только если объём работы отличается от выбранного, например длина волос. Мастер скажет до начала.</p></details>
+    <details><summary>Сколько длится переобувка?</summary><p>30–40 минут на легковой автомобиль.</p></details><details><summary>Цена может измениться?</summary><p>Нет, цена переобувки фиксируется при записи. Доп. работы — только после согласования.</p></details><details><summary>Можно без записи?</summary><p>Можно, если есть свободный бокс. В сезон лучше записаться.</p></details><details><summary>Принимаете грузовые?</summary><p>Уточните по телефону — подскажем.</p></details>
   </div></section>
   <section id="contacts" style="padding-top:0"><div class="wrap">
     <div class="sec-head"><div><span class="tag">Контакты</span><h2>Как нас найти</h2></div></div>
-    <div class="contacts"><div><small>Адрес</small><b>пр. Ветеранов, 143</b><p>Вход с проспекта</p><a class="btn ghost sm" href="https://yandex.ru/maps/?text=Санкт-Петербург,%20пр.%20Ветеранов,%20143" target="_blank" rel="noopener">Открыть на карте</a></div><div><small>Телефон</small><b>+7 981 962-90-49</b><p>Звонки и WhatsApp</p><a class="btn ghost sm" href="https://wa.me/79819629049" target="_blank" rel="noopener">Написать в WhatsApp</a></div><div><small>Часы работы</small><b>Ежедневно, 10:00–21:00</b><p>Последняя запись — за 1,5 часа до закрытия</p><a class="btn ghost sm" href="#booking">Записаться онлайн</a></div></div>
+    <div class="contacts"><div><small>Адрес</small><b>Горелово, ул. Сименса, 8</b><p>Шиномонтаж King Service</p><a class="btn ghost sm" href="https://yandex.ru/maps/?text=Санкт-Петербург,%20Горелово,%20ул.%20Сименса,%208" target="_blank" rel="noopener">Открыть на карте</a></div><div><small>Телефон</small><b>+7 953 163-53-00</b><p>Звонки и WhatsApp</p><a class="btn ghost sm" href="https://wa.me/79531635300" target="_blank" rel="noopener">Написать в WhatsApp</a></div><div><small>Часы работы</small><b>Ежедневно, 9:00–21:00</b><p>В сезон — по записи без очереди</p><a class="btn ghost sm" href="#booking">Записаться онлайн</a></div></div>
   </div></section>
 </main>
-<footer><div class="wrap"><span>© Студия красоты «Нероли» · пр. Ветеранов, 143</span><span>Демо-версия сайта. Цены, мастера и часы примерные.</span></div></footer>
+<footer><div class="wrap"><span>© King Service · Горелово, ул. Сименса, 8</span><span>Демо-версия сайта. Цены и часы примерные.</span></div></footer>
 <script>
-const C = {"days": 12, "hours": ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"], "services": [{"n": "Маникюр с покрытием", "p": 2200, "d": "90 мин", "c": "nails"}, {"n": "Педикюр с покрытием", "p": 2800, "d": "120 мин", "c": "nails"}, {"n": "Наращивание ногтей", "p": 3200, "d": "150 мин", "c": "nails"}, {"n": "Женская стрижка", "p": 1800, "d": "60 мин", "c": "hair"}, {"n": "Окрашивание в один тон", "p": 3500, "d": "от 2 часов", "c": "hair", "from": true}, {"n": "Укладка", "p": 1500, "d": "45 мин", "c": "hair"}, {"n": "Брови: коррекция и окрашивание", "p": 1200, "d": "45 мин", "c": "brows"}, {"n": "Ламинирование ресниц", "p": 2300, "d": "60 мин", "c": "brows"}, {"n": "Чистка лица", "p": 2900, "d": "75 мин", "c": "face"}], "masters": [{"n": "Анна", "r": "маникюр", "cats": ["nails"]}, {"n": "Ольга", "r": "маникюр и педикюр", "cats": ["nails"]}, {"n": "Виктория", "r": "парикмахер-стилист", "cats": ["hair"]}, {"n": "Ксения", "r": "брови и ресницы", "cats": ["brows"]}, {"n": "Марина", "r": "косметолог", "cats": ["face"]}], "text": {"svcLabel": "Услуга", "pickSvc": "Выберите услугу", "svcRow": "Услуга", "sumTitle": "Ваша запись", "send": "Записаться", "hint": "Оплата после процедуры", "adminTitle": "Запись", "adminIcon": "💅", "adminTo": "администратору", "doneTitle": "Вы записаны", "doneText": "ждём вас {when} на пр. Ветеранов, 143. Напоминание придёт накануне."}};
+const C = {"days": 10, "hours": ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"], "opts": {"label": "Тип машины", "list": [["Легковой", 1], ["Кроссовер", 1.2], ["Внедорожник", 1.4]]}, "services": [{"n": "Переобувка R13–R14", "p": 1700, "d": "4 колеса, комплекс"}, {"n": "Переобувка R15", "p": 1900, "d": "4 колеса, комплекс"}, {"n": "Переобувка R16", "p": 2200, "d": "4 колеса, комплекс"}, {"n": "Переобувка R17", "p": 2500, "d": "4 колеса, комплекс"}, {"n": "Переобувка R18", "p": 2800, "d": "4 колеса, комплекс"}, {"n": "Переобувка R19–R20", "p": 3400, "d": "4 колеса, комплекс"}, {"n": "Перестановка колёс", "p": 900, "d": "на дисках"}, {"n": "Ремонт прокола", "p": 500, "from": true}, {"n": "Балансировка 4 колёс", "p": 1000}], "text": {"svcLabel": "Услуга", "pickSvc": "Выберите услугу", "svcRow": "Услуга", "sumTitle": "Ваша запись", "send": "Записаться", "hint": "Оплата на месте после работы", "adminTitle": "Запись", "adminIcon": "🛞", "adminTo": "мастеру", "doneTitle": "Вы записаны", "doneText": "ждём вас {when} на Сименса, 8. Напоминание придёт за 2 часа."}};
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString("ru-RU") + " ₽";
 const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;

@@ -3,32 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Студия красоты «Нероли» · пр. Ветеранов, 143</title>
-<meta name="description" content="Студия красоты «Нероли» на проспекте Ветеранов, 143: маникюр, стрижки и окрашивание, брови и ресницы, уход за лицом. Онлайн-запись к мастеру.">
+<title>Кабинет массажа «Солнечный город» · пр. Будённого, 21</title>
+<meta name="description" content="Кабинет лечебного массажа «Солнечный город» на проспекте Будённого, 21: массаж спины и шеи, восстановление после травм, детский массаж. Онлайн-запись.">
 <script>document.documentElement.classList.add("js")</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Manrope:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap">
 <style>
 :root {
-  --bg: #fbf7f1;
+  --bg: #fbfaf5;
   --panel: #ffffff;
-  --panel-2: #f3ece2;
-  --line: #ebe2d6;
-  --ink: #2b2622;
-  --muted: #857a6f;
-  --accent: #e07b33;
-  --accent-ink: #ffffff;
-  --accent-text: #bf5f1b;
-  --tag-bg: #fbe6d4;
-  --tag-ink: #9a4a12;
-  --font-display: "Prata", Georgia, serif;
+  --panel-2: #f3efe2;
+  --line: #e9e3d1;
+  --ink: #23262a;
+  --muted: #72767c;
+  --accent: #f2a516;
+  --accent-ink: #2a1c00;
+  --accent-text: #b5760a;
+  --tag-bg: #e2f2ef;
+  --tag-ink: #1f6b5e;
+  --font-display: "Lora", Georgia, serif;
   --font-body: "Manrope", "Segoe UI", Roboto, Arial, sans-serif;
   --font-num: "Manrope", "Segoe UI", Arial, sans-serif;
-  --h1-weight: 400;
-  --em-style: normal;
-  --r-btn: 14px;
-  --r-card: 22px;
-  --shadow: 0 24px 48px -32px rgba(120,70,30,.35);
+  --h1-weight: 700;
+  --em-style: italic;
+  --r-btn: 12px;
+  --r-card: 20px;
+  --shadow: 0 24px 48px -30px rgba(120,90,20,.35);
   color-scheme: light;
   --ok: #2fbf71;
 }
@@ -168,77 +168,77 @@ details p { margin: 0 0 16px; color: var(--muted) }
 footer { border-top: 1px solid var(--line); padding: 26px 0 40px; color: var(--muted); font-size: 14px }
 footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap }
 
-.ne-hero { max-width: 400px; margin-inline: auto; padding: 26px }
-.ne-hero .cap { display: block; color: var(--muted); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; margin-bottom: 12px }
-.ne-hero .slot { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 14px; align-items: center; padding: 12px 0; border-top: 1px dashed var(--line) }
-.ne-hero time { font: 700 20px/1 var(--font-num); color: var(--accent-text) }
-.ne-hero .slot span { color: var(--muted); font-size: 14px } .ne-hero .slot b { display: block; color: var(--ink); font-size: 15.5px }
-.team { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px }
-@media (max-width: 900px) { .team { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
-.team .card { text-align: center; padding: 22px 14px }
-.team i { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 12px; display: grid; place-items: center; font: 400 30px/1 var(--font-display); font-style: normal; background: var(--tag-bg); color: var(--tag-ink) }
-.team b { display: block; font: 400 20px/1.2 var(--font-display) }
-.team small { display: block; color: var(--muted); margin-bottom: 14px }
+.sg-hero { max-width: 400px; margin-inline: auto; position: relative; overflow: hidden; padding: 28px }
+.sg-hero .sun { position: absolute; right: -40px; top: -40px; width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, #ffd56b, #f2a516 60%, transparent 61%); opacity: .5 }
+.sg-hero small { color: var(--muted); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600 }
+.sg-hero b { display: block; font: 700 24px/1.25 var(--font-display); margin: 8px 0 18px; position: relative }
+.sg-hero .bar { height: 10px; border-radius: 99px; background: var(--panel-2); overflow: hidden; margin-bottom: 14px }
+.sg-hero .bar i { display: block; height: 100%; background: linear-gradient(90deg, #ffcf5a, var(--accent)) }
+.sg-hero .row { display: flex; justify-content: space-between; padding: 10px 0; border-top: 1px dashed var(--line) }
+.sg-hero .row strong { color: var(--accent-text) }
+.cmp { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px }
+@media (max-width: 900px) { .cmp { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (max-width: 480px) { .cmp { grid-template-columns: minmax(0, 1fr) } }
+.cmp a { text-decoration: none; display: flex; flex-direction: column; gap: 6px; transition: transform .15s }
+.cmp a:hover { transform: translateY(-2px) }
+.cmp span { font-size: 28px } .cmp b { font: 700 19px/1.25 var(--font-display) } .cmp small { color: var(--muted); font-size: 14px }
+.cmp em { font-style: normal; color: var(--accent-text); font-weight: 600; margin-top: auto; padding-top: 8px }
 
 </style>
 </head>
 <body>
-<div class="demo"><b>Демо-версия сайта</b> для Студия красоты «Нероли». Цены, мастера и часы примерные.</div>
+<div class="demo"><b>Демо-версия сайта</b> для Массаж «Солнечный город». Цены и часы примерные.</div>
 <header class="nav"><div class="wrap">
-  <a class="logo" href="#top"><span class="mark">Н</span><span><b>Студия красоты «Нероли»</b><small>пр. Ветеранов, 143</small></span></a>
-  <nav class="links"><a href="#prices">Услуги</a><a href="#masters">Мастера</a><a href="#booking">Запись</a><a href="#contacts">Контакты</a></nav>
+  <a class="logo" href="#top"><span class="mark">☀</span><span><b>Массаж «Солнечный город»</b><small>Кабинет массажа · пр. Будённого, 21</small></span></a>
+  <nav class="links"><a href="#help">С чем помогаем</a><a href="#prices">Цены</a><a href="#booking">Запись</a><a href="#contacts">Контакты</a></nav>
   <a class="btn sm" href="#booking">Записаться</a>
 </div></header>
 <main id="top">
   <section class="hero"><div class="wrap">
     <div>
-      <span class="tag">Студия красоты на Ветеранов</span>
-      <h1>Запишитесь к своему мастеру <em>за минуту</em></h1>
-      <p class="lead">Маникюр, стрижки и окрашивание, брови и уход за лицом на проспекте Ветеранов, 143. Свободные окна видно сразу — не нужно звонить и ждать ответа.</p>
-      <div class="ctas"><a class="btn" href="#booking">Записаться онлайн</a><a class="btn ghost" href="https://wa.me/79819629049" target="_blank" rel="noopener">Написать в WhatsApp</a></div>
-      <div class="chips-row"><span>пр. Ветеранов, 143</span><span><b>Ежедневно</b> 10:00–21:00</span><span>Запись онлайн 24/7</span></div>
+      <span class="tag">Лечебный массаж</span>
+      <h1>Спина скажет <em>спасибо</em> уже после курса</h1>
+      <p class="lead">Кабинет массажа на проспекте Будённого, 21. Лечебный и восстановительный массаж, работа с осанкой у детей. Выберите время онлайн — подтверждение придёт в Telegram.</p>
+      <div class="ctas"><a class="btn" href="#booking">Записаться на массаж</a><a class="btn ghost" href="https://wa.me/79533590367" target="_blank" rel="noopener">Написать в WhatsApp</a></div>
+      <div class="chips-row"><span>пр. Будённого, 21</span><span><b>Пн–Сб</b> 9:00–20:00</span><span>Курсы со скидкой</span></div>
     </div>
-    <div><div class="card ne-hero">
-      <small class="cap">Свободно сегодня</small>
-      <div class="slot"><time>14:00</time><span><b>Маникюр с покрытием</b>Анна</span></div>
-      <div class="slot"><time>16:30</time><span><b>Женская стрижка</b>Виктория</span></div>
-      <div class="slot"><time>18:00</time><span><b>Брови: коррекция и окрашивание</b>Ксения</span></div>
-      <a class="btn" href="#booking" style="width:100%;margin-top:6px">Выбрать время</a>
+    <div><div class="card sg-hero">
+      <div class="sun"></div>
+      <small>Ваш курс</small>
+      <b>Лечебный массаж спины</b>
+      <div class="bar"><i style="width:40%"></i></div>
+      <div class="row"><span>Пройдено</span><strong>4 из 10</strong></div>
+      <div class="row"><span>Следующий сеанс</span><strong>ср, 18:00</strong></div>
     </div></div>
   </div></section>
-  <section id="perks" style="padding-top:0"><div class="wrap"><div class="perks"><div class="perk"><div class="ico">🗓</div><b>Видно свободное время</b><p>Выбираете мастера и окно сами, в любое время суток — даже когда студия закрыта.</p></div><div class="perk"><div class="ico">💬</div><b>Напоминание накануне</b><p>Бот пришлёт напоминание и кнопку «Перенести», если планы поменялись.</p></div><div class="perk"><div class="ico">🌸</div><b>Свой мастер</b><p>Записывайтесь к любимому мастеру повторно в два нажатия.</p></div></div></div></section>
+  <section id="perks" style="padding-top:0"><div class="wrap"><div class="perks"><div class="perk"><div class="ico">🎯</div><b>Под вашу проблему</b><p>На первом сеансе мастер разберётся, что беспокоит, и предложит курс.</p></div><div class="perk"><div class="ico">📅</div><b>Курс по расписанию</b><p>Удобное время на весь курс сразу. Бот напомнит о каждом сеансе.</p></div><div class="perk"><div class="ico">☀️</div><b>Спокойно и чисто</b><p>Отдельный кабинет, одноразовое бельё, без очередей.</p></div></div></div></section>
   <section class="alt" id="prices"><div class="wrap">
-    <div class="sec-head"><div><span class="tag">Цены</span><h2>Услуги и цены</h2></div><p>Цена может зависеть от длины волос и сложности работы — мастер скажет заранее.</p></div>
-    <div class="plist"><div class="card"><h3>Ногти</h3><div class="prow"><span>Маникюр с покрытием гель-лак<small>90 мин</small></span><b>2 200 ₽</b></div><div class="prow"><span>Педикюр с покрытием<small>120 мин</small></span><b>2 800 ₽</b></div><div class="prow"><span>Наращивание ногтей<small>150 мин</small></span><b>3 200 ₽</b></div></div><div class="card"><h3>Волосы</h3><div class="prow"><span>Женская стрижка<small>60 мин</small></span><b>1 800 ₽</b></div><div class="prow"><span>Окрашивание в один тон<small>от 2 часов</small></span><b>от 3 500 ₽</b></div><div class="prow"><span>Укладка<small>45 мин</small></span><b>1 500 ₽</b></div></div><div class="card"><h3>Брови и ресницы</h3><div class="prow"><span>Коррекция и окрашивание бровей<small>45 мин</small></span><b>1 200 ₽</b></div><div class="prow"><span>Ламинирование ресниц<small>60 мин</small></span><b>2 300 ₽</b></div></div><div class="card"><h3>Лицо</h3><div class="prow"><span>Чистка лица<small>75 мин</small></span><b>2 900 ₽</b></div><div class="prow"><span>Уходовая процедура<small>60 мин</small></span><b>2 500 ₽</b></div></div></div>
+    <div class="sec-head"><div><span class="tag">Цены</span><h2>Цены</h2></div><p>Курс из 10 сеансов — скидка 10%.</p></div>
+    <div class="plist"><div class="card"><h3>Массаж</h3><div class="prow"><span>Лечебный массаж спины<small>40 мин</small></span><b>2 000 ₽</b></div><div class="prow"><span>Шейно-воротниковая зона<small>30 мин</small></span><b>1 300 ₽</b></div><div class="prow"><span>Общий массаж<small>60 мин</small></span><b>3 300 ₽</b></div><div class="prow"><span>Восстановительный после травм<small>45 мин</small></span><b>2 500 ₽</b></div></div><div class="card"><h3>Дети и курсы</h3><div class="prow"><span>Детский массаж<small>30 мин</small></span><b>1 500 ₽</b></div><div class="prow"><span>ЛФК, индивидуально<small>45 мин</small></span><b>1 800 ₽</b></div><div class="prow"><span>Курс 10 сеансов спины<small>−10%</small></span><b>18 000 ₽</b></div></div></div>
   </div></section>
-  <section id="masters"><div class="wrap">
-      <div class="sec-head"><div><span class="tag">Мастера</span><h2>Наша команда</h2></div><p>Фото мастеров добавим после настройки сайта.</p></div>
-      <div class="team">
-        <div class="card"><i>А</i><b>Анна</b><small>мастер маникюра</small><a href="#booking" class="btn ghost sm">Записаться</a></div>
-        <div class="card"><i>О</i><b>Ольга</b><small>маникюр и педикюр</small><a href="#booking" class="btn ghost sm">Записаться</a></div>
-        <div class="card"><i>В</i><b>Виктория</b><small>парикмахер-стилист</small><a href="#booking" class="btn ghost sm">Записаться</a></div>
-        <div class="card"><i>К</i><b>Ксения</b><small>брови и ресницы</small><a href="#booking" class="btn ghost sm">Записаться</a></div>
-        <div class="card"><i>М</i><b>Марина</b><small>косметолог</small><a href="#booking" class="btn ghost sm">Записаться</a></div>
-      </div></div></section><section><div class="wrap split"><div><span class="tag">Напоминания</span><h2>Клиенты приходят вовремя</h2><p>За день до визита бот присылает напоминание. Если планы поменялись, клиент переносит запись сам, и окно сразу освобождается для других.</p><p>Администратору не нужно обзванивать клиентов и отвечать на одни и те же вопросы.</p></div><div><div class="tg"><div class="who"><i>Н</i><div>Студия «Нероли»<small>бот записи</small></div></div><div class="msg">Добрый день, Елена! Напоминаем: завтра в 14:00<br>💅 Маникюр с покрытием · Анна<br>📍 пр. Ветеранов, 143<time>12:00</time></div><div class="kb"><span>✅ Приду</span><span>🔄 Перенести</span></div></div></div></div></section>
+  <section id="help"><div class="wrap">
+      <div class="sec-head"><div><span class="tag">С чем помогаем</span><h2>Что вас беспокоит?</h2></div><p>Выберите — подскажем, с чего начать, и сразу перейдём к записи.</p></div>
+      <div class="cmp"><a class="card" href="#booking" data-svc="2"><span>🦴</span><b>Болит спина, поясница</b><small>Лечебный массаж спины, курс 10 сеансов</small><em>Записаться →</em></a><a class="card" href="#booking" data-svc="1"><span>🧣</span><b>Шея, головные боли</b><small>Шейно-воротниковая зона, курс 8–10 сеансов</small><em>Записаться →</em></a><a class="card" href="#booking" data-svc="4"><span>🩹</span><b>После травмы или операции</b><small>Восстановительный массаж + ЛФК</small><em>Записаться →</em></a><a class="card" href="#booking" data-svc="5"><span>🧒</span><b>Осанка у ребёнка</b><small>Детский массаж, курс 10 сеансов</small><em>Записаться →</em></a></div>
+    </div></section>
   <section class="alt" id="booking"><div class="wrap">
-    <div class="sec-head"><div><span class="tag">Онлайн-запись</span><h2>Онлайн-запись</h2></div><p>Сначала услуга, потом мастер и время. Занятые окна зачёркнуты.</p></div>
+    <div class="sec-head"><div><span class="tag">Онлайн-запись</span><h2>Онлайн-запись</h2></div><p>Выберите массаж и время. На первом сеансе обсудим курс.</p></div>
     <div class="bk">
-      <form class="form" id="bookForm" onsubmit="return false"><div class="field"><span class="lbl">Услуга</span><div class="chips" id="fService"></div></div><div class="field"><span class="lbl">Мастер</span><div class="chips" id="fMaster"></div></div><div class="field"><span class="lbl">День</span><div class="chips mono" id="fDay"></div></div><div class="field"><span class="lbl">Время</span><div class="chips mono" id="fTime"></div></div><div class="field two"><div><label for="fName" class="lbl" style="display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">Имя</label><input id="fName" autocomplete="name" placeholder="Как к вам обращаться"></div><div><label for="fPhone" style="display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">Телефон</label><input id="fPhone" type="tel" autocomplete="tel" placeholder="+7 ___ ___-__-__"></div></div></form>
-      <aside class="summary" id="summary" aria-live="polite"><h3>Запись в студию</h3><p style="color:var(--muted);margin:0 0 18px">Напишите в WhatsApp услугу и удобное время — подберём мастера и подтвердим запись.</p><a class="btn" href="https://wa.me/79819629049" style="width:100%">Написать в WhatsApp</a><span class="hint">+7 981 962-90-49</span></aside>
+      <form class="form" id="bookForm" onsubmit="return false"><div class="field"><span class="lbl">Массаж</span><div class="chips" id="fService"></div></div><div class="field"><span class="lbl">День</span><div class="chips mono" id="fDay"></div></div><div class="field"><span class="lbl">Время</span><div class="chips mono" id="fTime"></div></div><div class="field two"><div><label for="fName" class="lbl" style="display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">Имя</label><input id="fName" autocomplete="name" placeholder="Как к вам обращаться"></div><div><label for="fPhone" style="display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">Телефон</label><input id="fPhone" type="tel" autocomplete="tel" placeholder="+7 ___ ___-__-__"></div></div><div class="field"><label for="fNote">Что беспокоит (необязательно)</label><textarea id="fNote" placeholder="Например: болит поясница после работы за компьютером"></textarea></div></form>
+      <aside class="summary" id="summary" aria-live="polite"><h3>Запись на массаж</h3><p style="color:var(--muted);margin:0 0 18px">Напишите в WhatsApp, что беспокоит и когда удобно, — подберём время.</p><a class="btn" href="https://wa.me/79533590367" style="width:100%">Написать в WhatsApp</a><span class="hint">+7 953 359-03-67</span></aside>
     </div>
   </div></section>
   <section id="faq"><div class="wrap">
     <div class="sec-head"><div><span class="tag">Вопросы</span><h2>Частые вопросы</h2></div></div>
-    <details><summary>Можно ли выбрать конкретного мастера?</summary><p>Да. Или выберите «любой свободный» — так быстрее найдётся окно.</p></details><details><summary>Как перенести или отменить запись?</summary><p>Кнопкой в напоминании или в WhatsApp. Пожалуйста, не позднее чем за 3 часа.</p></details><details><summary>Как оплатить?</summary><p>Картой, наличными или переводом после процедуры.</p></details><details><summary>Цена может измениться?</summary><p>Только если объём работы отличается от выбранного, например длина волос. Мастер скажет до начала.</p></details>
+    <details><summary>Нужно ли направление врача?</summary><p>Нет. Но если есть диагноз или снимки, возьмите их с собой.</p></details><details><summary>Сколько нужно сеансов?</summary><p>Обычно курс 8–10 сеансов, 2–3 раза в неделю. Точнее скажем на первом приёме.</p></details><details><summary>С какого возраста детский массаж?</summary><p>Уточните по телефону — подскажем.</p></details><details><summary>Есть противопоказания?</summary><p>Острые воспаления, температура, обострения. Если сомневаетесь, напишите.</p></details>
   </div></section>
   <section id="contacts" style="padding-top:0"><div class="wrap">
     <div class="sec-head"><div><span class="tag">Контакты</span><h2>Как нас найти</h2></div></div>
-    <div class="contacts"><div><small>Адрес</small><b>пр. Ветеранов, 143</b><p>Вход с проспекта</p><a class="btn ghost sm" href="https://yandex.ru/maps/?text=Санкт-Петербург,%20пр.%20Ветеранов,%20143" target="_blank" rel="noopener">Открыть на карте</a></div><div><small>Телефон</small><b>+7 981 962-90-49</b><p>Звонки и WhatsApp</p><a class="btn ghost sm" href="https://wa.me/79819629049" target="_blank" rel="noopener">Написать в WhatsApp</a></div><div><small>Часы работы</small><b>Ежедневно, 10:00–21:00</b><p>Последняя запись — за 1,5 часа до закрытия</p><a class="btn ghost sm" href="#booking">Записаться онлайн</a></div></div>
+    <div class="contacts"><div><small>Адрес</small><b>пр. Будённого, 21</b><p>Кабинет массажа «Солнечный город»</p><a class="btn ghost sm" href="https://yandex.ru/maps/?text=Санкт-Петербург,%20пр.%20Будённого,%2021" target="_blank" rel="noopener">Открыть на карте</a></div><div><small>Телефон</small><b>+7 953 359-03-67</b><p>Звонки и WhatsApp</p><a class="btn ghost sm" href="https://wa.me/79533590367" target="_blank" rel="noopener">Написать в WhatsApp</a></div><div><small>Часы работы</small><b>Пн–Сб, 9:00–20:00</b><p>Воскресенье — выходной</p><a class="btn ghost sm" href="#booking">Записаться онлайн</a></div></div>
   </div></section>
 </main>
-<footer><div class="wrap"><span>© Студия красоты «Нероли» · пр. Ветеранов, 143</span><span>Демо-версия сайта. Цены, мастера и часы примерные.</span></div></footer>
+<footer><div class="wrap"><span>© Массаж «Солнечный город» · пр. Будённого, 21</span><span>Демо-версия сайта. Цены и часы примерные.</span></div></footer>
 <script>
-const C = {"days": 12, "hours": ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"], "services": [{"n": "Маникюр с покрытием", "p": 2200, "d": "90 мин", "c": "nails"}, {"n": "Педикюр с покрытием", "p": 2800, "d": "120 мин", "c": "nails"}, {"n": "Наращивание ногтей", "p": 3200, "d": "150 мин", "c": "nails"}, {"n": "Женская стрижка", "p": 1800, "d": "60 мин", "c": "hair"}, {"n": "Окрашивание в один тон", "p": 3500, "d": "от 2 часов", "c": "hair", "from": true}, {"n": "Укладка", "p": 1500, "d": "45 мин", "c": "hair"}, {"n": "Брови: коррекция и окрашивание", "p": 1200, "d": "45 мин", "c": "brows"}, {"n": "Ламинирование ресниц", "p": 2300, "d": "60 мин", "c": "brows"}, {"n": "Чистка лица", "p": 2900, "d": "75 мин", "c": "face"}], "masters": [{"n": "Анна", "r": "маникюр", "cats": ["nails"]}, {"n": "Ольга", "r": "маникюр и педикюр", "cats": ["nails"]}, {"n": "Виктория", "r": "парикмахер-стилист", "cats": ["hair"]}, {"n": "Ксения", "r": "брови и ресницы", "cats": ["brows"]}, {"n": "Марина", "r": "косметолог", "cats": ["face"]}], "text": {"svcLabel": "Услуга", "pickSvc": "Выберите услугу", "svcRow": "Услуга", "sumTitle": "Ваша запись", "send": "Записаться", "hint": "Оплата после процедуры", "adminTitle": "Запись", "adminIcon": "💅", "adminTo": "администратору", "doneTitle": "Вы записаны", "doneText": "ждём вас {when} на пр. Ветеранов, 143. Напоминание придёт накануне."}};
+const C = {"days": 12, "hours": ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00"], "closedDays": [0], "services": [{"n": "Шейно-воротниковая зона", "p": 1300, "d": "30 мин"}, {"n": "Лечебный массаж спины", "p": 2000, "d": "40 мин"}, {"n": "Общий массаж", "p": 3300, "d": "60 мин"}, {"n": "Восстановительный после травм", "p": 2500, "d": "45 мин"}, {"n": "Детский массаж", "p": 1500, "d": "30 мин"}, {"n": "ЛФК, индивидуально", "p": 1800, "d": "45 мин"}, {"n": "Курс 10 сеансов спины", "p": 18000, "d": "−10%, первый сеанс в выбранное время"}], "text": {"svcLabel": "Массаж", "pickSvc": "Выберите массаж", "svcRow": "Массаж", "sumTitle": "Ваша запись", "send": "Записаться", "hint": "Оплата после сеанса", "adminTitle": "Запись", "adminIcon": "☀️", "adminTo": "мастеру", "doneTitle": "Вы записаны", "doneText": "ждём вас {when} на пр. Будённого, 21. Напоминание придёт накануне.", "noteLabel": "Что беспокоит (необязательно)", "notePh": "Например: болит поясница после работы за компьютером"}};
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString("ru-RU") + " ₽";
 const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;

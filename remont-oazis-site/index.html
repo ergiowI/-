@@ -3,33 +3,33 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Студия красоты «Нероли» · пр. Ветеранов, 143</title>
-<meta name="description" content="Студия красоты «Нероли» на проспекте Ветеранов, 143: маникюр, стрижки и окрашивание, брови и ресницы, уход за лицом. Онлайн-запись к мастеру.">
+<title>Ремонт телефонов, ноутбуков и ТВ · пр. Ветеранов, 147 и Ленинский пр., 114</title>
+<meta name="description" content="Ремонт телефонов, ноутбуков и телевизоров: ТК «Оазис» на пр. Ветеранов, 147 (оф. 12) и Ленинский пр., 114. Цены на сайте, запись на удобный адрес, ремонт ТВ на дому.">
 <script>document.documentElement.classList.add("js")</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Manrope:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
 :root {
-  --bg: #fbf7f1;
-  --panel: #ffffff;
-  --panel-2: #f3ece2;
-  --line: #ebe2d6;
-  --ink: #2b2622;
-  --muted: #857a6f;
-  --accent: #e07b33;
-  --accent-ink: #ffffff;
-  --accent-text: #bf5f1b;
-  --tag-bg: #fbe6d4;
-  --tag-ink: #9a4a12;
-  --font-display: "Prata", Georgia, serif;
-  --font-body: "Manrope", "Segoe UI", Roboto, Arial, sans-serif;
-  --font-num: "Manrope", "Segoe UI", Arial, sans-serif;
-  --h1-weight: 400;
+  --bg: #0d1412;
+  --panel: #131c19;
+  --panel-2: #1b2622;
+  --line: #26332e;
+  --ink: #e9f2ee;
+  --muted: #8a9b94;
+  --accent: #3ddc84;
+  --accent-ink: #05170d;
+  --accent-text: #5be79a;
+  --tag-bg: #3ddc84;
+  --tag-ink: #05170d;
+  --font-display: "Montserrat", "Segoe UI", Arial, sans-serif;
+  --font-body: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-num: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --h1-weight: 800;
   --em-style: normal;
-  --r-btn: 14px;
-  --r-card: 22px;
-  --shadow: 0 24px 48px -32px rgba(120,70,30,.35);
-  color-scheme: light;
+  --r-btn: 10px;
+  --r-card: 16px;
+  --shadow: 0 24px 48px -28px #000;
+  color-scheme: dark;
   --ok: #2fbf71;
 }
 * { box-sizing: border-box }
@@ -168,77 +168,67 @@ details p { margin: 0 0 16px; color: var(--muted) }
 footer { border-top: 1px solid var(--line); padding: 26px 0 40px; color: var(--muted); font-size: 14px }
 footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap }
 
-.ne-hero { max-width: 400px; margin-inline: auto; padding: 26px }
-.ne-hero .cap { display: block; color: var(--muted); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; margin-bottom: 12px }
-.ne-hero .slot { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 14px; align-items: center; padding: 12px 0; border-top: 1px dashed var(--line) }
-.ne-hero time { font: 700 20px/1 var(--font-num); color: var(--accent-text) }
-.ne-hero .slot span { color: var(--muted); font-size: 14px } .ne-hero .slot b { display: block; color: var(--ink); font-size: 15.5px }
-.team { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px }
-@media (max-width: 900px) { .team { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
-.team .card { text-align: center; padding: 22px 14px }
-.team i { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 12px; display: grid; place-items: center; font: 400 30px/1 var(--font-display); font-style: normal; background: var(--tag-bg); color: var(--tag-ink) }
-.team b { display: block; font: 400 20px/1.2 var(--font-display) }
-.team small { display: block; color: var(--muted); margin-bottom: 14px }
+.ro-hero { max-width: 400px; margin-inline: auto }
+.ro-hero .cap { display: block; color: var(--muted); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; margin-bottom: 12px }
+.ro-hero .pick { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px }
+.ro-hero .pick span { border: 1.5px solid var(--line); border-radius: 10px; padding: 7px 11px; font-size: 14px }
+.ro-hero .pick .on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--panel)) }
+.ro-hero .ln { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-top: 1px dashed var(--line) }
+.ro-hero .ln b { font-family: var(--font-num); color: var(--accent-text); white-space: nowrap }
+.ro-hero .ok { border-top: 1px dashed var(--line); padding-top: 12px; color: var(--ok); font-size: 14px }
 
 </style>
 </head>
 <body>
-<div class="demo"><b>Демо-версия сайта</b> для Студия красоты «Нероли». Цены, мастера и часы примерные.</div>
+<div class="demo"><b>Демо-версия сайта</b> для «Ремонт техники». Название, цены и часы примерные.</div>
 <header class="nav"><div class="wrap">
-  <a class="logo" href="#top"><span class="mark">Н</span><span><b>Студия красоты «Нероли»</b><small>пр. Ветеранов, 143</small></span></a>
-  <nav class="links"><a href="#prices">Услуги</a><a href="#masters">Мастера</a><a href="#booking">Запись</a><a href="#contacts">Контакты</a></nav>
+  <a class="logo" href="#top"><span class="mark">R</span><span><b>Ремонт техники</b><small>Ветеранов, 147 · Ленинский, 114</small></span></a>
+  <nav class="links"><a href="#prices">Цены</a><a href="#tv">ТВ на дому</a><a href="#booking">Запись</a><a href="#contacts">Адреса</a></nav>
   <a class="btn sm" href="#booking">Записаться</a>
 </div></header>
 <main id="top">
   <section class="hero"><div class="wrap">
     <div>
-      <span class="tag">Студия красоты на Ветеранов</span>
-      <h1>Запишитесь к своему мастеру <em>за минуту</em></h1>
-      <p class="lead">Маникюр, стрижки и окрашивание, брови и уход за лицом на проспекте Ветеранов, 143. Свободные окна видно сразу — не нужно звонить и ждать ответа.</p>
-      <div class="ctas"><a class="btn" href="#booking">Записаться онлайн</a><a class="btn ghost" href="https://wa.me/79819629049" target="_blank" rel="noopener">Написать в WhatsApp</a></div>
-      <div class="chips-row"><span>пр. Ветеранов, 143</span><span><b>Ежедневно</b> 10:00–21:00</span><span>Запись онлайн 24/7</span></div>
+      <span class="tag">2 адреса · Ветеранов и Ленинский</span>
+      <h1>Чиним телефоны, ноутбуки и <em>телевизоры</em></h1>
+      <p class="lead">ТК «Оазис» на проспекте Ветеранов, 147 и Ленинский проспект, 114. Выберите адрес и время — мастер будет ждать, а цену вы знаете заранее.</p>
+      <div class="ctas"><a class="btn" href="#booking">Записаться на ремонт</a><a class="btn ghost" href="https://wa.me/79119290499" target="_blank" rel="noopener">Написать в WhatsApp</a></div>
+      <div class="chips-row"><span>пр. Ветеранов, 147, оф. 12</span><span>Ленинский пр., 114</span><span><b>Диагностика</b> бесплатно</span></div>
     </div>
-    <div><div class="card ne-hero">
-      <small class="cap">Свободно сегодня</small>
-      <div class="slot"><time>14:00</time><span><b>Маникюр с покрытием</b>Анна</span></div>
-      <div class="slot"><time>16:30</time><span><b>Женская стрижка</b>Виктория</span></div>
-      <div class="slot"><time>18:00</time><span><b>Брови: коррекция и окрашивание</b>Ксения</span></div>
-      <a class="btn" href="#booking" style="width:100%;margin-top:6px">Выбрать время</a>
+    <div><div class="card ro-hero">
+      <small class="cap">Цена за 10 секунд</small>
+      <div class="pick"><span class="on">📱 Телефон</span><span>💻 Ноутбук</span><span>📺 ТВ</span></div>
+      <div class="ln"><span>Замена экрана</span><b>от 2 500 ₽</b></div>
+      <div class="ln"><span>Замена аккумулятора</span><b>от 1 500 ₽</b></div>
+      <div class="ln"><span>Разъём зарядки</span><b>от 1 200 ₽</b></div>
+      <div class="ok">✓ Итог — до начала ремонта</div>
     </div></div>
   </div></section>
-  <section id="perks" style="padding-top:0"><div class="wrap"><div class="perks"><div class="perk"><div class="ico">🗓</div><b>Видно свободное время</b><p>Выбираете мастера и окно сами, в любое время суток — даже когда студия закрыта.</p></div><div class="perk"><div class="ico">💬</div><b>Напоминание накануне</b><p>Бот пришлёт напоминание и кнопку «Перенести», если планы поменялись.</p></div><div class="perk"><div class="ico">🌸</div><b>Свой мастер</b><p>Записывайтесь к любимому мастеру повторно в два нажатия.</p></div></div></div></section>
+  <section id="perks" style="padding-top:0"><div class="wrap"><div class="perks"><div class="perk"><div class="ico">📍</div><b>Два адреса</b><p>Сдайте технику там, где удобнее: на Ветеранов или на Ленинском.</p></div><div class="perk"><div class="ico">💸</div><b>Цена до ремонта</b><p>Сначала бесплатная диагностика и точная сумма, ремонт — только после вашего «да».</p></div><div class="perk"><div class="ico">📺</div><b>ТВ без перевозки</b><p>Большой телевизор не нужно везти: мастер приедет и посмотрит на месте.</p></div></div></div></section>
   <section class="alt" id="prices"><div class="wrap">
-    <div class="sec-head"><div><span class="tag">Цены</span><h2>Услуги и цены</h2></div><p>Цена может зависеть от длины волос и сложности работы — мастер скажет заранее.</p></div>
-    <div class="plist"><div class="card"><h3>Ногти</h3><div class="prow"><span>Маникюр с покрытием гель-лак<small>90 мин</small></span><b>2 200 ₽</b></div><div class="prow"><span>Педикюр с покрытием<small>120 мин</small></span><b>2 800 ₽</b></div><div class="prow"><span>Наращивание ногтей<small>150 мин</small></span><b>3 200 ₽</b></div></div><div class="card"><h3>Волосы</h3><div class="prow"><span>Женская стрижка<small>60 мин</small></span><b>1 800 ₽</b></div><div class="prow"><span>Окрашивание в один тон<small>от 2 часов</small></span><b>от 3 500 ₽</b></div><div class="prow"><span>Укладка<small>45 мин</small></span><b>1 500 ₽</b></div></div><div class="card"><h3>Брови и ресницы</h3><div class="prow"><span>Коррекция и окрашивание бровей<small>45 мин</small></span><b>1 200 ₽</b></div><div class="prow"><span>Ламинирование ресниц<small>60 мин</small></span><b>2 300 ₽</b></div></div><div class="card"><h3>Лицо</h3><div class="prow"><span>Чистка лица<small>75 мин</small></span><b>2 900 ₽</b></div><div class="prow"><span>Уходовая процедура<small>60 мин</small></span><b>2 500 ₽</b></div></div></div>
+    <div class="sec-head"><div><span class="tag">Цены</span><h2>Цены на ремонт</h2></div><p>Цена зависит от модели. Точную сумму скажем после диагностики — бесплатно.</p></div>
+    <div class="plist"><div class="card"><h3>Телефоны и планшеты</h3><div class="prow"><span>Замена экрана<small>1–2 часа при наличии</small></span><b>от 2 500 ₽</b></div><div class="prow"><span>Замена аккумулятора</span><b>от 1 500 ₽</b></div><div class="prow"><span>Разъём зарядки</span><b>от 1 200 ₽</b></div><div class="prow"><span>Прошивка, разблокировка</span><b>от 1 000 ₽</b></div></div><div class="card"><h3>Ноутбуки и телевизоры</h3><div class="prow"><span>Чистка ноутбука + термопаста</span><b>1 900 ₽</b></div><div class="prow"><span>Замена экрана ноутбука</span><b>от 4 500 ₽</b></div><div class="prow"><span>Ремонт ТВ: подсветка<small>частая поломка</small></span><b>от 3 000 ₽</b></div><div class="prow"><span>Выезд мастера по ТВ<small>в пределах района</small></span><b>500 ₽</b></div></div></div>
   </div></section>
-  <section id="masters"><div class="wrap">
-      <div class="sec-head"><div><span class="tag">Мастера</span><h2>Наша команда</h2></div><p>Фото мастеров добавим после настройки сайта.</p></div>
-      <div class="team">
-        <div class="card"><i>А</i><b>Анна</b><small>мастер маникюра</small><a href="#booking" class="btn ghost sm">Записаться</a></div>
-        <div class="card"><i>О</i><b>Ольга</b><small>маникюр и педикюр</small><a href="#booking" class="btn ghost sm">Записаться</a></div>
-        <div class="card"><i>В</i><b>Виктория</b><small>парикмахер-стилист</small><a href="#booking" class="btn ghost sm">Записаться</a></div>
-        <div class="card"><i>К</i><b>Ксения</b><small>брови и ресницы</small><a href="#booking" class="btn ghost sm">Записаться</a></div>
-        <div class="card"><i>М</i><b>Марина</b><small>косметолог</small><a href="#booking" class="btn ghost sm">Записаться</a></div>
-      </div></div></section><section><div class="wrap split"><div><span class="tag">Напоминания</span><h2>Клиенты приходят вовремя</h2><p>За день до визита бот присылает напоминание. Если планы поменялись, клиент переносит запись сам, и окно сразу освобождается для других.</p><p>Администратору не нужно обзванивать клиентов и отвечать на одни и те же вопросы.</p></div><div><div class="tg"><div class="who"><i>Н</i><div>Студия «Нероли»<small>бот записи</small></div></div><div class="msg">Добрый день, Елена! Напоминаем: завтра в 14:00<br>💅 Маникюр с покрытием · Анна<br>📍 пр. Ветеранов, 143<time>12:00</time></div><div class="kb"><span>✅ Приду</span><span>🔄 Перенести</span></div></div></div></div></section>
+  <section id="tv"><div class="wrap split"><div><span class="tag">ТВ на дому</span><h2>Телевизор не нужно везти в сервис</h2><p>Оставьте заявку с моделью и симптомом: «нет изображения», «есть звук, но нет картинки». Мастер приедет, проведёт диагностику и назовёт цену на месте.</p><p>Если ремонт не нужен или неоправдан, заплатите только за выезд.</p></div><div><div class="tg"><div class="who"><i>R</i><div>Ремонт техники · заявки<small>бот сервиса</small></div></div><div class="msg">🆕 Выезд по ТВ № 064<br>📺 Samsung 50", нет изображения, звук есть<br>📍 ул. Партизана Германа, 14<br>🗓 чт, 18:00<br>🙋 Ирина, +7 9•• •••-••-41<time>11:20</time></div><div class="kb"><span>✅ Подтвердить</span><span>🔄 Другое время</span></div></div></div></div></section>
   <section class="alt" id="booking"><div class="wrap">
-    <div class="sec-head"><div><span class="tag">Онлайн-запись</span><h2>Онлайн-запись</h2></div><p>Сначала услуга, потом мастер и время. Занятые окна зачёркнуты.</p></div>
+    <div class="sec-head"><div><span class="tag">Онлайн-запись</span><h2>Запишитесь на удобный адрес</h2></div><p>Выберите адрес, поломку и время. Если нужна запчасть, мастер закажет её заранее.</p></div>
     <div class="bk">
-      <form class="form" id="bookForm" onsubmit="return false"><div class="field"><span class="lbl">Услуга</span><div class="chips" id="fService"></div></div><div class="field"><span class="lbl">Мастер</span><div class="chips" id="fMaster"></div></div><div class="field"><span class="lbl">День</span><div class="chips mono" id="fDay"></div></div><div class="field"><span class="lbl">Время</span><div class="chips mono" id="fTime"></div></div><div class="field two"><div><label for="fName" class="lbl" style="display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">Имя</label><input id="fName" autocomplete="name" placeholder="Как к вам обращаться"></div><div><label for="fPhone" style="display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">Телефон</label><input id="fPhone" type="tel" autocomplete="tel" placeholder="+7 ___ ___-__-__"></div></div></form>
-      <aside class="summary" id="summary" aria-live="polite"><h3>Запись в студию</h3><p style="color:var(--muted);margin:0 0 18px">Напишите в WhatsApp услугу и удобное время — подберём мастера и подтвердим запись.</p><a class="btn" href="https://wa.me/79819629049" style="width:100%">Написать в WhatsApp</a><span class="hint">+7 981 962-90-49</span></aside>
+      <form class="form" id="bookForm" onsubmit="return false"><div class="field"><span class="lbl">Филиал</span><div class="chips" id="fBranch"></div></div><div class="field"><span class="lbl">Что случилось</span><div class="chips" id="fService"></div></div><div class="field"><span class="lbl">Когда удобно</span><div class="chips mono" id="fDay"></div></div><div class="field"><span class="lbl">Время</span><div class="chips mono" id="fTime"></div></div><div class="field two"><div><label for="fName" class="lbl" style="display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">Имя</label><input id="fName" autocomplete="name" placeholder="Как к вам обращаться"></div><div><label for="fPhone" style="display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">Телефон</label><input id="fPhone" type="tel" autocomplete="tel" placeholder="+7 ___ ___-__-__"></div></div><div class="field"><label for="fNote">Модель и что случилось (для ТВ — адрес)</label><textarea id="fNote" placeholder="Например: Xiaomi Redmi 10, не заряжается"></textarea></div></form>
+      <aside class="summary" id="summary" aria-live="polite"><h3>Запись на ремонт</h3><p style="color:var(--muted);margin:0 0 18px">Напишите в WhatsApp модель и что случилось — назовём цену и подскажем ближайший адрес.</p><a class="btn" href="https://wa.me/79119290499" style="width:100%">Написать в WhatsApp</a><span class="hint">+7 911 929-04-99</span></aside>
     </div>
   </div></section>
   <section id="faq"><div class="wrap">
     <div class="sec-head"><div><span class="tag">Вопросы</span><h2>Частые вопросы</h2></div></div>
-    <details><summary>Можно ли выбрать конкретного мастера?</summary><p>Да. Или выберите «любой свободный» — так быстрее найдётся окно.</p></details><details><summary>Как перенести или отменить запись?</summary><p>Кнопкой в напоминании или в WhatsApp. Пожалуйста, не позднее чем за 3 часа.</p></details><details><summary>Как оплатить?</summary><p>Картой, наличными или переводом после процедуры.</p></details><details><summary>Цена может измениться?</summary><p>Только если объём работы отличается от выбранного, например длина волос. Мастер скажет до начала.</p></details>
+    <details><summary>Сколько стоит диагностика?</summary><p>Бесплатно в сервисе. Выезд к телевизору — 500 ₽, при ремонте не оплачивается отдельно.</p></details><details><summary>Есть ли гарантия?</summary><p>Да, на работу и запчасти, срок указан в квитанции.</p></details><details><summary>Можно сдать на одном адресе, а забрать на другом?</summary><p>Уточните при сдаче: обычно да, если ремонт несрочный.</p></details><details><summary>Ремонт за один день?</summary><p>Экран и аккумулятор на популярные модели — чаще всего да, если запчасть в наличии.</p></details>
   </div></section>
   <section id="contacts" style="padding-top:0"><div class="wrap">
     <div class="sec-head"><div><span class="tag">Контакты</span><h2>Как нас найти</h2></div></div>
-    <div class="contacts"><div><small>Адрес</small><b>пр. Ветеранов, 143</b><p>Вход с проспекта</p><a class="btn ghost sm" href="https://yandex.ru/maps/?text=Санкт-Петербург,%20пр.%20Ветеранов,%20143" target="_blank" rel="noopener">Открыть на карте</a></div><div><small>Телефон</small><b>+7 981 962-90-49</b><p>Звонки и WhatsApp</p><a class="btn ghost sm" href="https://wa.me/79819629049" target="_blank" rel="noopener">Написать в WhatsApp</a></div><div><small>Часы работы</small><b>Ежедневно, 10:00–21:00</b><p>Последняя запись — за 1,5 часа до закрытия</p><a class="btn ghost sm" href="#booking">Записаться онлайн</a></div></div>
+    <div class="contacts"><div><small>Адрес</small><b>пр. Ветеранов, 147</b><p>ТК «Оазис», офис 12</p><a class="btn ghost sm" href="https://yandex.ru/maps/?text=Санкт-Петербург,%20пр.%20Ветеранов,%20147" target="_blank" rel="noopener">Открыть на карте</a></div><div><small>Адрес</small><b>Ленинский пр., 114</b><p>Вторая точка</p><a class="btn ghost sm" href="https://yandex.ru/maps/?text=Санкт-Петербург,%20Ленинский%20пр.,%20114" target="_blank" rel="noopener">Открыть на карте</a></div><div><small>Телефон</small><b>+7 911 929-04-99</b><p>Звонки и WhatsApp</p><a class="btn ghost sm" href="https://wa.me/79119290499" target="_blank" rel="noopener">Написать в WhatsApp</a></div><div><small>Часы работы</small><b>Пн–Сб, 10:00–20:00</b><p>Воскресенье — по записи</p><a class="btn ghost sm" href="#booking">Записаться онлайн</a></div></div>
   </div></section>
 </main>
-<footer><div class="wrap"><span>© Студия красоты «Нероли» · пр. Ветеранов, 143</span><span>Демо-версия сайта. Цены, мастера и часы примерные.</span></div></footer>
+<footer><div class="wrap"><span>© Ремонт техники · пр. Ветеранов, 147 · Ленинский пр., 114</span><span>Демо-версия сайта. Название, цены и часы примерные.</span></div></footer>
 <script>
-const C = {"days": 12, "hours": ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"], "services": [{"n": "Маникюр с покрытием", "p": 2200, "d": "90 мин", "c": "nails"}, {"n": "Педикюр с покрытием", "p": 2800, "d": "120 мин", "c": "nails"}, {"n": "Наращивание ногтей", "p": 3200, "d": "150 мин", "c": "nails"}, {"n": "Женская стрижка", "p": 1800, "d": "60 мин", "c": "hair"}, {"n": "Окрашивание в один тон", "p": 3500, "d": "от 2 часов", "c": "hair", "from": true}, {"n": "Укладка", "p": 1500, "d": "45 мин", "c": "hair"}, {"n": "Брови: коррекция и окрашивание", "p": 1200, "d": "45 мин", "c": "brows"}, {"n": "Ламинирование ресниц", "p": 2300, "d": "60 мин", "c": "brows"}, {"n": "Чистка лица", "p": 2900, "d": "75 мин", "c": "face"}], "masters": [{"n": "Анна", "r": "маникюр", "cats": ["nails"]}, {"n": "Ольга", "r": "маникюр и педикюр", "cats": ["nails"]}, {"n": "Виктория", "r": "парикмахер-стилист", "cats": ["hair"]}, {"n": "Ксения", "r": "брови и ресницы", "cats": ["brows"]}, {"n": "Марина", "r": "косметолог", "cats": ["face"]}], "text": {"svcLabel": "Услуга", "pickSvc": "Выберите услугу", "svcRow": "Услуга", "sumTitle": "Ваша запись", "send": "Записаться", "hint": "Оплата после процедуры", "adminTitle": "Запись", "adminIcon": "💅", "adminTo": "администратору", "doneTitle": "Вы записаны", "doneText": "ждём вас {when} на пр. Ветеранов, 143. Напоминание придёт накануне."}};
+const C = {"days": 10, "hours": ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00"], "branches": [["пр. Ветеранов", "пр. Ветеранов, 147, ТК «Оазис», оф. 12"], ["Ленинский пр.", "Ленинский пр., 114"]], "services": [{"n": "Экран телефона", "p": 2500, "from": true}, {"n": "Аккумулятор", "p": 1500, "from": true}, {"n": "Разъём зарядки", "p": 1200, "from": true}, {"n": "Чистка ноутбука", "p": 1900}, {"n": "Экран ноутбука", "p": 4500, "from": true}, {"n": "Выезд по ТВ", "p": 500, "d": "мастер приедет к вам"}, {"n": "Не знаю, нужна диагностика", "p": 0}], "text": {"svcLabel": "Что случилось", "pickSvc": "Выберите поломку", "svcRow": "Ремонт", "sumTitle": "Ваша заявка", "send": "Записаться", "hint": "Цену подтвердим после диагностики, до ремонта", "adminTitle": "Заявка", "adminIcon": "🔧", "adminTo": "мастеру", "doneTitle": "Заявка принята", "doneText": "ждём вас {when}. Если нужно уточнить модель, мастер напишет.", "dayLabel": "Когда удобно", "noteLabel": "Модель и что случилось (для ТВ — адрес)", "notePh": "Например: Xiaomi Redmi 10, не заряжается"}};
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString("ru-RU") + " ₽";
 const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
