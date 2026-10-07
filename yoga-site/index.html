@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Гармония · студия йоги</title>
+<meta name="description" content="Студия йоги «Гармония» на ул. Владимира Пчелинцева, 4. Хатха, виньяса, йога для спины, нидра. Пробное занятие 300 ₽, онлайн-запись.">
+<script>document.documentElement.classList.add("js")</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* Calm light look: warm sand, sage, a touch of terracotta, serif headings. Content is static HTML; JS only adds booking and animation. */
+:root {
+  --sand: #f5efe6;
+  --paper: #fffaf3;
+  --card: #fbf6ee;
+  --line: #e6dccd;
+  --ink: #2f2a24;
+  --muted: #8a8174;
+  --sage: #6f8f72;
+  --sage-soft: #e3ebe1;
+  --clay: #c47a5a;
+  --clay-soft: #f4e2d8;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Manrope", "Segoe UI", Roboto, Arial, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box }
+[hidden] { display: none !important }
+html { scroll-behavior: smooth }
+body { margin: 0; background: var(--sand); color: var(--ink); font: 16px/1.6 var(--font-body); }
+a { color: inherit }
+button { font: inherit; color: inherit; cursor: pointer }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px }
+@media (max-width: 600px) { .wrap { padding-inline: 16px } }
+.demo { background: var(--ink); color: #e9e1da; font-size: 13px; text-align: center; padding: 8px 16px }
+.demo b { color: #fff }
+
+header.nav { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--sand) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line) }
+header.nav .wrap { display: flex; align-items: center; gap: 28px; height: 68px }
+.logo { display: flex; align-items: center; gap: 10px; text-decoration: none }
+.logo svg { width: 34px; height: 34px }
+.logo b { font: 600 26px/1 var(--font-display) }
+.logo small { display: block; font: 600 9px/1 var(--font-body); letter-spacing: .28em; text-transform: uppercase; color: var(--muted); margin-top: 3px }
+nav.links { display: flex; gap: 24px; margin-left: auto; font-size: 14px }
+nav.links a { text-decoration: none; color: var(--muted) }
+nav.links a:hover { color: var(--ink) }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 999px; padding: 13px 24px; font-weight: 600; text-decoration: none;
+  background: var(--ink); color: var(--paper); transition: transform .15s, background .2s }
+.btn:hover { background: #4a4239 } .btn:active { transform: scale(.98) }
+.btn.light { background: transparent; color: var(--ink); border: 1px solid var(--ink) }
+.btn.light:hover { background: var(--ink); color: var(--paper) }
+.btn.sage { background: var(--sage) } .btn.sage:hover { background: #5d7c60 }
+.btn.sm { padding: 10px 18px; font-size: 14px }
+@media (max-width: 760px) { nav.links { display: none } header.nav .btn { margin-left: auto } }
+
+.hero { padding: 64px 0 80px }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 56px; align-items: center }
+@media (max-width: 860px) { .hero { padding: 36px 0 56px } .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 32px } }
+.eyebrow { font: 600 12px/1 var(--font-body); letter-spacing: .22em; text-transform: uppercase; color: var(--sage) }
+.hero h1 { font: 600 clamp(44px, 6.4vw, 80px)/.98 var(--font-display); margin: 18px 0 20px; text-wrap: balance }
+.hero h1 em { font-style: italic; color: var(--sage) }
+.hero p.lead { font-size: 18px; color: var(--muted); max-width: 44ch; margin: 0 0 28px }
+.hero .ctas { display: flex; flex-wrap: wrap; gap: 12px }
+.hero .meta { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 28px; font-size: 14px; color: var(--muted) }
+.hero .meta b { color: var(--ink); font-weight: 600 }
+.art { position: relative; aspect-ratio: 1; max-width: 460px; width: 100%; justify-self: center }
+.art .sun { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 50% 40%, #eef3ec 0, var(--sage-soft) 60%, #d6e2d4 100%) }
+.art svg.lotus { position: absolute; left: 50%; top: 52%; width: 70%; height: 70%; transform: translate(-50%, -50%) }
+.trial-float { position: absolute; right: -10px; bottom: 26px; background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 14px 18px; box-shadow: 0 20px 40px -24px rgba(47, 42, 36, .35) }
+.trial-float small { display: block; color: var(--muted); font-size: 12px }
+.trial-float b { font: 600 30px/1.1 var(--font-display); color: var(--clay) }
+@media (max-width: 860px) { .trial-float { right: 6px; bottom: 6px } }
+
+section { padding: 88px 0 }
+@media (max-width: 600px) { section { padding: 60px 0 } }
+.sec-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 34px; flex-wrap: wrap }
+.sec-head h2 { font: 600 clamp(36px, 4.8vw, 56px)/1 var(--font-display); margin: 12px 0 0 }
+.sec-head p { margin: 0; color: var(--muted); max-width: 42ch }
+
+.dirs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px }
+@media (max-width: 900px) { .dirs { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (max-width: 480px) { .dirs { grid-template-columns: minmax(0, 1fr) } }
+.dir { background: var(--paper); border: 1px solid var(--line); border-radius: 24px; padding: 22px }
+.dir .ico { width: 44px; height: 44px; border-radius: 14px; background: var(--sage-soft); display: grid; place-items: center; margin-bottom: 14px; font-size: 20px }
+.dir b { display: block; font: 600 24px/1.15 var(--font-display); margin-bottom: 6px }
+.dir p { margin: 0; color: var(--muted); font-size: 14px }
+.dir .lvl { display: inline-block; margin-top: 12px; font-size: 12px; padding: 3px 10px; border-radius: 999px; background: var(--sage-soft); color: #4f6b52 }
+.dir .lvl.mid { background: var(--clay-soft); color: #8b5a44 }
+
+.sched-sec { background: var(--paper) }
+.week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px }
+@media (max-width: 960px) { .week { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (max-width: 480px) { .week { grid-template-columns: minmax(0, 1fr) } }
+.day { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 16px 14px }
+.day h3 { font: 600 clamp(18px, 1.6vw, 22px)/1.1 var(--font-display); margin: 0 0 12px; letter-spacing: -.01em }
+.day h3 small { display: block; font: 500 12px/1 var(--font-body); color: var(--muted); margin-top: 4px }
+.day.today { border-color: var(--sage); box-shadow: inset 0 0 0 1px var(--sage) }
+.slot { display: block; width: 100%; text-align: left; background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; margin-top: 8px }
+.slot b { display: block; font-weight: 600; font-size: 14px }
+.slot span { font: 600 18px/1 var(--font-display); color: var(--sage) }
+.slot small { display: block; color: var(--muted); font-size: 12px }
+.js .slot { cursor: pointer; transition: border-color .15s, transform .1s }
+.js .slot:hover { border-color: var(--sage) }
+.js .slot:active { transform: scale(.98) }
+.slot .left { float: right; font: 500 11px/1.6 var(--font-body); color: var(--muted) }
+.slot.full { opacity: .5; cursor: default }
+
+.plans { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px }
+@media (max-width: 960px) { .plans { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (max-width: 480px) { .plans { grid-template-columns: minmax(0, 1fr) } }
+.plan { background: var(--paper); border: 1px solid var(--line); border-radius: 24px; padding: 22px }
+.plan b { display: block; font-weight: 600 }
+.plan small { color: var(--muted); font-size: 13px }
+.plan .p { display: block; font: 600 36px/1.1 var(--font-display); margin-top: 14px }
+.plan.trial { background: var(--clay-soft); border-color: #ecc9b8 } .plan.trial .p { color: var(--clay) }
+.plan.hit { background: var(--ink); color: var(--paper); border-color: var(--ink) } .plan.hit small { color: #cfc6b8 }
+.plan .tag { display: inline-block; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; background: var(--clay); color: #fff; border-radius: 999px; padding: 2px 8px; margin-left: 6px; vertical-align: 2px }
+
+.teachers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px }
+@media (max-width: 640px) { .teachers { grid-template-columns: minmax(0, 1fr) } }
+.teacher { background: var(--paper); border: 1px solid var(--line); border-radius: 26px; padding: 22px; display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 20px; align-items: center }
+.teacher .ava { width: 96px; height: 96px; border-radius: 50%; display: grid; place-items: center; font: 600 44px/1 var(--font-display); color: #fff }
+.teacher b { display: block; font: 600 28px/1.1 var(--font-display) }
+.teacher small { color: var(--sage); font-weight: 600; font-size: 13px }
+.teacher p { margin: 6px 0 0; color: var(--muted); font-size: 14px }
+
+.first { background: var(--sage-soft) }
+.first .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: start }
+@media (max-width: 860px) { .first .grid { grid-template-columns: minmax(0, 1fr); gap: 28px } }
+.steps { list-style: none; padding: 0; margin: 20px 0 0; display: grid; gap: 14px }
+.steps li { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 14px; align-items: start }
+.steps li span { width: 38px; height: 38px; border-radius: 50%; background: var(--paper); display: grid; place-items: center; font: 600 20px/1 var(--font-display); color: var(--sage) }
+details { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 0 18px }
+details + details { margin-top: 8px }
+summary { cursor: pointer; padding: 15px 0; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 10px }
+summary::-webkit-details-marker { display: none }
+summary::after { content: "+"; color: var(--sage); font-weight: 700 }
+details[open] summary::after { content: "−" }
+details p { margin: 0 0 16px; color: var(--muted); font-size: 15px }
+
+.book { background: var(--ink); color: #f3ece6 }
+.book .eyebrow { color: #b9cdb9 }
+.book .sec-head h2 { color: #fff } .book .sec-head p { color: #bfb3aa }
+.bk { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 24px; align-items: start }
+@media (max-width: 900px) { .bk { grid-template-columns: minmax(0, 1fr) } }
+.form { background: #3a332c; border: 1px solid #4a4239; border-radius: 28px; padding: 26px }
+@media (max-width: 600px) { .form { padding: 20px } }
+.field { margin-bottom: 20px }
+.field > .lbl, .field > label { display: block; font: 600 12px/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase; color: #b3a79d; margin-bottom: 10px }
+.chips { display: flex; flex-wrap: wrap; gap: 8px }
+.chips button { border: 1px solid #554c43; background: transparent; color: #f3ece6; border-radius: 12px; padding: 9px 13px; font-size: 14px; min-width: 60px; text-align: left }
+.chips button small { display: block; font-size: 11px; color: #a99c93 }
+.chips button[aria-pressed="true"] { background: #f3ece6; color: var(--ink); border-color: #f3ece6 }
+.chips button[aria-pressed="true"] small { color: var(--muted) }
+.chips button:disabled { opacity: .35; cursor: default }
+.form input { width: 100%; background: #2f2a24; border: 1px solid #554c43; color: #fff; border-radius: 14px; padding: 13px 14px; font: inherit }
+.form input::placeholder { color: #8a7f76 }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px }
+@media (max-width: 600px) { .two { grid-template-columns: minmax(0, 1fr) } }
+.toggle { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; width: 100%; text-align: left; border: 1px solid #554c43; background: transparent; color: #f3ece6; border-radius: 16px; padding: 12px 14px }
+.toggle .box { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid #6b6158; display: grid; place-items: center }
+.toggle[aria-pressed="true"] { border-color: #e0a488; background: rgba(196, 122, 90, .16) }
+.toggle[aria-pressed="true"] .box { background: var(--clay); border-color: var(--clay) }
+.toggle[aria-pressed="true"] .box::after { content: ""; width: 9px; height: 5px; border: solid #fff; border-width: 0 0 2.5px 2.5px; transform: translateY(-1px) rotate(-45deg) }
+.toggle small { display: block; color: #a99c93; font-size: 12px } .toggle .p { font: 600 22px/1 var(--font-display); color: #f0b89f }
+.summary { position: sticky; top: 88px; background: var(--paper); color: var(--ink); border-radius: 28px; padding: 26px }
+.summary h3 { font: 600 30px/1.1 var(--font-display); margin: 0 0 14px }
+.summary dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 16px; margin: 0 0 18px; font-size: 15px }
+.summary dt { color: var(--muted) } .summary dd { margin: 0 }
+.summary .total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--line); padding-top: 14px; margin-bottom: 16px }
+.summary .total b { font: 600 34px/1 var(--font-display) }
+.summary .btn { width: 100% }
+.summary .btn:disabled { opacity: .45; cursor: default }
+.summary .hint { display: block; text-align: center; margin-top: 10px; font-size: 13px; color: var(--muted) }
+.done { text-align: center }
+.done svg { width: 70px; height: 70px }
+.done p { color: var(--muted); margin: 0 0 14px }
+.admin { margin-top: 16px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 14px; text-align: left; font-size: 13px; white-space: pre-line }
+.admin small { display: block; color: var(--muted); margin-bottom: 6px; letter-spacing: .1em; text-transform: uppercase; font-size: 10px }
+html:not(.js) #bookForm { display: none }
+html:not(.js) .bk { grid-template-columns: minmax(0, 1fr) }
+
+.contacts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px }
+@media (max-width: 860px) { .contacts { grid-template-columns: minmax(0, 1fr) } }
+.contacts > div { background: var(--paper); border: 1px solid var(--line); border-radius: 24px; padding: 24px }
+.contacts small { font: 600 12px/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase; color: var(--muted) }
+.contacts b { display: block; font: 600 28px/1.2 var(--font-display); margin: 12px 0 6px }
+.contacts p { margin: 0 0 16px; color: var(--muted); font-size: 14px }
+footer { padding: 36px 0 48px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line) }
+footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap }
+
+.js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease }
+.js .reveal.in { opacity: 1; transform: none }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto } .js .reveal { opacity: 1; transform: none; transition: none } *, *::before, *::after { animation: none !important; transition: none !important } }
+</style>
+</head>
+<body>
+<div class="demo"><b>Демо-версия сайта</b> для студии «Гармония». Расписание, цены и преподаватели примерные.</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="lotus" viewBox="0 0 120 120"><g fill="none" stroke="#6f8f72" stroke-width="2.4" stroke-linejoin="round"><path d="M60 26c11 13 13 32 0 52-13-20-11-39 0-52z" fill="#d3e0d1"/><path d="M60 78C47 70 34 55 32 38c15 2 26 15 28 40z" fill="#e3ebe1"/><path d="M60 78c13-8 26-23 28-40-15 2-26 15-28 40z" fill="#e3ebe1"/><path d="M60 78c-15 2-32-4-42-17 17-4 32 2 42 17zM60 78c15 2 32-4 42-17-17-4-32 2-42 17z" fill="#f5efe6"/></g></symbol>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top"><svg viewBox="0 0 120 120"><use href="#lotus"/></svg><span><b>Гармония</b><small>студия йоги</small></span></a>
+    <nav class="links"><a href="#directions">Направления</a><a href="#schedule">Расписание</a><a href="#prices">Цены</a><a href="#contacts">Контакты</a></nav>
+    <a class="btn sm" href="#booking">Записаться</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">ул. Владимира Пчелинцева, 4</span>
+        <h1>Время <em>для себя</em> на коврике</h1>
+        <p class="lead">Хатха, виньяса, йога для спины и нидра в маленьких группах до 12 человек. Подходит, даже если вы никогда не занимались.</p>
+        <div class="ctas"><a class="btn" href="#booking">Записаться на пробное</a><a class="btn light" href="#schedule">Расписание</a></div>
+        <div class="meta"><span><b>Пробное</b> 300 ₽</span><span><b>+7 950 035-80-88</b></span></div>
+      </div>
+      <div class="art" aria-hidden="true">
+        <div class="sun"></div>
+        <svg class="lotus" viewBox="0 0 120 120"><use href="#lotus"/></svg>
+        <div class="trial-float"><small>Первое занятие</small><b>300 ₽</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="directions" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head reveal"><div><span class="eyebrow">Направления</span><h2>Выберите свою практику</h2></div><p>Не знаете, с чего начать? Приходите на «Йогу для начинающих» или любое занятие «для всех уровней».</p></div>
+      <div class="dirs">
+        <div class="dir reveal"><div class="ico">🌿</div><b>Хатха-йога</b><p>Классическая практика в спокойном темпе: асаны, дыхание, расслабление.</p><span class="lvl">все уровни</span></div>
+        <div class="dir reveal"><div class="ico">🌊</div><b>Виньяса флоу</b><p>Динамичный поток асан в ритме дыхания. Хорошо прогревает и бодрит.</p><span class="lvl mid">средний</span></div>
+        <div class="dir reveal"><div class="ico">🪷</div><b>Йога для спины</b><p>Для тех, кто много сидит: вытяжение, мягкие скрутки, укрепление.</p><span class="lvl">все уровни</span></div>
+        <div class="dir reveal"><div class="ico">🌙</div><b>Йога-нидра</b><p>Глубокое расслабление лёжа. Снимает напряжение, помогает лучше спать.</p><span class="lvl">все уровни</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sched-sec" id="schedule">
+    <div class="wrap">
+      <div class="sec-head reveal"><div><span class="eyebrow">Расписание</span><h2>Неделя в студии</h2></div><p id="schedHint">Группы до 12 человек. Запись онлайн или по телефону.</p></div>
+      <div class="week" id="week">
+        <div class="day"><h3>Понедельник</h3>
+          <div class="slot"><span>08:00</span><b>Утренняя хатха</b><small>Анна · 60 мин</small></div>
+          <div class="slot"><span>19:00</span><b>Хатха-йога</b><small>Анна · 75 мин</small></div>
+          <div class="slot"><span>20:30</span><b>Йога-нидра</b><small>Мария · 45 мин</small></div></div>
+        <div class="day"><h3>Вторник</h3>
+          <div class="slot"><span>10:00</span><b>Йога для спины</b><small>Анна · 60 мин</small></div>
+          <div class="slot"><span>19:00</span><b>Виньяса флоу</b><small>Мария · 75 мин</small></div></div>
+        <div class="day"><h3>Среда</h3>
+          <div class="slot"><span>08:00</span><b>Утренняя хатха</b><small>Анна · 60 мин</small></div>
+          <div class="slot"><span>19:00</span><b>Хатха-йога</b><small>Анна · 75 мин</small></div>
+          <div class="slot"><span>20:30</span><b>Растяжка</b><small>Мария · 60 мин</small></div></div>
+        <div class="day"><h3>Четверг</h3>
+          <div class="slot"><span>10:00</span><b>Йога для спины</b><small>Анна · 60 мин</small></div>
+          <div class="slot"><span>19:00</span><b>Виньяса флоу</b><small>Мария · 75 мин</small></div></div>
+        <div class="day"><h3>Пятница</h3>
+          <div class="slot"><span>19:00</span><b>Хатха-йога</b><small>Анна · 75 мин</small></div>
+          <div class="slot"><span>20:30</span><b>Йога-нидра</b><small>Мария · 45 мин</small></div></div>
+        <div class="day"><h3>Суббота</h3>
+          <div class="slot"><span>11:00</span><b>Йога для начинающих</b><small>Анна · 75 мин</small></div>
+          <div class="slot"><span>12:30</span><b>Растяжка</b><small>Мария · 60 мин</small></div></div>
+        <div class="day"><h3>Воскресенье</h3>
+          <div class="slot"><span>11:00</span><b>Мягкая йога</b><small>Анна · 60 мин</small></div>
+          <div class="slot"><span>18:00</span><b>Йога-нидра</b><small>Мария · 45 мин</small></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="prices">
+    <div class="wrap">
+      <div class="sec-head reveal"><div><span class="eyebrow">Цены</span><h2>Абонементы</h2></div><p>Действуют на все направления. Можно заморозить на 7 дней.</p></div>
+      <div class="plans">
+        <div class="plan trial reveal"><b>Пробное</b><small>первый раз, любое занятие</small><span class="p">300 ₽</span></div>
+        <div class="plan reveal"><b>Разовое</b><small>одно занятие</small><span class="p">700 ₽</span></div>
+        <div class="plan reveal"><b>4 занятия</b><small>на месяц · 600 ₽ за занятие</small><span class="p">2 400 ₽</span></div>
+        <div class="plan hit reveal"><b>8 занятий<span class="tag">выгодно</span></b><small>на месяц · 550 ₽ за занятие</small><span class="p">4 400 ₽</span></div>
+        <div class="plan reveal"><b>Безлимит</b><small>месяц, любые занятия</small><span class="p">6 000 ₽</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="teachers" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head reveal"><div><span class="eyebrow">Преподаватели</span><h2>Кто ведёт занятия</h2></div></div>
+      <div class="teachers">
+        <div class="teacher reveal"><div class="ava" style="background:#6f8f72">А</div><div><b>Анна</b><small>хатха · йога для спины · начинающие</small><p>Мягко объясняет основы и подбирает облегчённые варианты асан для каждого.</p></div></div>
+        <div class="teacher reveal"><div class="ava" style="background:#c47a5a">М</div><div><b>Мария</b><small>виньяса · нидра · растяжка</small><p>Динамичные практики и глубокое расслабление в конце дня.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="first" id="first">
+    <div class="wrap grid">
+      <div class="reveal">
+        <span class="eyebrow">Первый раз</span>
+        <div class="sec-head" style="margin-bottom:0"><h2>Как пройдёт первое занятие</h2></div>
+        <ul class="steps">
+          <li><span>1</span><div>Записываетесь на пробное занятие за 300 ₽, онлайн или по телефону</div></li>
+          <li><span>2</span><div>Приходите за 10 минут: удобная одежда и вода. Коврики, блоки и пледы есть в студии</div></li>
+          <li><span>3</span><div>Преподаватель знакомится с вами и подсказывает, как выполнять асаны безопасно</div></li>
+        </ul>
+      </div>
+      <div class="reveal">
+        <details open><summary>Я никогда не занимался. Мне можно?</summary><p>Да. Начните с «Йоги для начинающих» или любого занятия «для всех уровней». Преподаватель подскажет облегчённые варианты.</p></details>
+        <details><summary>Что взять с собой?</summary><p>Удобную одежду и воду. Коврики, блоки и пледы есть в студии.</p></details>
+        <details><summary>Можно ли есть перед занятием?</summary><p>Лучше не есть плотно за 2 часа до практики. Лёгкий перекус за час допустим.</p></details>
+        <details><summary>Как отменить запись?</summary><p>Позвоните или напишите в WhatsApp. При онлайн-записи отменить можно кнопкой в напоминании, место сразу освободится для других.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="book" id="booking">
+    <div class="wrap">
+      <div class="sec-head reveal"><div><span class="eyebrow">Онлайн-запись</span><h2>Запишитесь на занятие</h2></div><p>Выберите занятие, и студия получит заявку сразу. За 2 часа придёт напоминание.</p></div>
+      <div class="bk">
+        <form class="form" id="bookForm" novalidate>
+          <div class="field"><span class="lbl">День</span><div class="chips" id="fDay"></div></div>
+          <div class="field"><span class="lbl">Занятие</span><div class="chips" id="fClass"></div></div>
+          <div class="field"><button type="button" class="toggle" id="fTrial" aria-pressed="true"><span class="box"></span><span>Это моё первое занятие<small>пробное по специальной цене</small></span><span class="p">300 ₽</span></button></div>
+          <div class="two">
+            <div class="field"><label for="fName">Имя</label><input id="fName" autocomplete="given-name" placeholder="Как к вам обращаться"></div>
+            <div class="field"><label for="fPhone">Телефон</label><input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00"></div>
+          </div>
+        </form>
+        <aside class="summary" id="summary" aria-live="polite"><h3>Запись на занятие</h3><p style="color:var(--muted);margin:0 0 18px">Позвоните или напишите в WhatsApp, подберём удобное занятие.</p><a class="btn sage" href="https://wa.me/79500358088" style="width:100%">Написать в WhatsApp</a><span class="hint">+7 950 035-80-88</span></aside>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacts">
+    <div class="wrap">
+      <div class="sec-head reveal"><div><span class="eyebrow">Контакты</span><h2>Ждём вас в студии</h2></div></div>
+      <div class="contacts">
+        <div><small>Адрес</small><b>ул. Владимира Пчелинцева, 4</b><p>Санкт-Петербург</p><a class="btn light sm" href="https://yandex.ru/maps/?text=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%92%D0%BB%D0%B0%D0%B4%D0%B8%D0%BC%D0%B8%D1%80%D0%B0%20%D0%9F%D1%87%D0%B5%D0%BB%D0%B8%D0%BD%D1%86%D0%B5%D0%B2%D0%B0%2C%204" target="_blank" rel="noopener">Построить маршрут</a></div>
+        <div><small>Телефон</small><b>+7 950 035-80-88</b><p>Звонки и WhatsApp</p><a class="btn light sm" href="https://wa.me/79500358088" target="_blank" rel="noopener">Написать в WhatsApp</a></div>
+        <div><small>Занятия</small><b>Каждый день</b><p>Утро, день и вечер, см. расписание</p><a class="btn sm" href="#booking">Записаться онлайн</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap"><span>© Гармония, студия йоги · ул. Владимира Пчелинцева, 4</span><span>Демо-версия сайта. Расписание и цены примерные.</span></div></footer>
+
+<script>
+// Расписание (то же, что в разметке выше и в yoga-bot): день недели 0 = пн → [время, название, преподаватель, минут]
+const WEEK = [
+  [["08:00", "Утренняя хатха", "Анна", 60], ["19:00", "Хатха-йога", "Анна", 75], ["20:30", "Йога-нидра", "Мария", 45]],
+  [["10:00", "Йога для спины", "Анна", 60], ["19:00", "Виньяса флоу", "Мария", 75]],
+  [["08:00", "Утренняя хатха", "Анна", 60], ["19:00", "Хатха-йога", "Анна", 75], ["20:30", "Растяжка", "Мария", 60]],
+  [["10:00", "Йога для спины", "Анна", 60], ["19:00", "Виньяса флоу", "Мария", 75]],
+  [["19:00", "Хатха-йога", "Анна", 75], ["20:30", "Йога-нидра", "Мария", 45]],
+  [["11:00", "Йога для начинающих", "Анна", 75], ["12:30", "Растяжка", "Мария", 60]],
+  [["11:00", "Мягкая йога", "Анна", 60], ["18:00", "Йога-нидра", "Мария", 45]]
+];
+const CAPACITY = 12, TRIAL = 300, SINGLE = 700;
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString("ru-RU") + " ₽";
+const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const wd = d => (d.getDay() + 6) % 7;
+const digits = s => (s || "").replace(/\D/g, "");
+const plural = (n, a, b, c) => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 10 || h >= 20) ? b : c; };
+
+// демо-занятость на 7 дней вперёд
+const days = [];
+for (let i = 0; i < 7; i++) { const d = new Date(); d.setDate(d.getDate() + i); days.push(d); }
+const taken = {};
+days.forEach((d, i) => WEEK[wd(d)].forEach(([t], j) => { taken[`${iso(d)}_${t}`] = [7, 10, 4, 12, 9, 5, 11, 8][(i * 3 + j * 5) % 8]; }));
+const isPast = (day, t) => new Date(`${day}T${t}`) <= new Date();
+
+// расписание: подсвечиваем сегодня, показываем места на ближайшие даты, клик открывает запись
+document.querySelectorAll("#week .day").forEach((el, w) => {
+  const d = days.find(x => wd(x) === w), day = iso(d);
+  if (w === wd(days[0])) el.classList.add("today");
+  el.querySelector("h3").insertAdjacentHTML("beforeend", `<small>${d.getDate()} ${d.toLocaleDateString("ru-RU", { month: "short" }).replace(".", "")}</small>`);
+  el.querySelectorAll(".slot").forEach((s, j) => {
+    const [t] = WEEK[w][j], left = CAPACITY - (taken[`${day}_${t}`] || 0);
+    const btn = document.createElement("button"); btn.type = "button"; btn.className = s.className; btn.innerHTML = s.innerHTML;
+    const off = isPast(day, t) || left <= 0;
+    btn.insertAdjacentHTML("afterbegin", `<span class="left">${isPast(day, t) ? "прошло" : left <= 0 ? "мест нет" : `${left} ${plural(left, "место", "места", "мест")}`}</span>`);
+    if (off) btn.classList.add("full");
+    else btn.onclick = () => { bk.day = day; bk.time = t; renderBooking(); $("booking").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); };
+    s.replaceWith(btn);
+  });
+});
+$("schedHint").textContent = "Нажмите на занятие, чтобы записаться. Группы до 12 человек.";
+
+/* ---------- запись ---------- */
+const bk = { day: null, time: null, trial: true, sent: false };
+function chip(html, pressed, onClick, disabled) {
+  const b = document.createElement("button");
+  b.type = "button"; b.innerHTML = html; b.setAttribute("aria-pressed", pressed ? "true" : "false"); b.disabled = !!disabled;
+  b.onclick = () => { onClick(); renderBooking(); };
+  return b;
+}
+function renderBooking() {
+  if (!bk.day) bk.day = iso(days.find(d => WEEK[wd(d)].some(([t]) => !isPast(iso(d), t))) || days[1]);
+  $("fDay").replaceChildren(...days.map((d, i) => chip(`${d.getDate()}<small>${i === 0 ? "сегодня" : i === 1 ? "завтра" : d.toLocaleDateString("ru-RU", { weekday: "short" })}</small>`,
+    bk.day === iso(d), () => { bk.day = iso(d); bk.time = null; }, WEEK[wd(d)].every(([t]) => isPast(iso(d), t)))));
+  const list = WEEK[wd(new Date(bk.day + "T12:00"))];
+  $("fClass").replaceChildren(...list.map(([t, name, who]) => {
+    const left = CAPACITY - (taken[`${bk.day}_${t}`] || 0);
+    return chip(`${t} · ${name}<small>${who} · ${left > 0 ? `${left} ${plural(left, "место", "места", "мест")}` : "мест нет"}</small>`, bk.time === t, () => { bk.time = t; }, isPast(bk.day, t) || left <= 0);
+  }));
+  $("fTrial").setAttribute("aria-pressed", bk.trial ? "true" : "false");
+  renderSummary();
+}
+$("fTrial").onclick = () => { bk.trial = !bk.trial; renderBooking(); };
+function renderSummary() {
+  if (bk.sent) return;
+  const c = bk.time && WEEK[wd(new Date(bk.day + "T12:00"))].find(([t]) => t === bk.time);
+  const nameOk = $("fName").value.trim().length > 1, phoneOk = digits($("fPhone").value).length >= 10;
+  const when = bk.time ? `${new Date(bk.day + "T12:00").toLocaleDateString("ru-RU", { weekday: "short", day: "numeric", month: "long" })}, ${bk.time}` : "выберите занятие";
+  $("summary").innerHTML = `<h3>Ваша запись</h3>
+    <dl><dt>Занятие</dt><dd>${c ? c[1] : "—"}</dd><dt>Когда</dt><dd>${when}</dd><dt>Ведёт</dt><dd>${c ? `${c[2]}, ${c[3]} мин` : "—"}</dd></dl>
+    <div class="total"><span>${bk.trial ? "Пробное" : "Разовое"}</span><b>${fmt(bk.trial ? TRIAL : SINGLE)}</b></div>
+    <button class="btn sage" type="button" id="send" ${c && nameOk && phoneOk ? "" : "disabled"}>${!c ? "Выберите занятие" : !nameOk ? "Укажите имя" : !phoneOk ? "Укажите телефон" : "Записаться"}</button>
+    <span class="hint">Оплата на месте. Абонемент можно купить в студии.</span>`;
+  $("send").onclick = send;
+}
+["fName", "fPhone"].forEach(id => $(id).addEventListener("input", renderSummary));
+function send() {
+  const c = WEEK[wd(new Date(bk.day + "T12:00"))].find(([t]) => t === bk.time);
+  const key = `${bk.day}_${bk.time}`;
+  taken[key] = (taken[key] || 0) + 1;
+  bk.sent = true;
+  const when = `${new Date(bk.day + "T12:00").toLocaleDateString("ru-RU", { weekday: "long", day: "numeric", month: "long" })}, ${bk.time}`;
+  $("summary").innerHTML = `<div class="done"><svg viewBox="0 0 120 120"><use href="#lotus"/></svg><h3>Ждём вас на коврике</h3>
+    <p>${$("fName").value.trim()}, вы записаны: <b style="color:var(--ink)">${c[1]}</b>, ${when}. За 2 часа придёт напоминание.</p>
+    <p>Возьмите удобную одежду и воду, коврики есть в студии.</p>
+    <button class="btn light" type="button" id="again">Записаться ещё</button>
+    <div class="admin"><small>Студии в Telegram пришло</small>🧘 Новая запись с сайта
+${c[1]} · ${when}
+👤 ${$("fName").value.trim()}${bk.trial ? " · новичок, пробное" : ""}
+Мест занято: ${taken[key]} из ${CAPACITY}
+📞 ${$("fPhone").value.trim()}</div></div>`;
+  $("again").onclick = () => { bk.sent = false; bk.time = null; bk.trial = false; renderBooking(); };
+}
+
+const io = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .12 }) : null;
+document.querySelectorAll(".reveal").forEach(el => io ? io.observe(el) : el.classList.add("in"));
+renderBooking();
+</script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BACKENBART · барбершоп на Петергофском и Ветеранов</title>
+<meta name="description" content="Барбершоп BACKENBART: Петергофское ш., 72к4 и пр. Ветеранов, 183. Мужские стрижки, борода, бритьё. Онлайн-запись к барберу и подарочные сертификаты.">
+<script>document.documentElement.classList.add("js")</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+:root {
+  --bg: #121110;
+  --panel: #1b1917;
+  --panel-2: #25221f;
+  --line: #35302a;
+  --ink: #f1ebe3;
+  --muted: #9d9285;
+  --accent: #c9a15b;
+  --accent-ink: #17130c;
+  --accent-text: #d9b673;
+  --tag-bg: #c9a15b;
+  --tag-ink: #17130c;
+  --font-display: "Oswald", "Arial Narrow", sans-serif;
+  --font-body: "Manrope", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-num: "Oswald", "Arial Narrow", sans-serif;
+  --h1-weight: 600;
+  --em-style: normal;
+  --r-btn: 6px;
+  --r-card: 14px;
+  --shadow: 0 24px 48px -28px #000;
+  color-scheme: dark;
+  --ok: #2fbf71;
+}
+* { box-sizing: border-box }
+[hidden] { display: none !important }
+html { scroll-behavior: smooth }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 var(--font-body); }
+a { color: inherit }
+button { font: inherit; color: inherit; cursor: pointer }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px }
+@media (max-width: 600px) { .wrap { padding-inline: 16px } }
+.demo { background: var(--accent); color: var(--accent-ink); font-size: 13px; text-align: center; padding: 8px 16px; font-weight: 500 }
+
+header.nav { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line) }
+header.nav .wrap { display: flex; align-items: center; gap: 28px; height: 68px }
+.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; min-width: 0 }
+.logo .mark { width: 38px; height: 38px; border-radius: 11px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font: 700 17px/1 var(--font-display); flex: none }
+.logo b { display: block; font: 700 16px/1.1 var(--font-display); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.logo small { display: block; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+nav.links { display: flex; gap: 24px; margin-left: auto; font-size: 15px }
+nav.links a { text-decoration: none; color: var(--muted) }
+nav.links a:hover { color: var(--ink) }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: var(--r-btn); padding: 14px 22px; font-weight: 700; text-decoration: none; text-align: center;
+  background: var(--accent); color: var(--accent-ink); transition: transform .15s, filter .2s }
+.btn:hover { filter: brightness(1.06) } .btn:active { transform: scale(.98) }
+.btn.ghost { background: var(--panel-2); color: var(--ink); border: 1px solid var(--line) }
+.btn.sm { padding: 10px 16px; font-size: 15px }
+@media (max-width: 480px) { .logo small { display: none } .logo b { font-size: 15px } }
+@media (max-width: 760px) { nav.links { display: none } header.nav .btn { margin-left: auto; flex: none } }
+
+.hero { padding: 60px 0 76px }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px; align-items: center }
+@media (max-width: 860px) { .hero { padding: 34px 0 56px } .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 32px } }
+.tag { display: inline-block; font: 600 12px/1 var(--font-body); letter-spacing: .1em; text-transform: uppercase; background: var(--tag-bg); color: var(--tag-ink); padding: 7px 10px; border-radius: 6px }
+.hero h1 { font: var(--h1-weight) clamp(34px, 5.4vw, 64px)/1.04 var(--font-display); margin: 20px 0 18px; letter-spacing: -.01em; text-wrap: balance }
+.hero h1 em { font-style: var(--em-style); color: var(--accent-text) }
+.hero p.lead { font-size: 18px; color: var(--muted); max-width: 46ch; margin: 0 0 28px }
+.hero .ctas { display: flex; flex-wrap: wrap; gap: 12px }
+.chips-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px }
+.chips-row span { border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; font-size: 14px; color: var(--muted) }
+.chips-row span b { color: var(--ink) }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-card); padding: 22px; box-shadow: var(--shadow) }
+
+section { padding: 84px 0 }
+@media (max-width: 600px) { section { padding: 58px 0 } }
+.alt { background: var(--panel) }
+.alt .card, .alt .perk, .alt details, .alt .contacts > div, .alt .form, .alt .summary { background: var(--bg) }
+.sec-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 32px; flex-wrap: wrap }
+.sec-head h2 { font: var(--h1-weight) clamp(26px, 3.6vw, 42px)/1.12 var(--font-display); margin: 14px 0 0 }
+.sec-head p { margin: 0; color: var(--muted); max-width: 44ch }
+
+.perks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px }
+@media (max-width: 860px) { .perks { grid-template-columns: minmax(0, 1fr) } }
+.perk { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-card); padding: 24px }
+.perk .ico { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; font-size: 22px; background: var(--panel-2); margin-bottom: 14px }
+.perk b { display: block; font: 700 19px/1.25 var(--font-display); margin-bottom: 8px }
+.perk p { margin: 0; color: var(--muted); font-size: 15px }
+
+.plist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px }
+@media (max-width: 860px) { .plist { grid-template-columns: minmax(0, 1fr) } }
+.plist h3 { font: 700 18px/1.2 var(--font-display); margin: 0 0 8px }
+.prow { display: flex; justify-content: space-between; gap: 16px; padding: 11px 0; border-top: 1px dashed var(--line) }
+.prow span small { display: block; color: var(--muted); font-size: 13px }
+.prow b { white-space: nowrap; color: var(--accent-text); font-family: var(--font-num) }
+.ptable-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r-card); background: var(--bg) }
+table.pt { width: 100%; border-collapse: collapse; min-width: 480px }
+.pt th, .pt td { padding: 13px 16px; text-align: right; border-top: 1px solid var(--line); white-space: nowrap }
+.pt thead th { border-top: 0; font-size: 13px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em }
+.pt th:first-child, .pt td:first-child { text-align: left }
+.pt td { font-family: var(--font-num); font-weight: 500 }
+.pt td.r { font-weight: 700; color: var(--accent-text) }
+.note { color: var(--muted); font-size: 14px; margin: 14px 0 0 }
+
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: center }
+@media (max-width: 860px) { .split { grid-template-columns: minmax(0, 1fr); gap: 28px } }
+.split h2 { font: var(--h1-weight) clamp(26px, 3.6vw, 42px)/1.12 var(--font-display); margin: 14px 0 14px }
+.split p { color: var(--muted); margin: 0 0 12px; max-width: 46ch }
+.tg { background: #17212b; color: #e9eef3; border-radius: 22px; padding: 16px; border: 1px solid #263240; font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif }
+.tg .who { display: flex; align-items: center; gap: 10px; padding: 0 2px 12px; border-bottom: 1px solid #263240; margin-bottom: 12px; font-size: 14px }
+.tg .who i { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font: 700 14px/1 var(--font-display); font-style: normal }
+.tg .who small { display: block; color: #6c7883; font-size: 12px }
+.tg .msg { background: #182533; border: 1px solid #263240; border-radius: 16px 16px 16px 4px; padding: 11px 13px; font-size: 14.5px; margin-bottom: 8px; line-height: 1.5 }
+.tg .msg time { display: block; text-align: right; font-size: 11px; color: #6c7883 }
+.tg .kb { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px }
+.tg .kb span { text-align: center; padding: 9px; border-radius: 10px; background: #22303f; color: #6ab3f3; font-size: 14px; font-weight: 600 }
+
+.bk { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 24px; align-items: start }
+@media (max-width: 900px) { .bk { grid-template-columns: minmax(0, 1fr) } }
+.form { background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-card); padding: 24px }
+@media (max-width: 600px) { .form { padding: 18px } }
+.field { margin-bottom: 20px }
+.field > .lbl, .field > label { display: block; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 10px }
+.chips { display: flex; flex-wrap: wrap; gap: 8px }
+.chips button { border: 1.5px solid var(--line); background: var(--panel); border-radius: 12px; padding: 9px 13px; font-size: 15px; text-align: left; line-height: 1.35 }
+.chips button small { display: block; font-size: 12px; color: var(--muted) }
+.chips button[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--panel)) }
+.chips button:disabled { opacity: .3; text-decoration: line-through; cursor: default }
+.chips.mono button { font-family: var(--font-num); font-weight: 600 }
+.form input, .form textarea { width: 100%; background: var(--panel); border: 1.5px solid var(--line); color: var(--ink); border-radius: 12px; padding: 13px 14px; font: inherit }
+.form textarea { min-height: 80px; resize: vertical }
+.form input::placeholder, .form textarea::placeholder { color: var(--muted); opacity: .7 }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px }
+@media (max-width: 600px) { .two { grid-template-columns: minmax(0, 1fr) } }
+.summary { position: sticky; top: 88px; background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-card); padding: 24px }
+.summary h3 { font: 700 20px/1.2 var(--font-display); margin: 0 0 14px }
+.summary dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 16px; margin: 0 0 16px; font-size: 15px }
+.summary dt { color: var(--muted) } .summary dd { margin: 0 }
+.summary .total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px dashed var(--line); padding-top: 14px; margin-bottom: 16px }
+.summary .total b { font: 700 30px/1 var(--font-num); color: var(--accent-text) }
+.summary .btn { width: 100% }
+.summary .btn:disabled { opacity: .4; cursor: default }
+.summary .hint { display: block; text-align: center; margin-top: 10px; font-size: 13px; color: var(--muted) }
+.done { text-align: center }
+.done .ok { width: 60px; height: 60px; border-radius: 50%; background: var(--ok); color: #fff; display: grid; place-items: center; margin: 0 auto 12px; font-size: 28px; font-weight: 700 }
+.done p { color: var(--muted); margin: 0 0 12px; font-size: 15px }
+.admin { margin-top: 16px; background: #17212b; color: #e9eef3; border-radius: 16px; padding: 14px; text-align: left; font-size: 14px; white-space: pre-line }
+.admin small { display: block; color: #6c7883; margin-bottom: 6px; letter-spacing: .1em; text-transform: uppercase; font-size: 10px }
+html:not(.js) #bookForm { display: none }
+html:not(.js) .bk { grid-template-columns: minmax(0, 1fr) }
+html.js .nojs { display: none }
+
+details { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 0 18px }
+details + details { margin-top: 8px }
+summary { cursor: pointer; padding: 15px 0; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 10px }
+summary::-webkit-details-marker { display: none }
+summary::after { content: "+"; color: var(--accent-text); font: 700 18px/1 var(--font-num) }
+details[open] summary::after { content: "−" }
+details p { margin: 0 0 16px; color: var(--muted) }
+
+.contacts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px }
+@media (max-width: 860px) { .contacts { grid-template-columns: minmax(0, 1fr) } }
+.contacts > div { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-card); padding: 22px }
+.contacts small { font-size: 13px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; font-weight: 600 }
+.contacts b { display: block; font: 700 19px/1.3 var(--font-display); margin: 8px 0 6px }
+.contacts p { margin: 0 0 14px; color: var(--muted); font-size: 15px }
+footer { border-top: 1px solid var(--line); padding: 26px 0 40px; color: var(--muted); font-size: 14px }
+footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap }
+
+.hero h1 { text-transform: uppercase; letter-spacing: .01em }
+.sec-head h2, .split h2 { text-transform: uppercase }
+.bb-hero { display: grid; gap: 12px; max-width: 420px; margin-inline: auto }
+.bb-hero small { color: var(--muted); font-size: 13px }
+.bb-hero b { display: block; font: 600 20px/1.3 var(--font-display); text-transform: uppercase; margin: 2px 0 10px }
+.bb-hero .t { display: flex; gap: 8px; flex-wrap: wrap }
+.bb-hero .t span { border: 1px solid var(--accent); color: var(--accent-text); border-radius: 6px; padding: 5px 12px; font: 600 16px/1.2 var(--font-num) }
+.bb-hero .gift { background: linear-gradient(135deg, #2a2216, var(--panel)); border-color: #5a4626 }
+.bb-hero .gift a { color: var(--accent-text); text-decoration: none; font-weight: 600 }
+.certs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px }
+@media (max-width: 900px) { .certs { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (max-width: 480px) { .certs { grid-template-columns: minmax(0, 1fr) } }
+.cert { background: linear-gradient(150deg, #2a2216, var(--panel) 70%); border-color: #4a3a22 }
+.cert small { color: var(--muted); font-size: 12px; letter-spacing: .08em; text-transform: uppercase }
+.cert b { display: block; font: 700 34px/1.2 var(--font-num); color: var(--accent-text); margin: 6px 0 2px }
+.cert p { color: var(--muted); margin: 0 0 16px; font-size: 15px }
+
+</style>
+</head>
+<body>
+<div class="demo"><b>Демо-версия сайта</b> для «BACKENBART». Цены, барберы и часы примерные.</div>
+<header class="nav"><div class="wrap">
+  <a class="logo" href="#top"><span class="mark">B</span><span><b>BACKENBART</b><small>Барбершоп · 2 адреса</small></span></a>
+  <nav class="links"><a href="#prices">Цены</a><a href="#gift">Сертификаты</a><a href="#booking">Запись</a><a href="#contacts">Контакты</a></nav>
+  <a class="btn sm" href="#booking">Записаться</a>
+</div></header>
+<main id="top">
+  <section class="hero"><div class="wrap">
+    <div>
+      <span class="tag">Барбершоп · 2 адреса</span>
+      <h1>СТРИЖКА И БОРОДА <em>БЕЗ ЗВОНКОВ</em></h1>
+      <p class="lead">Петергофское шоссе и проспект Ветеранов. Выберите адрес, барбера и время онлайн — подтверждение придёт в Telegram.</p>
+      <div class="ctas"><a class="btn" href="#booking">Записаться к барберу</a><a class="btn ghost" href="https://wa.me/79520985050" target="_blank" rel="noopener">Написать в WhatsApp</a></div>
+      <div class="chips-row"><span>Петергофское ш., 72к4</span><span>пр. Ветеранов, 183</span><span><b>от 900 ₽</b></span></div>
+    </div>
+    <div><div class="bb-hero">
+      <div class="card"><small>Петергофское ш., 72к4</small><b>Сегодня свободно</b><div class="t"><span>17:00</span><span>18:30</span><span>20:00</span></div></div>
+      <div class="card"><small>пр. Ветеранов, 183</small><b>Сегодня свободно</b><div class="t"><span>16:00</span><span>19:00</span></div></div>
+      <div class="card gift"><small>Подарок</small><b>Сертификат от 1 500 ₽</b><a href="#gift">Подробнее →</a></div>
+    </div></div>
+  </div></section>
+  <section id="perks" style="padding-top:0"><div class="wrap"><div class="perks"><div class="perk"><div class="ico">✂️</div><b>Запись за минуту</b><p>Адрес, барбер, время — и готово. Не нужно писать в ВК и ждать ответа.</p></div><div class="perk"><div class="ico">📍</div><b>Два адреса</b><p>Выбирайте точку, которая ближе: Петергофское шоссе или проспект Ветеранов.</p></div><div class="perk"><div class="ico">🎁</div><b>Сертификаты</b><p>Подарочный сертификат на сумму или услугу — заказ в пару сообщений.</p></div></div></div></section>
+  <section class="alt" id="prices"><div class="wrap">
+    <div class="sec-head"><div><span class="tag">Цены</span><h2>Услуги и цены</h2></div><p>Цены одинаковые на обоих адресах.</p></div>
+    <div class="plist"><div class="card"><h3>Стрижки</h3><div class="prow"><span>Мужская стрижка<small>60 мин</small></span><b>1 600 ₽</b></div><div class="prow"><span>Стрижка машинкой<small>30 мин</small></span><b>900 ₽</b></div><div class="prow"><span>Детская стрижка<small>до 12 лет</small></span><b>1 100 ₽</b></div><div class="prow"><span>Отец + сын<small>две стрижки</small></span><b>2 600 ₽</b></div></div><div class="card"><h3>Борода и бритьё</h3><div class="prow"><span>Моделирование бороды<small>45 мин</small></span><b>1 000 ₽</b></div><div class="prow"><span>Стрижка + борода<small>90 мин</small></span><b>2 400 ₽</b></div><div class="prow"><span>Королевское бритьё<small>горячее полотенце</small></span><b>1 500 ₽</b></div><div class="prow"><span>Камуфляж седины</span><b>900 ₽</b></div></div></div>
+  </div></section>
+  <section id="gift"><div class="wrap">
+      <div class="sec-head"><div><span class="tag">Подарочные сертификаты</span><h2>Лучший подарок мужчине</h2></div><p>Электронный сертификат придёт в WhatsApp или Telegram, его можно переслать. Действует на обоих адресах.</p></div>
+      <div class="certs"><div class="card cert"><small>Подарочный сертификат</small><b>1 500 ₽</b><p>мужская стрижка</p><a class="btn sm" target="_blank" rel="noopener" href="https://wa.me/79520985050?text=1%20500%20%E2%82%BD%20%E2%80%94%20%D1%85%D0%BE%D1%87%D1%83%20%D1%81%D0%B5%D1%80%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%82">Заказать</a></div><div class="card cert"><small>Подарочный сертификат</small><b>2 400 ₽</b><p>стрижка + борода</p><a class="btn sm" target="_blank" rel="noopener" href="https://wa.me/79520985050?text=2%20400%20%E2%82%BD%20%E2%80%94%20%D1%85%D0%BE%D1%87%D1%83%20%D1%81%D0%B5%D1%80%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%82">Заказать</a></div><div class="card cert"><small>Подарочный сертификат</small><b>3 000 ₽</b><p>на любые услуги</p><a class="btn sm" target="_blank" rel="noopener" href="https://wa.me/79520985050?text=3%20000%20%E2%82%BD%20%E2%80%94%20%D1%85%D0%BE%D1%87%D1%83%20%D1%81%D0%B5%D1%80%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%82">Заказать</a></div><div class="card cert"><small>Подарочный сертификат</small><b>5 000 ₽</b><p>на любые услуги</p><a class="btn sm" target="_blank" rel="noopener" href="https://wa.me/79520985050?text=5%20000%20%E2%82%BD%20%E2%80%94%20%D1%85%D0%BE%D1%87%D1%83%20%D1%81%D0%B5%D1%80%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%82">Заказать</a></div></div>
+    </div></section>
+  <section class="alt" id="booking"><div class="wrap">
+    <div class="sec-head"><div><span class="tag">Онлайн-запись</span><h2>Запись к барберу</h2></div><p>Выберите адрес — покажем барберов и свободное время на этой точке.</p></div>
+    <div class="bk">
+      <form class="form" id="bookForm" onsubmit="return false"><div class="field"><span class="lbl">Филиал</span><div class="chips" id="fBranch"></div></div><div class="field"><span class="lbl">Услуга</span><div class="chips" id="fService"></div></div><div class="field"><span class="lbl">Барбер</span><div class="chips" id="fMaster"></div></div><div class="field"><span class="lbl">День</span><div class="chips mono" id="fDay"></div></div><div class="field"><span class="lbl">Время</span><div class="chips mono" id="fTime"></div></div><div class="field two"><div><label for="fName" class="lbl" style="display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">Имя</label><input id="fName" autocomplete="name" placeholder="Как к вам обращаться"></div><div><label for="fPhone" style="display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">Телефон</label><input id="fPhone" type="tel" autocomplete="tel" placeholder="+7 ___ ___-__-__"></div></div></form>
+      <aside class="summary" id="summary" aria-live="polite"><h3>Запись к барберу</h3><p style="color:var(--muted);margin:0 0 18px">Напишите в WhatsApp адрес, услугу и удобное время — подтвердим запись.</p><a class="btn" href="https://wa.me/79520985050" style="width:100%">Написать в WhatsApp</a><span class="hint">+7 952 098-50-50</span></aside>
+    </div>
+  </div></section>
+  <section id="faq"><div class="wrap">
+    <div class="sec-head"><div><span class="tag">Вопросы</span><h2>Частые вопросы</h2></div></div>
+    <details><summary>Можно прийти без записи?</summary><p>Можно, если есть свободный барбер. По записи — без ожидания.</p></details><details><summary>Как перенести запись?</summary><p>Кнопкой в напоминании от бота или в WhatsApp.</p></details><details><summary>Сертификат действует на обоих адресах?</summary><p>Да, на Петергофском и на Ветеранов.</p></details><details><summary>Стрижёте детей?</summary><p>Да, детская стрижка до 12 лет. Есть комплекс «Отец + сын».</p></details>
+  </div></section>
+  <section id="contacts" style="padding-top:0"><div class="wrap">
+    <div class="sec-head"><div><span class="tag">Контакты</span><h2>Как нас найти</h2></div></div>
+    <div class="contacts"><div><small>Адрес</small><b>Петергофское ш., 72к4</b><p>Первая точка</p><a class="btn ghost sm" href="https://yandex.ru/maps/?text=Санкт-Петербург,%20Петергофское%20ш.,%2072к4" target="_blank" rel="noopener">Открыть на карте</a></div><div><small>Адрес</small><b>пр. Ветеранов, 183</b><p>Вторая точка</p><a class="btn ghost sm" href="https://yandex.ru/maps/?text=Санкт-Петербург,%20пр.%20Ветеранов,%20183" target="_blank" rel="noopener">Открыть на карте</a></div><div><small>Телефон</small><b>+7 952 098-50-50</b><p>Петергофское ш.</p><a class="btn ghost sm" href="https://wa.me/79520985050" target="_blank" rel="noopener">Написать в WhatsApp</a></div><div><small>Телефон</small><b>+7 903 098-55-38</b><p>пр. Ветеранов</p><a class="btn ghost sm" href="https://wa.me/79030985538" target="_blank" rel="noopener">Написать в WhatsApp</a></div><div><small>Часы работы</small><b>Ежедневно, 10:00–22:00</b><p>На обоих адресах</p><a class="btn ghost sm" href="#booking">Записаться онлайн</a></div></div>
+  </div></section>
+</main>
+<footer><div class="wrap"><span>© BACKENBART · Петергофское ш., 72к4 · пр. Ветеранов, 183</span><span>Демо-версия сайта. Цены, барберы и часы примерные.</span></div></footer>
+<script>
+const C = {"days": 10, "hours": ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"], "branches": [["Петергофское ш.", "Петергофское ш., 72к4"], ["пр. Ветеранов", "пр. Ветеранов, 183"]], "services": [{"n": "Мужская стрижка", "p": 1600, "d": "60 мин"}, {"n": "Стрижка машинкой", "p": 900, "d": "30 мин"}, {"n": "Стрижка + борода", "p": 2400, "d": "90 мин"}, {"n": "Моделирование бороды", "p": 1000, "d": "45 мин"}, {"n": "Королевское бритьё", "p": 1500, "d": "45 мин"}, {"n": "Детская стрижка", "p": 1100, "d": "до 12 лет"}, {"n": "Отец + сын", "p": 2600, "d": "две стрижки"}, {"n": "Камуфляж седины", "p": 900, "d": "30 мин"}], "masters": [{"n": "Артём", "r": "топ-барбер", "b": 0}, {"n": "Денис", "r": "барбер", "b": 0}, {"n": "Илья", "r": "барбер", "b": 0}, {"n": "Максим", "r": "топ-барбер", "b": 1}, {"n": "Руслан", "r": "барбер", "b": 1}], "anyMaster": "первый свободный на этом адресе", "text": {"svcLabel": "Услуга", "pickSvc": "Выберите услугу", "svcRow": "Услуга", "masterRow": "Барбер", "sumTitle": "Ваша запись", "send": "Записаться", "hint": "Оплата после стрижки", "adminTitle": "Запись", "adminIcon": "✂️", "adminTo": "администратору", "doneTitle": "Вы записаны", "doneText": "ждём вас {when}. Напоминание придёт за 2 часа."}};
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString("ru-RU") + " ₽";
+const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const digits = s => (s || "").replace(/\D/g, "");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const round50 = n => Math.round(n / 50) * 50;
+const dayName = d => new Date(d + "T12:00").toLocaleDateString("ru-RU", { weekday: "short", day: "numeric", month: "long" });
+
+const st = { branch: 0, opt: 0, svc: null, master: -1, day: null, time: null, sent: false };
+// примерная занятость: часть слотов зачёркнута, чтобы календарь выглядел живым
+const busy = new Set();
+for (let i = 0; i < C.days; i++) { const d = new Date(); d.setDate(d.getDate() + i); C.hours.forEach((h, j) => { if ((j * 7 + i * 3 + 1) % 5 < 2) busy.add(`${iso(d)}_${h}`); }); }
+const slotKey = h => `${st.day}_${h}`;
+const svcList = () => C.services;
+const svcPrice = s => round50(s.p * (C.opts ? C.opts.list[st.opt][1] : 1));
+const masters = () => (C.masters || []).filter(m => (m.b === undefined || m.b === st.branch) && (!st.svc || !m.cats || m.cats.includes(svcList()[st.svc - 1].c)));
+const priceText = s => s.p === 0 ? "бесплатно" : (s.from ? "от " : "") + fmt(svcPrice(s));
+const closed = d => (C.closedDays || []).includes(d.getDay());
+
+function chip(html, pressed, onClick, disabled) {
+  const b = document.createElement("button");
+  b.type = "button"; b.innerHTML = html; b.setAttribute("aria-pressed", pressed ? "true" : "false"); b.disabled = !!disabled;
+  b.onclick = () => { onClick(); render(); };
+  return b;
+}
+function render() {
+  if (C.branches) $("fBranch").replaceChildren(...C.branches.map((b, i) => chip(`${esc(b[0])}<small>${esc(b[1])}</small>`, st.branch === i, () => { st.branch = i; st.master = -1; st.time = null; })));
+  if (C.opts) $("fOpt").replaceChildren(...C.opts.list.map((o, i) => chip(esc(o[0]), st.opt === i, () => { st.opt = i; })));
+  $("fService").replaceChildren(...svcList().map((s, i) => chip(`${esc(s.n)} · ${priceText(s)}${s.d ? `<small>${esc(s.d)}</small>` : ""}`, st.svc === i + 1, () => { st.svc = i + 1; if (st.master >= 0 && !masters().includes(C.masters[st.master])) st.master = -1; })));
+  if (C.masters) {
+    const list = masters();
+    $("fMaster").replaceChildren(chip(`Любой свободный<small>${esc(C.anyMaster || "подберём сами")}</small>`, st.master < 0, () => { st.master = -1; }),
+      ...list.map(m => { const i = C.masters.indexOf(m); return chip(`${esc(m.n)}<small>${esc(m.r)}</small>`, st.master === i, () => { st.master = i; st.time = null; }); }));
+  }
+  const now = new Date(), days = [];
+  for (let i = 0; i < C.days; i++) { const d = new Date(); d.setDate(d.getDate() + i); days.push(d); }
+  const todayDone = !C.hours.some(h => +h.slice(0, 2) > now.getHours());
+  if (!st.day) { const first = days.find((d, i) => !closed(d) && !(i === 0 && todayDone)); st.day = iso(first); }
+  $("fDay").replaceChildren(...days.map((d, i) => chip(`${d.getDate()}<small>${i === 0 ? "сегодня" : i === 1 ? "завтра" : d.toLocaleDateString("ru-RU", { weekday: "short" })}</small>`,
+    st.day === iso(d), () => { st.day = iso(d); st.time = null; }, (i === 0 && todayDone) || closed(d))));
+  const shift = (st.master + 1) + st.branch;
+  $("fTime").replaceChildren(...C.hours.map((h, j) => chip(h, st.time === h, () => { st.time = h; },
+    busy.has(`${st.day}_${C.hours[(j + shift) % C.hours.length]}`) || (st.day === iso(now) && +h.slice(0, 2) <= now.getHours()))));
+  summary();
+}
+function summary() {
+  if (st.sent) return;
+  const s = st.svc ? svcList()[st.svc - 1] : null;
+  const ok = { svc: !!s, time: !!st.time, name: $("fName").value.trim().length > 1, phone: digits($("fPhone").value).length >= 10 };
+  const label = !ok.svc ? C.text.pickSvc : !ok.time ? "Выберите время" : !ok.name ? "Укажите имя" : !ok.phone ? "Укажите телефон" : C.text.send;
+  const when = st.time ? `${dayName(st.day)}, ${st.time}` : "выберите время";
+  const rows = [];
+  if (C.branches) rows.push(["Адрес", C.branches[st.branch][1]]);
+  if (C.opts) rows.push([C.opts.label, C.opts.list[st.opt][0]]);
+  rows.push([C.text.svcRow, s ? s.n : "не выбрано"]);
+  if (C.masters) rows.push([C.text.masterRow || "Мастер", st.master < 0 ? "любой свободный" : C.masters[st.master].n]);
+  rows.push(["Когда", when]);
+  $("summary").innerHTML = `<h3>${C.text.sumTitle}</h3>
+    <dl>${rows.map(r => `<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join("")}</dl>
+    <div class="total"><span>${s && s.from ? "Стоимость от" : "Стоимость"}</span><b>${s ? (s.p === 0 ? "0 ₽" : fmt(svcPrice(s))) : "—"}</b></div>
+    <button class="btn" type="button" id="send" ${Object.values(ok).every(Boolean) ? "" : "disabled"}>${label}</button>
+    <span class="hint">${C.text.hint}</span>`;
+  $("send").onclick = send;
+}
+["fName", "fPhone"].forEach(id => $(id).addEventListener("input", summary));
+function send() {
+  const s = svcList()[st.svc - 1];
+  const no = String(100 + Math.floor(Math.random() * 80));
+  const when = `${dayName(st.day)}, ${st.time}`;
+  const name = $("fName").value.trim(), phone = $("fPhone").value.trim(), note = $("fNote") ? $("fNote").value.trim() : "";
+  busy.add(`${st.day}_${st.time}`);
+  st.sent = true;
+  const lines = [`🆕 ${C.text.adminTitle} № ${no}`];
+  if (C.branches) lines.push(`📍 ${C.branches[st.branch][1]}`);
+  lines.push(`${C.text.adminIcon} ${s.n}${C.opts ? ", " + C.opts.list[st.opt][0].toLowerCase() : ""} · ${priceText(s)}`);
+  if (C.masters) lines.push(`👤 ${C.text.masterRow || "Мастер"}: ${st.master < 0 ? "любой свободный" : C.masters[st.master].n}`);
+  lines.push(`🗓 ${when}`, `🙋 ${name}, ${phone}`);
+  if (note) lines.push(`💬 ${note}`);
+  $("summary").innerHTML = `<div class="done"><div class="ok">✓</div><h3>${C.text.doneTitle} · № ${no}</h3>
+    <p>${esc(name)}, ${esc(C.text.doneText.replace("{when}", when))}</p>
+    <div class="admin"><small>Так заявка приходит ${esc(C.text.adminTo)} в Telegram</small>${esc(lines.join("\n"))}\n\n[ ✅ Подтвердить ]  [ ✖ Отказать ]</div>
+    <button class="btn ghost sm" type="button" id="again" style="margin-top:14px">Записаться ещё</button></div>`;
+  $("again").onclick = () => { st.sent = false; st.time = null; render(); };
+}
+document.querySelectorAll("[data-svc]").forEach(a => a.addEventListener("click", () => { st.svc = +a.dataset.svc; st.time = null; render(); }));
+render();
+</script>
+</body>
+</html>
